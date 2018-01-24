@@ -1,5 +1,5 @@
 //
-//  Title.swift
+//  role.swift
 //  App
 //
 //  Created by jarrod maeckeler on 2018-01-23.
@@ -9,34 +9,34 @@ import Foundation
 import Vapor
 import FluentProvider
 
-final class Title: Model, Timestampable {
+final class Role: Model, Timestampable {
   let storage: Storage = Storage()
   
-  var title: String
+  var role: String
   
-  init(title: String) {
-    self.title = title
+  init(role: String) {
+    self.role = role
   }
   
   required init(row: Row) throws {
-    title = try row.get("title")
+    role = try row.get("role")
   }
   
   func makeRow() throws -> Row {
     var row = Row()
     
-    try row.set("title", title)
+    try row.set("role", role)
     
     return row
   }
 }
 
-extension Title: Preparation {
+extension Role: Preparation {
   
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
-      db.string("title")
+      db.string("role")
     }
   }
   
@@ -45,12 +45,12 @@ extension Title: Preparation {
   }
 }
 
-extension Title: JSONRepresentable {
+extension Role: JSONRepresentable {
   func makeJSON() throws -> JSON {
     var json = JSON()
     
     try json.set("id", id)
-    try json.set("title", title)
+    try json.set("role", role)
     
     return json
   }
