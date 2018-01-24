@@ -1,23 +1,20 @@
-<p align="center">
-    <img src="https://cloud.githubusercontent.com/assets/1342803/24797159/52fb0d88-1b90-11e7-85a5-359fff0496a4.png" width="320" alt="MySQL">
-    <br>
-    <br>
-    <a href="http://beta.docs.vapor.codes/getting-started/hello-world/">
-        <img src="http://img.shields.io/badge/read_the-docs-92A8D1.svg" alt="Documentation">
-    </a>
-    <a href="http://vapor.team">
-        <img src="http://vapor.team/badge.svg" alt="Slack Team">
-    </a>
-    <a href="LICENSE">
-        <img src="http://img.shields.io/badge/license-MIT-brightgreen.svg" alt="MIT License">
-    </a>
-    <a href="https://circleci.com/gh/vapor/mysql">
-        <img src="https://circleci.com/gh/vapor/mysql.svg?style=shield" alt="Continuous Integration">
-    </a>
-    <a href="https://travis-ci.org/vapor/api-template">
-    	<img src="https://travis-ci.org/vapor/api-template.svg?branch=master" alt="Build Status">
-    </a>
-    <a href="https://swift.org">
-        <img src="http://img.shields.io/badge/swift-3.1-brightgreen.svg" alt="Swift 3.1">
-    </a>
-</center>
+# InvestingInMeAPI
+Developed in Vapor
+
+By: Jarrod, Liam & Johnny
+
+## Documentation
+- [Setting up Tests](CREATING_TESTS.md)
+- [Creating Files and Folders](CREATING_FILES_FOLDERS.md)
+
+## Useful Tips
+
+- If there's a change in the `Package.swift`, always do a `vapor build`, followed by `vapor xcode -y`. This re-generates your xcode files as well as updates your libraries/dependicies.
+- If you need to wipe out all your tables, then do `vapor run prepare --revert -all`. If this doesn't work, you can just wipe it out your database manually, through either Postico or terminal, or whatever database you choose.
+- If you only need to wipe out the latest batch of preparations, then do `vapor run prepare --revert`. This is useful, when you want to revert a latest change you didn't need.
+- If you want to see more information regarding on the commands you've ran, then you can append `--verbose` at the end, to get more information.
+
+
+## Libraries Used
+- Vapor Swift Framework
+- PostgreSQL
