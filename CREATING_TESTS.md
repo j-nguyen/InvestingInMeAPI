@@ -52,3 +52,16 @@ Finally, you can't open up `./Tests/LinuxMain.swift` on XCode, so you'll have to
 Do `nano Tests/LinuxMain.swift`. You should see the `testCases` and the extension variable that you created. Add the one you made from your test file class. Hit `ctrl+x` and tap `y` to save the file.
 
 ![Terminal Image](images/terminal.png)
+
+## Running on Mac
+
+To run all of these tests on Mac, open up terminal and your current directory, do `vapor build`. Once that's finished, run `swift test` or `vapor test`.
+
+## Test Commands
+
+XCTestcase, in my opinion, is not the best test case. I actually dislike it, because it returns back such a generic response. In the recent years though, they've improved enough that it doesn't require much.
+
+The main ones you'll be likely using are:
+- `XCTXCTAssertNotNil`
+- `XCTAssertEqual`
+- Droplet extensions, just call `assert` in the beginning, and you'll see all of the required functions you may need.
