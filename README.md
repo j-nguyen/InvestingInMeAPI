@@ -4,9 +4,8 @@ Developed in Vapor
 By: Jarrod, Liam & Johnny
 
 ## Documentation
-- [Setting up Tests]()
-- [Creating Files and Folders]()
-- [Other]()
+- [Setting up Tests](CREATING_TESTS.md)
+- [Creating Files and Folders](CREATING_FILES_FOLDERS.md)
 
 ## Libraries Used
 - Vapor Swift Framework
