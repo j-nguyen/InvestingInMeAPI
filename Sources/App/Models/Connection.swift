@@ -54,3 +54,46 @@ final class Connection: Model, Timestampable {
     return row
   }
 }
+
+// MARK: Connection model for parents
+extension Connection {
+  var inviter: Parent<Connection, User> {
+    return parent(id: inviter_id)
+  }
+  
+  var invitee: Parent<Connection, User> {
+    return parent(id: invitee_id)
+  }
+}
+
+// MARK: Preparation Database
+extension Connection: Preparation {
+  static func prepare(_ database: Database) throws {
+    try database.create(self) { db in
+      db.id()
+      db.parent(User.self, foreignIdKey: "inviter_id")
+      db.parent(User.self, foreignIdKey: "invitee_id")
+      db.bool("accepted", default: false)
+      db.string("message")
+      // we'll want to set a raw unique constraint
+      db.raw("UNIQUE(\"inviter_id\", \"invitee_id\")")
+    }
+  }
+  
+  static func revert(_ database: Database) throws {
+    try database.delete(self)
+  }
+}
+
+// MARK: JSONRepresentable to send at the end
+extension Connection: JSONRepresentable {
+  func makeJSON() throws -> JSON {
+    var json = JSON()
+    try json.set("id", id)
+    try json.set("inviter", inviter.get()?.makeJSON())
+    try json.set("invitee", invitee.get()?.makeJSON())
+    try json.set("accepted", accepted)
+    try json.set("message", message)
+    return json
+  }
+}
