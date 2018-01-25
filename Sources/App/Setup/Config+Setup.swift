@@ -27,7 +27,9 @@ extension Config {
   /// schemas prepared before the app boots
   private func setupPreparations() throws {
     preparations.append(Role.self)
+    preparations.append(Category.self)
     preparations.append(User.self)
     preparations.append(Connection.self)
+    preparations.append(Project.self)
   }
 }
