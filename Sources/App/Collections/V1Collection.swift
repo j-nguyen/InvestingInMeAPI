@@ -22,8 +22,9 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     
     //MARK: User Routes
     //Declare the group for the users
-    let users = api.group("users") { user in
+    api.group("users") { user in
       user.get(":id", handler: userController.show)
+      user.patch(":id", handler: userController.update)
     }
   }
 }
