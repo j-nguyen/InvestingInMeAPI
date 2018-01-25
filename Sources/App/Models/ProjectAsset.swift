@@ -6,3 +6,9 @@
 //
 
 import Foundation
+import Vapor
+import FluentProvider
+
+final class AssetModel: Model, Timestampable {
+  
+}
