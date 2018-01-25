@@ -26,7 +26,7 @@ final class SeedCommand: Command {
       //Declare the roles we will allow
       let roles = ["Developer", "Marketer", "Investor", "Business Person", "Finance"]
       
-      //Iterate through the list of roles 
+      //Iterate through the list of roles
       for current_role in roles {
         
         //Create a new role based on the current_role
@@ -34,6 +34,19 @@ final class SeedCommand: Command {
         
         //Save the role
         try role.save()
+      }
+      
+      //Declare the categories we will allow
+      let categories = ["Game", "Mobile App", "Mobile Game App", "Website", "Desktop App", "Other"]
+      
+      //Iterate through the list of categories
+      for current_category in categories {
+        
+        //Create a new category based on the current_category
+        let category = Category.init(type: current_category)
+        
+        //Save the category
+        try category.save()
       }
     }
   }
