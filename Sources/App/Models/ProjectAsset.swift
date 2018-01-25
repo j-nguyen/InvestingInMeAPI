@@ -22,13 +22,21 @@ final class AssetModel: Model, Timestampable {
     self.asset_id = asset_id
   }
   
+  //MARK: Initialize Row
   init(row: Row) throws {
-    <#code#>
+    project_id = try row.get("project_id")
+    asset_id = try row.get("asset_id")
   }
   
+  //MARK: Make Row
   func makeRow() throws -> Row {
-    <#code#>
+    var row = Row()
+    try row.set("project_id", project_id)
+    try row.set("asset_id", asset_id)
+    
+    return row
   }
-  
   
 }
+
+
