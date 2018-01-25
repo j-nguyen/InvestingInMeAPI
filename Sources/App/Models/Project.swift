@@ -61,7 +61,7 @@ extension Project: Preparation {
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
-      db.int(User.self)
+      db.parent(User.self)
       db.string("name")
       db.parent(Category.self)
       db.parent(Role.self)
