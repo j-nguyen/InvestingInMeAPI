@@ -23,6 +23,11 @@ extension Config {
     addConfigurable(command: SeedCommand.init, name: "seed")
   }
   
+  // Setup the seeds for the database
+  private func setupSeedDatabase() {
+    Role.database = drop?.database
+  }
+  
   /// Add all models that should have their
   /// schemas prepared before the app boots
   private func setupPreparations() throws {
