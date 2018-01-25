@@ -29,5 +29,6 @@ extension Config {
     preparations.append(Role.self)
     preparations.append(Category.self)
     preparations.append(User.self)
+    preparations.append(Project.self)
   }
 }
