@@ -54,3 +54,23 @@ final class Project: Model, Timestampable {
   }
   
 }
+
+//MARK: Project Database Extension
+extension Project: Preparation {
+  static func prepare(_ database: Database) throws {
+    try database.create(self) { db in
+      db.id()
+      db.int("user_id")
+      db.string("name")
+      //db.parent(Category.self)
+      db.parent(Role.self)
+      db.custom("project_description", type: "TEXT")
+      db.custom("description_needs", type: "TEXT")
+    }
+  }
+  
+  //MARK: Project Revert
+  static func revert(_ database: Database) throws {
+    try database.delete(self)
+  }
+}
