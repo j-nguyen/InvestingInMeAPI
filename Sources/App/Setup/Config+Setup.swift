@@ -30,6 +30,7 @@ extension Config {
     preparations.append(Category.self)
     preparations.append(User.self)
     preparations.append(ProjectAsset.self)
+    preparations.append(Connection.self)
     preparations.append(Project.self)
   }
 }
