@@ -52,11 +52,12 @@ final class Project: Model, Timestampable {
     
     return row
   }
-  
 }
 
 //MARK: Project Database Extension
 extension Project: Preparation {
+  
+  //MARK: Project Prepare
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
@@ -74,3 +75,22 @@ extension Project: Preparation {
     try database.delete(self)
   }
 }
+
+//MARK: Project JSON Extension
+extension Project: JSONRepresentable {
+  func makeJSON() throws -> JSON {
+    var json = JSON()
+    
+    try json.set("id", id)
+    try json.set("user_id", user_id)
+    try json.set("name", name)
+    //try json.set("category", category.get()?.makeJSON())
+    try json.set("role", role.get()?.makeJSON())
+    try json.set("project_description", project_description)
+    try json.set("description_needs", description_needs)
+    
+    return json
+  }
+}
+
+
