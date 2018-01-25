@@ -73,11 +73,12 @@ final class User: Model, Timestampable {
     
     return row
   }
-  
 }
 
 //MARK: User Database Extension
 extension User: Preparation {
+  
+  //MARK: User Prepare
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
@@ -125,6 +126,7 @@ extension User: JSONRepresentable {
   }
 }
 
+//MARK: Role ID Parent Extension
 extension User {
   var role: Parent<User,Role> {
     return parent(id: role_id)
