@@ -17,14 +17,19 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     //Declare the group route for the api
     let api = builder.grouped("api", "v1")
     
-    //Declare the UserController
+    //Declare the Controllers
     let userController = UserController()
+    let projectController = projectController()
     
     //MARK: User Routes
     //Declare the group for the users
     api.group("users") { user in
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
+    }
+    
+    api.group("projects") { project in
+      project.get(":id", handler: projectController.show)
     }
   }
 }
