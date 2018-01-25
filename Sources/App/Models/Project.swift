@@ -32,7 +32,12 @@ final class Project: Model, Timestampable {
   
   //MARK: Initialize Row
   init(row: Row) throws {
-    
+    user_id = try row.get("user_id")
+    name = try row.get("name")
+    category_id = try row.get("category_id")
+    role_id = try row.get("role_id")
+    project_description = try row.get("project_description")
+    description_needs = try row.get("description_needs")
   }
   
   
