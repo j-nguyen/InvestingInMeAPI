@@ -30,8 +30,8 @@ extension Config {
     preparations.append(Role.self)
     preparations.append(Category.self)
     preparations.append(User.self)
-    preparations.append(ProjectAsset.self)
     preparations.append(Connection.self)
     preparations.append(Project.self)
+    preparations.append(Pivot<Project,Asset>.self)
   }
 }
