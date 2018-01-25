@@ -56,6 +56,17 @@ extension ProjectAsset: Preparation {
   }
 }
 
-extension ProjectAsset: 
+//MARK: JSON ProjectAsset Extension
+extension ProjectAsset:  JSONRepresentable {
+  func makeJSON() throws -> JSON {
+    var json = JSON()
+    
+    try json.set("id", id)
+    try json.set("project_id", project_id)
+    try json.set("asset_id", asset_id)
+    
+    return json
+  }
+}
 
 
