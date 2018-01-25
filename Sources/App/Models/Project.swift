@@ -13,7 +13,7 @@ final class Project: Model, Timestampable {
   let storage: Storage = Storage()
 
   //MARK: Project Table Variables
-  var user_id: Int
+  var user_id: Identifier
   var name: String
   var category_id: Identifier
   var role_id: Identifier
@@ -21,7 +21,7 @@ final class Project: Model, Timestampable {
   var description_needs: String
 
   //MARK: Initialize Project Table
-  init(user_id: Int, name: String, category_id: Identifier, role_id: Identifier, project_description: String, description_needs: String) {
+  init(user_id: Identifier, name: String, category_id: Identifier, role_id: Identifier, project_description: String, description_needs: String) {
     self.user_id = user_id
     self.name = name
     self.category_id = category_id
@@ -61,7 +61,7 @@ extension Project: Preparation {
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
-      db.int("user_id")
+      db.int(User.self)
       db.string("name")
       db.parent(Category.self)
       db.parent(Role.self)
@@ -81,7 +81,7 @@ extension Project: JSONRepresentable {
   func makeJSON() throws -> JSON {
     var json = JSON()
     
-    try json.set("id", id)
+    try json.set("id", user.get()?.makeJSON())
     try json.set("user_id", user_id)
     try json.set("name", name)
     try json.set("category", category.get()?.makeJSON())
@@ -100,5 +100,8 @@ extension Project {
   }
   var category: Parent<Project,Category> {
     return parent(id: category_id)
+  }
+  var user: Parent<Project,User> {
+    return parent(id: user_id)
   }
 }
