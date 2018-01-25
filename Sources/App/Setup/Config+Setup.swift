@@ -31,5 +31,6 @@ extension Config {
     preparations.append(User.self)
     preparations.append(Connection.self)
     preparations.append(Project.self)
+    preparations.append(FeaturedProject.self)
   }
 }

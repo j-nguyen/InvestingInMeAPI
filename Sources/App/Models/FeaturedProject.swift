@@ -40,3 +40,36 @@ final class FeaturedProject: Model, Timestampable {
     return row
   }
 }
+
+// MARK: Convenience operators for our project
+extension FeaturedProject {
+  var project: Parent<FeaturedProject, Project> {
+    return parent(id: project_id)
+  }
+}
+
+// MARK: Prepare Database
+extension FeaturedProject: Preparation {
+  static func prepare(_ database: Database) throws {
+    try database.create(self) { db in
+      db.id()
+      db.parent(Project.self)
+      db.int("duration")
+    }
+  }
+  
+  static func revert(_ database: Database) throws {
+    try database.delete(self)
+  }
+}
+
+// MARK: JSONRepresentable
+extension FeaturedProject: JSONRepresentable {
+  func makeJSON() throws -> JSON {
+    var json = JSON()
+    try json.set("id", id)
+    try json.set("project", project.get()?.makeJSON())
+    try json.set("duration", duration)
+    return json
+  }
+}
