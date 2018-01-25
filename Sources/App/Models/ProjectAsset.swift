@@ -10,5 +10,19 @@ import Vapor
 import FluentProvider
 
 final class AssetModel: Model, Timestampable {
+  var storage: Storage = Storage()
+
+  //MARK ProjectAsset Table Variables
+  var project_id: Identifier
+  var asset_id: Identifier  
+  
+  init(row: Row) throws {
+    <#code#>
+  }
+  
+  func makeRow() throws -> Row {
+    <#code#>
+  }
+  
   
 }
