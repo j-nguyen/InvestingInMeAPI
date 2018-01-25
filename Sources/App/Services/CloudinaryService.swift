@@ -10,6 +10,9 @@ final class CloudinaryService {
   private let apiKey: String
   private let apiSecret: String
   
+  // Our base url to create
+  private static let baseUrl: String = "https://api.cloudinary.com/v1_1/dvrolb5ai"
+  
   // MARK: Enums
   enum ContentType {
     case image
@@ -40,7 +43,13 @@ final class CloudinaryService {
     )
   }
   
-  func uploadFile() {
+  /**
+    Attempts to upload the file based on the content type chosen
+   
+    - parameter type: The file type of its used
+    - parameter fileName: The name of the file string
+  */
+  func uploadFile(type: ContentType, fileName: String) {
     
   }
 }
