@@ -11,14 +11,31 @@ final class SeedCommand: Command {
   let id: String = "seed"
   let help: [String] = ["Helps populate data so that we know what our application is going to look like"]
   let console: ConsoleProtocol
+  let environment: Environment
   
-  init(console: ConsoleProtocol) {
+  init(console: ConsoleProtocol, environment: Environment) {
     self.console = console
+    self.environment = environment
   }
   
   func run(arguments: [String]) throws {
     
-    
+    //Declare seeds for the development environment
+    if environment == .development {
+      
+      //Declare the roles we will allow
+      let roles = ["Developer", "Marketer", "Investor", "Business Person", "Finance"]
+      
+      //Iterate through the list of roles 
+      for current_role in roles {
+        
+        //Create a new role based on the current_role
+        let role = Role.init(role: current_role)
+        
+        //Save the role
+        try role.save()
+      }
+    }
   }
 }
 
@@ -26,6 +43,6 @@ final class SeedCommand: Command {
 extension SeedCommand: ConfigInitializable {
   convenience init(config: Config) throws {
     let console = try config.resolveConsole()
-    self.init(console: console)
+    self.init(console: console, environment: config.environment)
   }
 }
