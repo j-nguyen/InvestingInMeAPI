@@ -9,7 +9,7 @@ import Foundation
 import Vapor
 import FluentProvider
 
-final class Assets: Model, Timestampable {
+final class Asset: Model, Timestampable {
   
   let storage: Storage = Storage()
   
@@ -17,9 +17,9 @@ final class Assets: Model, Timestampable {
   var url: String
   var file_name: String
   var file_size: Int64
-  var project_icon: String
+  var project_icon: Bool
   
-  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: String) {
+  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool) {
     self.file_type = file_type
     self.url = url
     self.file_name = file_name
@@ -48,7 +48,7 @@ final class Assets: Model, Timestampable {
   }
 }
 
-extension Assets: Preparation {
+extension Asset: Preparation {
   
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
@@ -57,7 +57,7 @@ extension Assets: Preparation {
       db.string("url")
       db.string("file_name")
       db.custom("file_size", type: "BIGINT")
-      db.string("project_icon")
+      db.bool("project_icon")
     }
   }
   
@@ -66,7 +66,7 @@ extension Assets: Preparation {
   }
 }
 
-extension Assets: JSONRepresentable {
+extension Asset: JSONRepresentable {
   func makeJSON() throws -> JSON {
     var json = JSON()
     
