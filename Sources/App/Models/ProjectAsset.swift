@@ -10,7 +10,7 @@ import Vapor
 import FluentProvider
 
 final class ProjectAsset: Model, Timestampable {
-  var storage: Storage = Storage()
+  let storage: Storage = Storage()
 
   //MARK ProjectAsset Table Variables
   var project_id: Int
