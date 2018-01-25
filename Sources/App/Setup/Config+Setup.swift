@@ -26,6 +26,7 @@ extension Config {
   // Setup the seeds for the database
   private func setupSeedDatabase() {
     Role.database = drop?.database
+    Category.database = drop?.database
   }
   
   /// Add all models that should have their

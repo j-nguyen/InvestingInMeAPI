@@ -23,6 +23,10 @@ final class SeedCommand: Command {
     //Declare seeds for the development environment
     if environment == .development {
       
+      //Delete roles so they don't readd
+      try Role.makeQuery().delete()
+      try Category.makeQuery().delete()
+      
       //Declare the roles we will allow
       let roles = ["Developer", "Marketer", "Investor", "Business Person", "Finance"]
       
@@ -30,7 +34,7 @@ final class SeedCommand: Command {
       for current_role in roles {
         
         //Create a new role based on the current_role
-        let role = Role.init(role: current_role)
+        let role = Role(role: current_role)
         
         //Save the role
         try role.save()
@@ -43,7 +47,7 @@ final class SeedCommand: Command {
       for current_category in categories {
         
         //Create a new category based on the current_category
-        let category = Category.init(type: current_category)
+        let category = Category(type: current_category)
         
         //Save the category
         try category.save()
