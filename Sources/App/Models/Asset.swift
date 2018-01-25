@@ -19,7 +19,7 @@ final class Asset: Model, Timestampable {
   var file_size: Int64
   var project_icon: Bool
   
-  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool) {
+  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool = false) {
     self.file_type = file_type
     self.url = url
     self.file_name = file_name
@@ -57,7 +57,7 @@ extension Asset: Preparation {
       db.string("url")
       db.string("file_name")
       db.custom("file_size", type: "BIGINT")
-      db.bool("project_icon")
+      db.bool("project_icon", default: false)
     }
   }
   
