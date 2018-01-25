@@ -63,7 +63,7 @@ extension Project: Preparation {
       db.id()
       db.int("user_id")
       db.string("name")
-      //db.parent(Category.self)
+      db.parent(Category.self)
       db.parent(Role.self)
       db.custom("project_description", type: "TEXT")
       db.custom("description_needs", type: "TEXT")
@@ -84,7 +84,7 @@ extension Project: JSONRepresentable {
     try json.set("id", id)
     try json.set("user_id", user_id)
     try json.set("name", name)
-    //try json.set("category", category.get()?.makeJSON())
+    try json.set("category", category.get()?.makeJSON())
     try json.set("role", role.get()?.makeJSON())
     try json.set("project_description", project_description)
     try json.set("description_needs", description_needs)
@@ -97,5 +97,8 @@ extension Project: JSONRepresentable {
 extension Project {
   var role: Parent<Project,Role> {
     return parent(id: role_id)
+  }
+  var category: Parent<Project,Category> {
+    return parent(id: category_id)
   }
 }
