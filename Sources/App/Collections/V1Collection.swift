@@ -19,7 +19,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     
     //Declare the Controllers
     let userController = UserController()
-    let projectController = projectController()
+    let projectController = ProjectController()
     
     //MARK: User Routes
     //Declare the group for the users
