@@ -14,7 +14,7 @@ final class ConnectionController {
   //MARK: Show Connection Invite
   func show(_ request: Request) throws -> ResponseRepresentable {
     
-    //Declare the user_id requested in the url
+    //Declare the connection_id requested in the url
     guard let connection_id = request.parameters["id"]?.int
       else {
         throw Abort.badRequest
@@ -24,20 +24,20 @@ final class ConnectionController {
       throw Abort.notFound
     }
     
-    //Return user as JSON
+    //Return connection as JSON
     return try invite.makeJSON()
     }
   
-  //MARK: Update User
+  //MARK: Update Connection
   func update(_ request: Request) throws -> ResponseRepresentable {
     
-    //Declare the user_id requested in the url
+    //Declare the connection_id requested in the url
     guard let connection_id = request.parameters["id"]?.int
       else {
         throw Abort.badRequest
     }
     
-    //Declare the user by searching the User model at the given user_id
+    //Declare the connection by searching the connection model at the given connection_id
     guard let connection = try Connection.find(connection_id)
       else {
         throw Abort.notFound
@@ -51,11 +51,26 @@ final class ConnectionController {
     connection.accepted = accepted
     
     
-    //Save the user
+    //Save the connection
     try connection.save()
     
-    //Return user as JSON
+    //Return connection as JSON
     return try connection.makeJSON()
     
 }
+  
+  // Create Connection
+  func create(_ request: Request) throws -> ResponseRepresentable {
+    
+    guard let inviter_id = request.parameters["inviter_id"]?.int, let invitee_id = request.parameters["invitee_id"]?.int, let accepted = request.parameters["accepted"]?.bool, let message = request.parameters["message"]?.string else {
+      throw Abort.badRequest
+    }
+    
+   let connection = Connection(inviter_id: Identifier(inviter_id), invitee_id: Identifier(invitee_id), accepted: accepted, message: message)
+    
+    try connection.save()
+    
+    return try connection.makeJSON()
+    
+  }
 }
