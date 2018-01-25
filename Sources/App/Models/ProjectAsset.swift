@@ -14,7 +14,13 @@ final class AssetModel: Model, Timestampable {
 
   //MARK ProjectAsset Table Variables
   var project_id: Identifier
-  var asset_id: Identifier  
+  var asset_id: Identifier
+  
+  //MARK: Initialize ModelAsset Table
+  init(project_id: Identifier, asset_id: Identifier) {
+    self.project_id = project_id
+    self.asset_id = asset_id
+  }
   
   init(row: Row) throws {
     <#code#>
