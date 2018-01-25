@@ -10,7 +10,7 @@ import Vapor
 import FluentProvider
 
 final class Project: Model, Timestampable {
-  var storage: Storage
+  let storage: Storage = Storage()
 
   //MARK: Project Table Variables
   var user_id: Int
@@ -40,10 +40,17 @@ final class Project: Model, Timestampable {
     description_needs = try row.get("description_needs")
   }
   
-  
+  //MARK: Make Row
   func makeRow() throws -> Row {
-    <#code#>
+    var row = Row()
+    try row.set("user_id", user_id)
+    try row.set("name", name)
+    try row.set("category_id", category_id)
+    try row.set("role_id", role_id)
+    try row.set("project_description", project_description)
+    try row.set("description_needs", description_needs)
+    
+    return row
   }
-  
   
 }
