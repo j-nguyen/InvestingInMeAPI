@@ -93,4 +93,9 @@ extension Project: JSONRepresentable {
   }
 }
 
-
+//MARK: Role ID Parent Extension
+extension Project {
+  var role: Parent<Project,Role> {
+    return parent(id: role_id)
+  }
+}

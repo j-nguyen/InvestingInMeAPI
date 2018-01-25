@@ -126,6 +126,7 @@ extension User: JSONRepresentable {
   }
 }
 
+//MARK: Role ID Parent Extension
 extension User {
   var role: Parent<User,Role> {
     return parent(id: role_id)
