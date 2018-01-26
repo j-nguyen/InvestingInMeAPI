@@ -1,5 +1,6 @@
 import HTTP
 import Vapor
+import Foundation
 
 /**
  Our CloudinaryService is the service for actually using the Restful API connection to ensure that we've
@@ -101,17 +102,27 @@ final class CloudinaryService {
    This will attempt to delete the file, based on the id given, which is the unique identifier
    
    - parameter type: The resource type of which type of image or video it is.
-   - parameter public_id: The public_id identifier from cloudinary that will help us get the retreived file
+   - parameter asset: The asset model from the database
   */
-  func deleteFile(type: ContentType, public_id: String) throws {
+  func deleteFile(type: ContentType, asset: Asset) throws {
     // generate the url once again
     let url = "\(baseUrl)/\(type.rawValue)/destroy"
     
     // create the headers
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
     
+    // setup hash
+    let timestamp = Int(Date().timeIntervalSince1970)
+    let hash = CryptoHasher(hash: .sha1, encoding: .hex)
+    let encrypt: String = ["public_id=\(asset.public_id)", "timestamp=\(timestamp)"].joined(separator: "&") + apiSecret
+    let signature = try hash.make(encrypt)
+    
     // set up body
-    let json = try JSON(node: ["public_id": public_id])
+    var json = JSON()
+    try json.set("public_id", asset.public_id)
+    try json.set("timestamp", timestamp)
+    try json.set("signature", signature.makeString())
+    try json.set("api_key", apiKey)
     
     // set up request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())

@@ -56,10 +56,10 @@ final class Asset: Model, Timestampable {
 // MARK: Other Convenience operators
 extension Asset {
   /// This lifecycle gets called once the asset is about to be deleted. We want to delete the file on the 3rd-party first
-  func willDelete() {
-    if let config = drop?.config, let type = CloudinaryService.ContentType(rawValue: file_type) {
+  func willDelete() throws {
+    if let config = drop?.config["cloudinary"], let type = CloudinaryService.ContentType(rawValue: file_type) {
       let cloudService = try? CloudinaryService(config: config)
-      try? cloudService?.deleteFile(type: type, public_id: public_id)
+      try? cloudService?.deleteFile(type: type, asset: self)
     }
   }
 }

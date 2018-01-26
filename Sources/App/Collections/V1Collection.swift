@@ -33,6 +33,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     
     api.group("assets") { asset in
       asset.post("/", handler: assetController.create)
+      asset.delete(":id", handler: assetController.delete)
     }
   }
 }
