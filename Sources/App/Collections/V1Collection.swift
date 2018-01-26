@@ -20,6 +20,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     //Declare the Controllers
     let userController = UserController()
     let projectController = ProjectController()
+    let connectionController = ConnectionController()
     
     //MARK: User Routes
     //Declare the group for the users
@@ -34,6 +35,14 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       project.post("/", handler: projectController.create)
       project.patch(":id", handler: projectController.update)
       project.delete(":id", handler: projectController.delete)
+    }
+    
+    api.group("connections") { connection in
+      connection.get(":id", handler: connectionController.show)
+      connection.patch(":id", handler: connectionController.update)
+      connection.post("/", handler: connectionController.create)
+      connection.delete(":id", handler: connectionController.delete)
+
     }
   }
 }
