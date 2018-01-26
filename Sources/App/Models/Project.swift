@@ -82,7 +82,7 @@ extension Project: JSONRepresentable {
     var json = JSON()
     
     try json.set("id", id)
-    try json.set("user_id", user.get()?.makeJSON())
+    try json.set("user", user.get()?.makeJSON())
     try json.set("name", name)
     try json.set("category", category.get()?.makeJSON())
     try json.set("role", role.get()?.makeJSON())
