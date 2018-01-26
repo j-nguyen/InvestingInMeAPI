@@ -12,7 +12,7 @@ import HTTP
 final class ProjectController {
   
   //MARK: Show all Projects
-  func index(_ reuqest: Request) throws -> ResponseRepresentable {
+  func index(_ request: Request) throws -> ResponseRepresentable {
     
     //Return all Projects
     return try Project.all().makeJSON()
@@ -37,7 +37,7 @@ final class ProjectController {
     return try project.makeJSON()
   }
   
-  //MARK: Create project
+  //MARK: Create Project
   func create(_ request: Request) throws -> ResponseRepresentable {
     
     //Pull the values from the request for each column
@@ -91,6 +91,7 @@ final class ProjectController {
     return try project.makeJSON()
   }
   
+  //MARK: Delete Project
   func delete(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the project_id requested in the url
@@ -105,7 +106,7 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    //Return project as JSON
+    //Delete the project
     try project.delete()
     
     //Return a confirmation message that the project was deleted

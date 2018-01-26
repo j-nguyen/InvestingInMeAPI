@@ -21,14 +21,15 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     let userController = UserController()
     let projectController = ProjectController()
     let connectionController = ConnectionController()
+    let featuredProjectController = FeaturedProjectController()
     
     //MARK: User Routes
-    //Declare the group for the users
     api.group("users") { user in
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
     }
     
+    //MARK: Project Routes
     api.group("projects") { project in
       project.get("/", handler: projectController.index)
       project.get(":id", handler: projectController.show)
@@ -37,12 +38,19 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       project.delete(":id", handler: projectController.delete)
     }
     
+    //MARK: Connection Routes
     api.group("connections") { connection in
       connection.get(":id", handler: connectionController.show)
       connection.patch(":id", handler: connectionController.update)
       connection.post("/", handler: connectionController.create)
       connection.delete(":id", handler: connectionController.delete)
-
     }
+    
+    api.group("featured_projects") { featured_project in
+      featured_project.get("/", handler: featuredProjectController.index)
+      featured_project.post("/", handler: featuredProjectController.create)
+      featured_project.delete(":id", handler: featuredProjectController.delete)
+    }
+    
   }
 }
