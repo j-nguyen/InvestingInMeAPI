@@ -29,7 +29,9 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     }
     
     api.group("projects") { project in
+      project.get("/", handler: projectController.index)
       project.get(":id", handler: projectController.show)
+      project.patch(":id", handler: projectController.update)
     }
   }
 }
