@@ -62,7 +62,7 @@ final class ConnectionController {
   // Create Connection
   func create(_ request: Request) throws -> ResponseRepresentable {
     
-    guard let inviter_id = request.parameters["inviter_id"]?.int, let invitee_id = request.parameters["invitee_id"]?.int, let accepted = request.parameters["accepted"]?.bool, let message = request.parameters["message"]?.string else {
+    guard let inviter_id = request.json?["inviter_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
       throw Abort.badRequest
     }
     
@@ -71,6 +71,25 @@ final class ConnectionController {
     try connection.save()
     
     return try connection.makeJSON()
+    
+  }
+  
+  func delete(_ request: Request) throws -> ResponseRepresentable {
+    
+    guard let connection_id = request.parameters["id"]?.int
+      else {
+        throw Abort.badRequest
+    }
+    
+    //Declare the connection by searching the connection model at the given connection_id
+    guard let connection = try Connection.find(connection_id)
+      else {
+        throw Abort.notFound
+    }
+    
+    try connection.delete()
+    
+    return try JSON(node: ["message": "Connection removed."])
     
   }
 }
