@@ -14,11 +14,24 @@ import Sockets
 
 /**
  AssetController setup, this is done without a "live" server, since it's much more effective.
+ Unfournately, AssetController requires me to actually use a live server, so I can't do this
 */
 class AssetControllerTests: TestCase {
   // our intitializers are at the setup here
   
+  let controller = AssetController()
+  
+  /**
+    We'll test creating a route aka creating an asset
+  */
   func testCreateRoute() throws {
+    
+  }
+  
+  /**
+   Test based on the delete route
+  */
+  func testDeleteRoute() throws {
     
   }
 }
@@ -30,5 +43,6 @@ extension AssetControllerTests {
   /// See ./Tests/LinuxMain.swift for examples
   static let allTests = [
     ("testCreateRoute", testCreateRoute),
+    ("testDeleteRoute", testDeleteRoute)
   ]
 }
