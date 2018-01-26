@@ -13,17 +13,31 @@ class RouteTests: TestCase {
   
   /// Testing for asset
   func testCreateAsset() throws {
-    
+    // create the json response
     let json = try JSON(node: [
-      "file": "data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==",
-      "project_icon": false,
-      "type": "image"
-    ])
+      "file": "http://via.placeholder.com/1x1",
+      "type": "image",
+      "project_icon": false
+    ]).makeBody()
+    
+    let headers: [HeaderKey: String] = [.contentType: "application/json"]
     
     try drop
-      .testResponse(to: .post, at: "api/v1/assets", body: json.makeBody())
+      .testResponse(to: .post, at: "api/v1/assets", headers: headers, body: json)
       .assertStatus(is: .ok)
+      .json?["id"]?.int
+  }
+  
+  /// Attempts to delete it after
+  func testDropAssets() throws {
+    // using that asset id i can try to drop
+    let assets = try Asset.all()
     
+    try assets.forEach { asset in 
+      try drop
+        .testResponse(to: .delete, at: "api/v1/assets/\(asset.assertExists().int!)")
+        .assertStatus(is: .ok)
+    }
   }
   
   
