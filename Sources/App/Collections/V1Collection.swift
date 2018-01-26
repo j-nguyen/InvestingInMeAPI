@@ -26,5 +26,14 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
     }
+    
+    let connectionController = ConnectionController()
+    
+    api.group("connections") { connection in
+      connection.get(":id", handler: connectionController.show)
+      connection.patch(":id", handler: connectionController.update)
+      connection.post("/", handler: connectionController.create)
+      connection.delete(":id", handler: connectionController.delete)
+    }
   }
 }
