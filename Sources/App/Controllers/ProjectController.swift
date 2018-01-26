@@ -87,13 +87,11 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    let project_name = project.name
-    
     //Return project as JSON
     try project.delete()
     
-    return try JSON(node: ["message", "\(project_name) has been deleted."])
-  
+    //Return a confirmation message that the project was deleted
+    return try JSON(node: ["message", "\(project.name) has been deleted."])
   }
   
 }
