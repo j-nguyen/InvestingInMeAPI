@@ -31,6 +31,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     api.group("projects") { project in
       project.get("/", handler: projectController.index)
       project.get(":id", handler: projectController.show)
+      project.post("/", handler: projectController.create)
       project.patch(":id", handler: projectController.update)
       project.delete(":id", handler: projectController.delete)
     }
