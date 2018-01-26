@@ -46,6 +46,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       connection.delete(":id", handler: connectionController.delete)
     }
     
+    //MARK: Featured Project Routes
     api.group("featured_projects") { featured_project in
       featured_project.get("/", handler: featuredProjectController.index)
       featured_project.post("/", handler: featuredProjectController.create)
