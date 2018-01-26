@@ -11,6 +11,13 @@ import HTTP
 
 final class ProjectController {
   
+  //MARK: Show all Projects
+  func index(_ reuqest: Request) throws -> ResponseRepresentable {
+    
+    //Return all Projects
+    return try Project.all().makeJSON()
+  }
+  
   //MARK: Show Project
   func show(_ request: Request) throws -> ResponseRepresentable {
     
@@ -28,13 +35,6 @@ final class ProjectController {
     
     //Return project as JSON
     return try project.makeJSON()
-  }
-  
-  //MARK: Show all Projects
-  func index(_ reuqest: Request) throws -> ResponseRepresentable {
-    
-    //Return all Projects
-    return try Project.all().makeJSON()
   }
   
   //MARK: Update Project
@@ -71,6 +71,29 @@ final class ProjectController {
     
     //Return the project as JSON
     return try project.makeJSON()
+  }
+  
+  func delete(_ request: Request) throws -> ResponseRepresentable {
+    
+    //Declare the project_id requested in the url
+    guard let project_id = request.parameters["id"]?.int
+      else {
+        throw Abort.badRequest
+    }
+    
+    //Declare the project by searching the Project model at the given project_id
+    guard let project = try Project.find(project_id)
+      else {
+        throw Abort.notFound
+    }
+    
+    let project_name = project.name
+    
+    //Return project as JSON
+    try project.delete()
+    
+    return try JSON(node: ["message", "\(project_name) has been deleted."])
+  
   }
   
 }
