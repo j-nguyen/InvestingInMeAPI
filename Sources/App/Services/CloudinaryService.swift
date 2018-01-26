@@ -99,6 +99,56 @@ final class CloudinaryService {
   }
   
   /**
+   Attempts to upload the file based on the content type chosen
+   
+     - parameter type: The file type of its used
+     - parameter file: Bytes
+     - parameter projectIcon: This asks to make sure it's a profileIcon or not
+   */
+  func uploadFile(type: ContentType, file: Bytes, projectIcon: Bool) throws -> ResponseRepresentable {
+    // this will generate the url
+    let url = "\(baseUrl)/\(type.rawValue)/upload"
+    
+    // set up our headers here
+    let headers: [HeaderKey: String] = [.contentType: "application/json"]
+    
+    // set up our body content
+    var json = JSON()
+    try json.set("file", file)
+    try json.set("upload_preset", uploadPreset)
+    
+    // set up the request
+    let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
+    
+    let response = try EngineClient.factory.respond(to: request)
+    
+    // if response is successful we can continue
+    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      throw Abort(.badRequest, reason: "Something went wrong with the file!")
+    }
+    
+    // we can now get the json
+    guard let responseJSON = response.json else {
+      throw Abort(.unprocessableEntity, reason: "Could not parse correctly!")
+    }
+    
+    // attempt to create the asset
+    let asset = Asset(
+      file_type: try responseJSON.get("resource_type"),
+      url: try responseJSON.get("secure_url"),
+      file_name: try responseJSON.get("public_id"),
+      file_size: try responseJSON.get("bytes"),
+      project_icon: projectIcon,
+      public_id: try responseJSON.get("public_id")
+    )
+    
+    // attempt to save once finished
+    try asset.save()
+    
+    return try asset.makeJSON()
+  }
+  
+  /**
    This will attempt to delete the file, based on the id given, which is the unique identifier
    
    - parameter type: The resource type of which type of image or video it is.

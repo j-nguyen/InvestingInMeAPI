@@ -18,14 +18,12 @@ final class AssetController {
     Attempts to create the asset, by first creating the model, then attempting to upload an image
   */
   func create(_ req: Request) throws -> ResponseRepresentable {
-    // im gonna assume this would be ok for base64 content
-    guard let file = req.json?["file"]?.string,
-      let projectIcon = req.json?["project_icon"]?.bool else {
+    // try to parse the type
+    guard let type = req.query?["type"]?.string else {
       throw Abort.badRequest
     }
     
-    // try to parse the type
-    guard let type = req.json?["type"]?.string, let fileType = CloudinaryService.ContentType(rawValue: type) else {
+    guard let fileType = CloudinaryService.ContentType(rawValue: type) else {
       throw Abort(.unprocessableEntity, reason: "Unsupported file type!")
     }
     
@@ -34,9 +32,25 @@ final class AssetController {
       throw Abort.serverError
     }
     
-    let cloudService = try CloudinaryService(config: config)
+    switch fileType {
+    case .image:
+      guard let file = req.json?["file"]?.string, let projectIcon = req.json?["project_icon"]?.bool else {
+        throw Abort.badRequest
+      }
+      
+      let cloudService = try CloudinaryService(config: config)
+      
+      return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon)
+    case .video:
+      guard let file = req.formData?["file"]?.part.body, let projectIcon = req.formData?["project_icon"]?.bool else {
+        throw Abort.badRequest
+      }
+      
+      let cloudService = try CloudinaryService(config: config)
+      
+      return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon)
+    }
     
-    return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon)
   }
   
   /**
