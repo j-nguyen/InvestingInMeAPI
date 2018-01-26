@@ -23,6 +23,16 @@ final class AssetController {
       throw Abort.badRequest
     }
     
+    // attempt to retrieve file
+    guard let config = drop?.config["cloudinary"] else {
+      throw Abort.serverError
+    }
+    
+    let asset = Asset(file_type: "image", url: "sdf", file_name: "sdf", file_size: 23)
+    
+    let cloudService = try CloudinaryService(config: config)
+    try cloudService.uploadFile(type: .image, asset: asset, file: file)
+    
     return Response(status: .ok)
   }
 }

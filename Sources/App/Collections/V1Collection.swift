@@ -26,5 +26,13 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
     }
+    
+    // MARK: Asset Routes
+    
+    let assetController = AssetController()
+    
+    api.group("assets") { asset in
+      asset.post("/", handler: assetController.create)
+    }
   }
 }

@@ -54,7 +54,7 @@ final class CloudinaryService {
     - parameter asset: The Asset Database model used to record the results after a successful save
     - parameter file: A Data URI base64-encoded used to save the image files for us
   */
-  func uploadFile(type: ContentType, asset: Asset, file: String) throws {
+  func uploadFile(type: ContentType, file: String) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
@@ -64,9 +64,32 @@ final class CloudinaryService {
     // set up our body content
     var json = JSON()
     try json.set("file", file)
-//    try json.set("fileName", fileName)
+//    try json.set("api_key", apiKey)
+    try json.set("upload_preset", uploadPreset)
+//    try json.set("timestamp", Date().timeIntervalSince1970)
     
     // set up the request
-//    let request = Request(method: .post, uri: url, body: )
+    let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
+    
+    let response = try EngineClient.factory.respond(to: request)
+    
+    // if response is successful we can continue
+    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      throw Abort(.badRequest, reason: "Something went wrong with the image!")
+    }
+    
+    // we can now get the json
+    guard let json = response.json else {
+      throw Abort(.unprocessableEntity, reason: "Could not parse correctly!")
+    }
+    
+    // attempt to create the asset
+    let asset = Asset(
+      file_type: try json.get("resource_type"),
+      url: try json.get("secure_url"),
+      file_name: try json.get("public_id"),
+      file_size: try json.get("bytes"),
+      public_id: try json.get("public_id")
+    )
   }
 }
