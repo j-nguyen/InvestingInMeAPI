@@ -19,8 +19,14 @@ final class AssetController {
   */
   func create(_ req: Request) throws -> ResponseRepresentable {
     // im gonna assume this would be ok for base64 content
-    guard let file = req.json?["file"]?.string else {
+    guard let file = req.json?["file"]?.string,
+      let projectIcon = req.json?["project_icon"]?.bool else {
       throw Abort.badRequest
+    }
+    
+    // try to parse the type
+    guard let type = req.json?["type"]?.string, let fileType = CloudinaryService.ContentType(rawValue: type) else {
+      throw Abort(.unprocessableEntity, reason: "Unsupported file type!")
     }
     
     // attempt to retrieve file
@@ -28,11 +34,8 @@ final class AssetController {
       throw Abort.serverError
     }
     
-    let asset = Asset(file_type: "image", url: "sdf", file_name: "sdf", file_size: 23)
-    
     let cloudService = try CloudinaryService(config: config)
-    try cloudService.uploadFile(type: .image, asset: asset, file: file)
     
-    return Response(status: .ok)
+    return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon)
   }
 }
