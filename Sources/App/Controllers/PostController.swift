@@ -68,7 +68,7 @@ final class PostController: ResourceRepresentable {
 
     /// When making a controller, it is pretty flexible in that it
     /// only expects closures, this is useful for advanced scenarios, but
-    /// most of the time, it should look almost identical to this 
+    /// most of the time, it should look almost identic,al to this
     /// implementation
     func makeResource() -> Resource<Post> {
         return Resource(
