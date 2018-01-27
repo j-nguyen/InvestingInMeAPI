@@ -103,29 +103,28 @@ final class CloudinaryService {
    Attempts to upload the file based on the content type chosen
    
      - parameter type: The file type of its used
-     - parameter file: Bytes
+     - parameter file: String
    */
   func uploadFile(type: ContentType, file: Bytes) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
     // set up our headers here
-    let headers: [HeaderKey: String] = [.contentType: "application/x-www-form-urlencoded"]
-    
-    // set up the request
-    let request = Request(method: .post, uri: url, headers: headers)
-    request.formURLEncoded = try Node(node: [
-      "file": file.base64Encoded.makeString(),
+    let headers: [HeaderKey: String] = [.contentType: "application/json"]
+
+    let json = try JSON(node: [
+      "file": "data:video/mp4;base64,\(file.base64Encoded.makeString())",
       "upload_preset": uploadPreset
     ])
     
-    print (request.description)
+    // set up the request
+    let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
     let response = try EngineClient.factory.respond(to: request)
     
     // if response is successful we can continue
     guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
-      print (response.json)
+      print(response.json)
       throw Abort(.badRequest, reason: "Something went wrong with the file!")
     }
     
