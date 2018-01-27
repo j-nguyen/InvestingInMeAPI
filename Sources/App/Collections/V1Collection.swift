@@ -15,7 +15,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
   func build(_ builder: RouteBuilder) throws {
     
     //Declare the group route for the api
-    let api = builder.grouped("api", "v1")
+    let api = builder.grouped(AuthMiddleware()).grouped("api", "v1")
     
     //Declare the Controllers
     let userController = UserController()
