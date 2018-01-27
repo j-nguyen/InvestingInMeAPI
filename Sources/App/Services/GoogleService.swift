@@ -32,6 +32,4 @@ final class GoogleService {
     }
   }
   
-  
-  
 }
