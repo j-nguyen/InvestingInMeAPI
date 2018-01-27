@@ -13,8 +13,8 @@ import Console
  Helps us drop all the tables on Postgres, and re-creates the database for us
 */
 final class DropCommand: Command {
-  let id: String = "seed"
-  let help: [String] = ["Helps populate data so that we know what our application is going to look like"]
+  let id: String = "drop"
+  let help: [String] = ["Drops all of our tables"]
   let console: ConsoleProtocol
   
   init(console: ConsoleProtocol) {
@@ -24,7 +24,7 @@ final class DropCommand: Command {
   func run(arguments: [String]) throws {
     try drop?.database?.raw("DROP SCHEMA public CASCADE;")
     try drop?.database?.raw("CREATE SCHEMA public;")
-    try drop?.database?.raw("GRANT ALL ON SCHEMA public TO postgres;")
+//    try drop?.database?.raw("GRANT ALL ON SCHEMA public TO postgres;")
     try drop?.database?.raw("GRANT ALL ON SCHEMA public TO public;")
   }
 }
