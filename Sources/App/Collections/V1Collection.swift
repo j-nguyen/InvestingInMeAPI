@@ -22,11 +22,18 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     let projectController = ProjectController()
     let connectionController = ConnectionController()
     let featuredProjectController = FeaturedProjectController()
+    let assetController = AssetController()
     
     //MARK: User Routes
     api.group("users") { user in
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
+    }
+    
+    // MARK: Asset Routes
+    api.group("assets") { asset in
+      asset.post("/", handler: assetController.create)
+      asset.delete(":id", handler: assetController.delete)
     }
     
     //MARK: Project Routes
@@ -52,6 +59,5 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       featured_project.post("/", handler: featuredProjectController.create)
       featured_project.delete(":id", handler: featuredProjectController.delete)
     }
-    
   }
 }
