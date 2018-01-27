@@ -28,6 +28,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     api.group("users") { user in
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
+      user.get(":id","projects", handler: userController.userProjects)
     }
     
     // MARK: Asset Routes
@@ -54,7 +55,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     }
     
     //MARK: Featured Project Routes
-    api.group("featured_projects") { featured_project in
+    api.group("featured") { featured_project in
       featured_project.get("/", handler: featuredProjectController.index)
       featured_project.post("/", handler: featuredProjectController.create)
       featured_project.delete(":id", handler: featuredProjectController.delete)
