@@ -31,6 +31,31 @@ final class Role: Model, Timestampable {
   }
 }
 
+extension Role {
+  /// list of enums we use
+  enum Group: String {
+    case developer = "Developer"
+    case marketer = "Marketer"
+    case investor = "Investor"
+    case businessPerson = "Business Person"
+    case finance = "Finance"
+  
+    /// tries to find the specified role by search
+    func role() throws -> Role {
+      guard let role = try Role.makeQuery().filter("role", rawValue).first() else {
+        throw Abort.notFound
+      }
+      
+      return role
+    }
+    
+    static let allValues: [String] = [
+      Group.developer.rawValue, Group.marketer.rawValue, Group.investor.rawValue,
+      Group.businessPerson.rawValue, Group.finance.rawValue
+    ]
+  }
+}
+
 extension Role: Preparation {
   
   static func prepare(_ database: Database) throws {
