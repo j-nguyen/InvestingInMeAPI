@@ -14,6 +14,7 @@ final class Asset: Model, Timestampable {
   let storage: Storage = Storage()
   
   // MARK: Properties
+  var project_id: Identifier
   var file_type: String
   var url: String
   var file_name: String
@@ -21,7 +22,8 @@ final class Asset: Model, Timestampable {
   var project_icon: Bool
   var public_id: String
   
-  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool = false, public_id: String) {
+  init(project_id: Identifier, file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool = false, public_id: String) {
+    self.project_id = project_id
     self.file_type = file_type
     self.url = url
     self.file_name = file_name
@@ -31,6 +33,7 @@ final class Asset: Model, Timestampable {
   }
   
   required init(row: Row) throws {
+    project_id = try row.get("project_id")
     file_type = try row.get("file_type")
     url = try row.get("url")
     file_name = try row.get("file_name")
@@ -42,6 +45,7 @@ final class Asset: Model, Timestampable {
   func makeRow() throws -> Row {
     var row = Row()
     
+    try row.set("project_id", project_id)
     try row.set("file_type", file_type)
     try row.set("url", url)
     try row.set("file_name", file_name)
@@ -62,6 +66,11 @@ extension Asset {
       try? cloudService?.deleteFile(type: type, asset: self)
     }
   }
+  
+  /// project
+  var project: Parent<Asset, Project> {
+    return parent(id: project_id)
+  }
 }
 
 extension Asset: Preparation {
@@ -69,6 +78,7 @@ extension Asset: Preparation {
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
+      db.parent(Project.self)
       db.string("file_type")
       db.string("url")
       db.string("file_name")
@@ -88,6 +98,7 @@ extension Asset: JSONRepresentable {
     var json = JSON()
     
     try json.set("id", id)
+    try json.set("project", project.get()?.makeJSON())
     try json.set("file_type", file_type)
     try json.set("file_name", file_name)
     try json.set("url", url)
