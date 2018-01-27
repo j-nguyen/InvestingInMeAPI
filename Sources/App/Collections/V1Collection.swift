@@ -17,23 +17,49 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     //Declare the group route for the api
     let api = builder.grouped("api", "v1")
     
-    //Declare the UserController
+    //Declare the Controllers
     let userController = UserController()
+    let projectController = ProjectController()
+    let connectionController = ConnectionController()
+    let featuredProjectController = FeaturedProjectController()
+    let assetController = AssetController()
     
     //MARK: User Routes
-    //Declare the group for the users
     api.group("users") { user in
       user.get(":id", handler: userController.show)
       user.patch(":id", handler: userController.update)
     }
     
     // MARK: Asset Routes
-    
-    let assetController = AssetController()
-    
     api.group("assets") { asset in
       asset.post("/", handler: assetController.create)
       asset.delete(":id", handler: assetController.delete)
     }
+    
+    //MARK: Project Routes
+    api.group("projects") { project in
+      project.get("/", handler: projectController.index)
+      project.get(":id", handler: projectController.show)
+      project.post("/", handler: projectController.create)
+      project.patch(":id", handler: projectController.update)
+      project.delete(":id", handler: projectController.delete)
+    }
+    
+    //MARK: Connection Routes
+    api.group("connections") { connection in
+      connection.get(":id", handler: connectionController.show)
+      connection.patch(":id", handler: connectionController.update)
+      connection.post("/", handler: connectionController.create)
+      connection.delete(":id", handler: connectionController.delete)
+    }
+    
+    //MARK: Featured Project Routes
+    api.group("featured_projects") { featured_project in
+      featured_project.get("/", handler: featuredProjectController.index)
+      featured_project.post("/", handler: featuredProjectController.create)
+      featured_project.delete(":id", handler: featuredProjectController.delete)
+    }
+    
+>>>>>>> 8d301b5463d5917596be3abea144559a0150eecf
   }
 }
