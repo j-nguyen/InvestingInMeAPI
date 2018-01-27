@@ -19,6 +19,7 @@ final class User: Model, Timestampable {
   var picture: String
   var email_verification: Bool
   var description: String
+  var role_id: Identifier
   var location: String
   var phone_number: String
   var experience_and_credentials: String
@@ -26,13 +27,14 @@ final class User: Model, Timestampable {
   
   //MARK: Initialize User Table
   init(google_id: Int, email: String, name: String, picture: String, email_verification: Bool,
-       description: String, location: String, phone_number: String, experience_and_credentials: String, player_id: Int) {
+       description: String, role_id: Identifier, location: String, phone_number: String, experience_and_credentials: String, player_id: Int) {
     self.google_id = google_id
     self.email = email
     self.name = name
     self.picture = picture
     self.email_verification = email_verification
     self.description = description
+    self.role_id = role_id
     self.location = location
     self.phone_number = phone_number
     self.experience_and_credentials = experience_and_credentials
@@ -47,6 +49,7 @@ final class User: Model, Timestampable {
     picture = try row.get("picture")
     email_verification = try row.get("email_verification")
     description = try row.get("description")
+    role_id = try row.get("role_id")
     location = try row.get("location")
     phone_number = try row.get("phone_number")
     experience_and_credentials = try row.get("experience_and_credentials")
@@ -62,6 +65,7 @@ final class User: Model, Timestampable {
     try row.set("picture", picture)
     try row.set("email_verification", email_verification)
     try row.set("description", description)
+    try row.set("role_id", role_id)
     try row.set("location", location)
     try row.set("phone_number", phone_number)
     try row.set("experience_and_credentials", experience_and_credentials)
@@ -69,11 +73,12 @@ final class User: Model, Timestampable {
     
     return row
   }
-  
 }
 
 //MARK: User Database Extension
 extension User: Preparation {
+  
+  //MARK: User Prepare
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
@@ -83,6 +88,7 @@ extension User: Preparation {
       db.string("picture")
       db.bool("email_verification")
       db.custom("description", type: "TEXT")
+      db.parent(Role.self)
       db.string("location")
       db.string("phone_number")
       db.custom("experience_and_credentials", type: "TEXT")
@@ -110,11 +116,19 @@ extension User: JSONRepresentable {
     try json.set("picture", picture)
     try json.set("email_verification", email_verification)
     try json.set("description", description)
+    try json.set("role", role.get()?.makeJSON())
     try json.set("location", location)
     try json.set("phone_number", phone_number)
     try json.set("experience_and_credentials", experience_and_credentials)
     try json.set("player_id", player_id)
     
     return json
+  }
+}
+
+//MARK: Role ID Parent Extension
+extension User {
+  var role: Parent<User,Role> {
+    return parent(id: role_id)
   }
 }
