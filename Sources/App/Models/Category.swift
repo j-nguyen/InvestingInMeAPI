@@ -10,9 +10,9 @@ import Vapor
 import FluentProvider
 
 final class Category: Model, Timestampable {
-  
   let storage: Storage = Storage()
   
+  // MARK: Properties
   var type: String
   
   init(type: String) {
@@ -25,15 +25,35 @@ final class Category: Model, Timestampable {
   
   func makeRow() throws -> Row {
     var row = Row()
-    
     try row.set("type", type)
-    
     return row
   }
 }
 
+// MARK: Category Conveience operators
+extension Category {
+  enum Group: String {
+    case game = "Game"
+    case mobileApp = "Mobile App"
+    case mobileGameApp = "Mobile Game App"
+    case website = "Website"
+    case desktop = "Desktop App"
+    case other = "Other"
+    
+    /**
+      Attempts to find a category, by searching for the enum list at the above top.
+    */
+    func category() throws -> Category {
+      guard let category = try Category.makeQuery().filter("type", rawValue).first() else {
+        throw Abort.notFound
+      }
+      
+      return category
+    }
+  }
+}
+
 extension Category: Preparation {
-  
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
