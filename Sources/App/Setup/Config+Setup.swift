@@ -32,13 +32,12 @@ extension Config {
   /// Add all models that should have their
   /// schemas prepared before the app boots
   private func setupPreparations() throws {
-    preparations.append(Asset.self)
     preparations.append(Role.self)
     preparations.append(Category.self)
     preparations.append(User.self)
     preparations.append(Connection.self)
     preparations.append(Project.self)
+    preparations.append(Asset.self)
     preparations.append(FeaturedProject.self)
-    preparations.append(Pivot<Project,Asset>.self)
   }
 }
