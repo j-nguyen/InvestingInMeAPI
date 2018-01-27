@@ -34,5 +34,4 @@ extension DropCommand: ConfigInitializable {
     let console = try config.resolveConsole()
     self.init(console: console)
   }
-  
 }

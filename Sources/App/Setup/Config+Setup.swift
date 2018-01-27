@@ -21,6 +21,7 @@ extension Config {
   /// configures our custom commands that we have
   private func setupCommands() {
     addConfigurable(command: SeedCommand.init, name: "seed")
+    addConfigurable(command: DropCommand.init, name: "drop")
   }
   
   // Setup the seeds for the database
