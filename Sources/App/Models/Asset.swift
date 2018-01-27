@@ -13,18 +13,21 @@ final class Asset: Model, Timestampable {
   
   let storage: Storage = Storage()
   
+  // MARK: Properties
   var file_type: String
   var url: String
   var file_name: String
   var file_size: Int64
   var project_icon: Bool
+  var public_id: String
   
-  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool = false) {
+  init(file_type: String, url: String, file_name: String, file_size: Int64, project_icon: Bool = false, public_id: String) {
     self.file_type = file_type
     self.url = url
     self.file_name = file_name
     self.file_size = file_size
     self.project_icon = project_icon
+    self.public_id = public_id
   }
   
   required init(row: Row) throws {
@@ -33,6 +36,7 @@ final class Asset: Model, Timestampable {
     file_name = try row.get("file_name")
     file_size = try row.get("file_size")
     project_icon = try row.get("project_icon")
+    public_id = try row.get("public_id")
   }
   
   func makeRow() throws -> Row {
@@ -43,8 +47,20 @@ final class Asset: Model, Timestampable {
     try row.set("file_name", file_name)
     try row.set("file_size", file_size)
     try row.set("project_icon", project_icon)
+    try row.set("public_id", public_id)
     
     return row
+  }
+}
+
+// MARK: Other Convenience operators
+extension Asset {
+  /// This lifecycle gets called once the asset is about to be deleted. We want to delete the file on the 3rd-party first
+  func willDelete() throws {
+    if let config = drop?.config["cloudinary"], let type = CloudinaryService.ContentType(rawValue: file_type) {
+      let cloudService = try? CloudinaryService(config: config)
+      try? cloudService?.deleteFile(type: type, asset: self)
+    }
   }
 }
 
@@ -58,6 +74,7 @@ extension Asset: Preparation {
       db.string("file_name")
       db.custom("file_size", type: "BIGINT")
       db.bool("project_icon", default: false)
+      db.string("public_id")
     }
   }
   
@@ -73,8 +90,10 @@ extension Asset: JSONRepresentable {
     try json.set("id", id)
     try json.set("file_type", file_type)
     try json.set("file_name", file_name)
+    try json.set("url", url)
     try json.set("file_size", file_size)
     try json.set("project_icon", project_icon)
+    try json.set("public_id", public_id)
     
     return json
   }
