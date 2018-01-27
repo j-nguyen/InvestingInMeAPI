@@ -59,7 +59,5 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       featured_project.post("/", handler: featuredProjectController.create)
       featured_project.delete(":id", handler: featuredProjectController.delete)
     }
-    
->>>>>>> 8d301b5463d5917596be3abea144559a0150eecf
   }
 }
