@@ -41,7 +41,7 @@ final class SeedCommand: Command {
       }
       
       //Declare the categories we will allow
-      let categories = ["Game", "Mobile App", "Mobile Game App", "Website", "Desktop App", "Other"]
+      let categories = Category.Group.allValues
       
       //Iterate through the list of categories
       for current_category in categories {

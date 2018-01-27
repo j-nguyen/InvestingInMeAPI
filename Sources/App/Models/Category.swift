@@ -50,6 +50,12 @@ extension Category {
       
       return category
     }
+
+    // constant values
+    static let allValues: [String] = [
+      Group.game.rawValue, Group.mobileApp.rawValue, Group.mobileGameApp.rawValue,
+      Group.website.rawValue, Group.desktop.rawValue, Group.other.rawValue
+    ]
   }
 }
 
