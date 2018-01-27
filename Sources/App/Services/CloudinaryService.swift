@@ -1,6 +1,7 @@
 import HTTP
 import Vapor
 import Foundation
+import Multipart
 
 /**
  Our CloudinaryService is the service for actually using the Restful API connection to ensure that we've
@@ -103,27 +104,28 @@ final class CloudinaryService {
    
      - parameter type: The file type of its used
      - parameter file: Bytes
-     - parameter projectIcon: This asks to make sure it's a profileIcon or not
    */
-  func uploadFile(type: ContentType, file: Bytes, projectIcon: Bool) throws -> ResponseRepresentable {
+  func uploadFile(type: ContentType, file: Bytes) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
     // set up our headers here
-    let headers: [HeaderKey: String] = [.contentType: "application/json"]
-    
-    // set up our body content
-    var json = JSON()
-    try json.set("file", file)
-    try json.set("upload_preset", uploadPreset)
+    let headers: [HeaderKey: String] = [.contentType: "application/x-www-form-urlencoded"]
     
     // set up the request
-    let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
+    let request = Request(method: .post, uri: url, headers: headers)
+    request.formURLEncoded = try Node(node: [
+      "file": file.base64Encoded.makeString(),
+      "upload_preset": uploadPreset
+    ])
+    
+    print (request.description)
     
     let response = try EngineClient.factory.respond(to: request)
     
     // if response is successful we can continue
     guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      print (response.json)
       throw Abort(.badRequest, reason: "Something went wrong with the file!")
     }
     
@@ -138,7 +140,7 @@ final class CloudinaryService {
       url: try responseJSON.get("secure_url"),
       file_name: try responseJSON.get("public_id"),
       file_size: try responseJSON.get("bytes"),
-      project_icon: projectIcon,
+      project_icon: false,
       public_id: try responseJSON.get("public_id")
     )
     

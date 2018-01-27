@@ -42,13 +42,12 @@ final class AssetController {
       
       return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon)
     case .video:
-      guard let file = req.formData?["file"]?.part.body, let projectIcon = req.formData?["project_icon"]?.bool else {
+      guard let file = req.body.bytes else {
         throw Abort.badRequest
       }
-      
+      // set up the service and attempt to uplaod the file
       let cloudService = try CloudinaryService(config: config)
-      
-      return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon)
+      return try cloudService.uploadFile(type: fileType, file: file)
     }
     
   }
