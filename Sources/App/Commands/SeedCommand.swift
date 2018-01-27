@@ -28,7 +28,7 @@ final class SeedCommand: Command {
       try Category.makeQuery().delete()
       
       //Declare the roles we will allow
-      let roles = ["Developer", "Marketer", "Investor", "Business Person", "Finance"]
+      let roles = Role.Group.allValues
       
       //Iterate through the list of roles
       for current_role in roles {
