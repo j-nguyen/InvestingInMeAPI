@@ -87,9 +87,17 @@ final class ConnectionController {
         throw Abort.notFound
     }
     
-    try connection.delete()
+    //Check if the user requesting the update is equal to the connection user_id
+    if request.headers["user_id"]?.int == connection.invitee_id.int || connection.inviter_id.int {
     
-    return try JSON(node: ["message": "Connection removed."])
-    
+      //Delete the connection
+      try connection.delete()
+
+      //Return a JSON confirmation message
+      return try JSON(node: ["message": "Connection removed."])
+
+    } else {
+      
+    }
   }
 }
