@@ -52,25 +52,30 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    //Update name, project_description, and description_needs if they have been passed through the url
-    project.name = request.json?["name"]?.string ?? project.name
-    project.project_description = request.json?["project_description"]?.string ?? project.project_description
-    project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
-    
-    //Update category_id, and role_id if they have been requested to change
-    if let category_id = request.json?["category_id"]?.int {
-      project.category_id = Identifier(category_id)
+    if request.headers["user_id"]?.int == project.user_id.int {
+      
+      //Update name, project_description, and description_needs if they have been passed through the url
+      project.name = request.json?["name"]?.string ?? project.name
+      project.project_description = request.json?["project_description"]?.string ?? project.project_description
+      project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
+      
+      //Update category_id, and role_id if they have been requested to change
+      if let category_id = request.json?["category_id"]?.int {
+        project.category_id = Identifier(category_id)
+      }
+      
+      if let role_id = request.json?["role_id"]?.int {
+        project.role_id = Identifier(role_id)
+      }
+      
+      //Save the project
+      try project.save()
+      
+      //Return the project as JSON
+      return try project.makeJSON()
+    } else {
+      throw Abort(.badRequest, reason: "You don't have the permissions to update this project.")
     }
-    
-    if let role_id = request.json?["role_id"]?.int {
-      project.role_id = Identifier(role_id)
-    }
-    
-    //Save the project
-    try project.save()
-    
-    //Return the project as JSON
-    return try project.makeJSON()
   }
   
   //MARK: Delete Project

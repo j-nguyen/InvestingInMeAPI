@@ -42,8 +42,9 @@ final class UserController {
     //Instaniate the project using the variables we created
     let project = Project(user_id: Identifier(user_id), name: name, category_id: Identifier(category_id), role_id: Identifier(role_id), project_description: project_description, description_needs: description_needs)
     
-    //Check if the user_id is the owner of the project
+    //Check if the user_id in the authorization header is the user_id of the project
     if request.headers["user_id"]?.int == project.user_id.int {
+      
       //Save the new project
       try project.save()
       
