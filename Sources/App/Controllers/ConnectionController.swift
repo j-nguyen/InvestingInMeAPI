@@ -43,20 +43,30 @@ final class ConnectionController {
         throw Abort.notFound
     }
     
-    guard let accepted = request.json?["accepted"]?.bool else {
-      throw Abort.badRequest
+    //Declare the invitee and inviter ids
+    guard let invitee_id = connection.invitee_id.int else { throw Abort.badRequest }
+    guard let inviter_id = connection.inviter_id.int else { throw Abort.badRequest }
+    
+    //Check if the user requesting the update is equal to the connection user_id
+    if request.headers["user_id"]?.int == invitee_id || request.headers["user_id"]?.int == inviter_id {
+      
+      guard let accepted = request.json?["accepted"]?.bool else {
+        throw Abort.badRequest
+      }
+      
+      //Update accepted
+      connection.accepted = accepted
+      
+      
+      //Save the connection
+      try connection.save()
+      
+      //Return connection as JSON
+      return try connection.makeJSON()
+    } else {
+      throw Abort(.forbidden, reason: "You don't have the permissions to update a connection under this user.")
     }
-    
-    //Update accepted
-    connection.accepted = accepted
-    
-    
-    //Save the connection
-    try connection.save()
-    
-    //Return connection as JSON
-    return try connection.makeJSON()
-    
+      
 }
   
   // Create Connection
@@ -87,9 +97,21 @@ final class ConnectionController {
         throw Abort.notFound
     }
     
-    try connection.delete()
+    //Declare the invitee and inviter ids
+    guard let invitee_id = connection.invitee_id.int else { throw Abort.badRequest }
+    guard let inviter_id = connection.inviter_id.int else { throw Abort.badRequest }
     
-    return try JSON(node: ["message": "Connection removed."])
+    //Check if the user requesting the update is equal to the connection user_id
+    if request.headers["user_id"]?.int == invitee_id || request.headers["user_id"]?.int == inviter_id {
     
+      //Delete the connection
+      try connection.delete()
+
+      //Return a JSON confirmation message
+      return try JSON(node: ["message": "Connection removed."])
+
+    } else {
+      throw Abort(.forbidden, reason: "You don't have the permissions to delete a connection under this user.")
+    }
   }
 }
