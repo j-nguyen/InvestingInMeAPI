@@ -29,7 +29,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       user.grouped(AuthMiddleware()).get(":id", handler: userController.show)
       user.grouped(AuthMiddleware()).patch(":id", handler: userController.update)
       user.grouped(AuthMiddleware()).get(":id","projects", handler: userController.userProjects)
-      user.grouped(AuthMiddleware()).post(":id", "projects", handler: projectController.create)
+      user.grouped(AuthMiddleware()).post(":id", "projects", handler: userController.createProject)
       user.post("login", handler: userController.login)
     }
     

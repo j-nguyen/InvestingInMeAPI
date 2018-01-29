@@ -37,24 +37,6 @@ final class ProjectController {
     return try project.makeJSON()
   }
   
-  //MARK: Create Project
-  func create(_ request: Request) throws -> ResponseRepresentable {
-    
-    //Pull the values from the request for each column
-    guard let user_id = request.json?["user_id"]?.int, let name = request.json?["name"]?.string, let category_id = request.json?["category_id"]?.int, let role_id = request.json?["role_id"]?.int, let project_description = request.json?["project_description"]?.string, let description_needs = request.json?["description_needs"]?.string else {
-      throw Abort.badRequest
-    }
-    
-    //Instaniate the project using the variables we created
-    let project = Project(user_id: Identifier(user_id), name: name, category_id: Identifier(category_id), role_id: Identifier(role_id), project_description: project_description, description_needs: description_needs)
-    
-    //Save the new project
-    try project.save()
-    
-    //Return the newly created project
-    return try project.makeJSON()
-  }
-  
   //MARK: Update Project
   func update(_ request: Request) throws -> ResponseRepresentable {
     
