@@ -30,6 +30,19 @@ final class UserController {
     return try user.makeJSON()
   }
   
+  //MARK Show all Projects at User
+  func userProjects(_ request: Request) throws -> ResponseRepresentable {
+    
+    //Declare the user_id requested in the url
+    guard let user_id = request.parameters["id"]?.int
+      else {
+        throw Abort.badRequest
+    }
+    
+    //Return all projects at the specified user_id
+    return try Project.makeQuery().filter("user_id", user_id).all().makeJSON()
+  }
+  
   //MARK: Update User
   func update(_ request: Request) throws -> ResponseRepresentable {
     
