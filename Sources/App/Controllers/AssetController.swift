@@ -41,6 +41,15 @@ final class AssetController {
         throw Abort.badRequest
       }
       
+      // check project
+      guard let project = try Project.find(project_id) else {
+        throw Abort(.notFound, reason: "Could not find project!")
+      }
+      
+      guard req.headers["user_id"]?.int == project.user_id.int else {
+        throw Abort(.forbidden, reason: "You are not the owner of this project!")
+      }
+      
       let cloudService = try CloudinaryService(config: config)
       
       return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon, projectId: project_id)
