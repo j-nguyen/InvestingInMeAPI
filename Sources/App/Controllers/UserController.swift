@@ -42,11 +42,16 @@ final class UserController {
     //Instaniate the project using the variables we created
     let project = Project(user_id: Identifier(user_id), name: name, category_id: Identifier(category_id), role_id: Identifier(role_id), project_description: project_description, description_needs: description_needs)
     
-    //Save the new project
-    try project.save()
-    
-    //Return the newly created project
-    return try project.makeJSON()
+    //Check if the user_id is the owner of the project
+    if request.headers["user_id"]?.int == project.user_id.int {
+      //Save the new project
+      try project.save()
+      
+      //Return the newly created project
+      return try project.makeJSON()
+    } else {
+      throw Abort(.badRequest, reason: "You don't have the permissions to create a project under this user.")
+    }
   }
   
   //MARK Show all Projects at User
