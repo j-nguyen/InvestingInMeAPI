@@ -87,8 +87,12 @@ final class ConnectionController {
         throw Abort.notFound
     }
     
+    //Declare the invitee and inviter ids
+    guard let invitee_id = connection.invitee_id.int else { throw Abort.badRequest }
+    guard let inviter_id = connection.inviter_id.int else { throw Abort.badRequest }
+    
     //Check if the user requesting the update is equal to the connection user_id
-    if request.headers["user_id"]?.int == connection.invitee_id.int || connection.inviter_id.int {
+    if request.headers["user_id"]?.int == invitee_id || request.headers["user_id"]?.int == inviter_id {
     
       //Delete the connection
       try connection.delete()
@@ -97,7 +101,7 @@ final class ConnectionController {
       return try JSON(node: ["message": "Connection removed."])
 
     } else {
-      
+      throw Abort(.forbidden, reason: "You don't have the permissions to delete a connection under this user.")
     }
   }
 }
