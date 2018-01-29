@@ -29,6 +29,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
       user.grouped(AuthMiddleware()).get(":id", handler: userController.show)
       user.grouped(AuthMiddleware()).patch(":id", handler: userController.update)
       user.grouped(AuthMiddleware()).get(":id","projects", handler: userController.userProjects)
+      user.grouped(AuthMiddleware()).post(":id", "projects", handler: projectController.create)
       user.post("login", handler: userController.login)
     }
     
@@ -42,7 +43,6 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     api.grouped(AuthMiddleware()).group("projects") { project in
       project.get("/", handler: projectController.index)
       project.get(":id", handler: projectController.show)
-      project.post("/", handler: projectController.create)
       project.patch(":id", handler: projectController.update)
       project.delete(":id", handler: projectController.delete)
     }
