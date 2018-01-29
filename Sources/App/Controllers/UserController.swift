@@ -51,7 +51,7 @@ final class UserController {
       //Return the newly created project
       return try project.makeJSON()
     } else {
-      throw Abort(.badRequest, reason: "You don't have the permissions to create a project under this user.")
+      throw Abort(.forbidden, reason: "You don't have the permissions to create a project under this user.")
     }
   }
   

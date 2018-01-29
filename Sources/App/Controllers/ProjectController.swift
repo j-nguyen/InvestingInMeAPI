@@ -75,7 +75,7 @@ final class ProjectController {
       //Return the project as JSON
       return try project.makeJSON()
     } else {
-      throw Abort(.badRequest, reason: "You don't have the permissions to update this project.")
+      throw Abort(.forbidden, reason: "You don't have the permissions to update this project.")
     }
   }
   
@@ -103,7 +103,7 @@ final class ProjectController {
       //Return a confirmation message that the project was deleted
       return try JSON(node: ["message", "\(project.name) has been deleted."])
     } else {
-      throw Abort(.badRequest, reason: "You don't have the permissions to delete this project.")
+      throw Abort(.forbidden, reason: "You don't have the permissions to delete this project.")
     }
   }
   
