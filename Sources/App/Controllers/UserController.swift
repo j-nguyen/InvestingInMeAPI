@@ -31,6 +31,30 @@ final class UserController {
     return try user.makeJSON()
   }
   
+  //MARK: Create Project
+  func createProject(_ request: Request) throws -> ResponseRepresentable {
+    
+    //Pull the values from the request for each column
+    guard let user_id = request.json?["user_id"]?.int, let name = request.json?["name"]?.string, let category_id = request.json?["category_id"]?.int, let role_id = request.json?["role_id"]?.int, let project_description = request.json?["project_description"]?.string, let description_needs = request.json?["description_needs"]?.string else {
+      throw Abort.badRequest
+    }
+    
+    //Check if the user_id in the authorization header is the user_id of the project
+    if request.headers["user_id"]?.int == user_id {
+      
+      //Instaniate the project using the variables we created
+      let project = Project(user_id: Identifier(user_id), name: name, category_id: Identifier(category_id), role_id: Identifier(role_id), project_description: project_description, description_needs: description_needs)
+      
+      //Save the new project
+      try project.save()
+      
+      //Return the newly created project
+      return try project.makeJSON()
+    } else {
+      throw Abort(.forbidden, reason: "You don't have the permissions to create a project under this user.")
+    }
+  }
+  
   //MARK Show all Projects at User
   func userProjects(_ request: Request) throws -> ResponseRepresentable {
     

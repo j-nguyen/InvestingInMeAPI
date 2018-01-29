@@ -37,24 +37,6 @@ final class ProjectController {
     return try project.makeJSON()
   }
   
-  //MARK: Create Project
-  func create(_ request: Request) throws -> ResponseRepresentable {
-    
-    //Pull the values from the request for each column
-    guard let user_id = request.json?["user_id"]?.int, let name = request.json?["name"]?.string, let category_id = request.json?["category_id"]?.int, let role_id = request.json?["role_id"]?.int, let project_description = request.json?["project_description"]?.string, let description_needs = request.json?["description_needs"]?.string else {
-      throw Abort.badRequest
-    }
-    
-    //Instaniate the project using the variables we created
-    let project = Project(user_id: Identifier(user_id), name: name, category_id: Identifier(category_id), role_id: Identifier(role_id), project_description: project_description, description_needs: description_needs)
-    
-    //Save the new project
-    try project.save()
-    
-    //Return the newly created project
-    return try project.makeJSON()
-  }
-  
   //MARK: Update Project
   func update(_ request: Request) throws -> ResponseRepresentable {
     
@@ -70,25 +52,31 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    //Update name, project_description, and description_needs if they have been passed through the url
-    project.name = request.json?["name"]?.string ?? project.name
-    project.project_description = request.json?["project_description"]?.string ?? project.project_description
-    project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
-    
-    //Update category_id, and role_id if they have been requested to change
-    if let category_id = request.json?["category_id"]?.int {
-      project.category_id = Identifier(category_id)
+    //Check if the user requesting the update is equal to the project user_id
+    if request.headers["user_id"]?.int == project.user_id.int {
+      
+      //Update name, project_description, and description_needs if they have been passed through the url
+      project.name = request.json?["name"]?.string ?? project.name
+      project.project_description = request.json?["project_description"]?.string ?? project.project_description
+      project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
+      
+      //Update category_id, and role_id if they have been requested to change
+      if let category_id = request.json?["category_id"]?.int {
+        project.category_id = Identifier(category_id)
+      }
+      
+      if let role_id = request.json?["role_id"]?.int {
+        project.role_id = Identifier(role_id)
+      }
+      
+      //Save the project
+      try project.save()
+      
+      //Return the project as JSON
+      return try project.makeJSON()
+    } else {
+      throw Abort(.forbidden, reason: "You don't have the permissions to update this project.")
     }
-    
-    if let role_id = request.json?["role_id"]?.int {
-      project.role_id = Identifier(role_id)
-    }
-    
-    //Save the project
-    try project.save()
-    
-    //Return the project as JSON
-    return try project.makeJSON()
   }
   
   //MARK: Delete Project
@@ -106,11 +94,17 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    //Delete the project
-    try project.delete()
-    
-    //Return a confirmation message that the project was deleted
-    return try JSON(node: ["message", "\(project.name) has been deleted."])
+    //Check if the user requesting the update is equal to the project user_id
+    if request.headers["user_id"]?.int == project.user_id.int {
+      
+      //Delete the project
+      try project.delete()
+      
+      //Return a confirmation message that the project was deleted
+      return try JSON(node: ["message", "\(project.name) has been deleted."])
+    } else {
+      throw Abort(.forbidden, reason: "You don't have the permissions to delete this project.")
+    }
   }
   
 }
