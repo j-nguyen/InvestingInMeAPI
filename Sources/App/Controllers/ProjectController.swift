@@ -52,6 +52,7 @@ final class ProjectController {
         throw Abort.notFound
     }
     
+    //Check if the user requesting the update is equal to the project user_id
     if request.headers["user_id"]?.int == project.user_id.int {
       
       //Update name, project_description, and description_needs if they have been passed through the url
@@ -93,11 +94,17 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    //Delete the project
-    try project.delete()
-    
-    //Return a confirmation message that the project was deleted
-    return try JSON(node: ["message", "\(project.name) has been deleted."])
+    //Check if the user requesting the update is equal to the project user_id
+    if request.headers["user_id"]?.int == project.user_id.int {
+      
+      //Delete the project
+      try project.delete()
+      
+      //Return a confirmation message that the project was deleted
+      return try JSON(node: ["message", "\(project.name) has been deleted."])
+    } else {
+      throw Abort(.badRequest, reason: "You don't have the permissions to delete this project.")
+    }
   }
   
 }
