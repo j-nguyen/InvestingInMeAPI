@@ -57,6 +57,10 @@ final class FeaturedProjectController {
         throw Abort.notFound
     }
     
+    guard request.headers["user_id"]?.int == project.user_id.int else {
+      throw Abort(.forbidden, reason:  "You're not the owner of this project")
+    }
+    
     //Delete the featured project
     try featured_project.delete()
     
