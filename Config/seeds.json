@@ -10,7 +10,14 @@
   },
   "project": {
     "name": "Project - ",
-    "description": "This is the project description.",
+    "project_description": "This is the project description.",
     "description_needs": "I want an investor to give me $10,000 for 30% of my company"
+  },
+  "asset": {
+    "url": "http://via.placeholder.com/350x150",
+    "file_type": "Image",
+    "file_name": "First Image",
+    "file_size": 103924,
+    "project_icon": false
   }
 }

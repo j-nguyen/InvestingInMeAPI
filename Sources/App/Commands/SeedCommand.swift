@@ -15,12 +15,14 @@ final class SeedCommand: Command {
   let environment: Environment
   let user: Config?
   let project: Config?
+  let asset: Config?
   
   init(console: ConsoleProtocol, environment: Environment, seeds: Config?) {
     self.console = console
     self.environment = environment
     self.user = seeds?["user"]
     self.project = seeds?["project"]
+    self.asset = seeds?["asset"]
   }
   
   func createUsers() throws {
@@ -57,9 +59,13 @@ final class SeedCommand: Command {
     }
   }
   
+  func createAssets() throws {
+    if let asset = asset {
+      let projects 
+    }
+  }
+  
   func run(arguments: [String]) throws {
-    
-    
     
     // Changed it up so that now it'll only delete if the specified values do not exist
     if try Role.count() == 0 {
