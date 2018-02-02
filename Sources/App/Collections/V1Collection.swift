@@ -56,7 +56,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     }
     
     //MARK: Featured Project Routes
-    api.group("featured") { featured_project in
+    api.grouped(AuthMiddleware()).group("featured") { featured_project in
       featured_project.get("/", handler: featuredProjectController.index)
       featured_project.post("/", handler: featuredProjectController.create)
       featured_project.delete(":id", handler: featuredProjectController.delete)
