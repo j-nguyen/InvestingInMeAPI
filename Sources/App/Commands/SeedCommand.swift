@@ -73,7 +73,18 @@ final class SeedCommand: Command {
   }
   
   func createConnections() throws {
-    
+    let users = try User.all()
+    let accepted_types = [true, false]
+    for _ in 1...10 {
+      let invitee_user = users.random
+      var inviter_user = users.random
+      repeat { inviter_user = users.random } while inviter_user !== invitee_user
+      let accepted = accepted_types.random
+      if let invitee_user = invitee_user, let inviter_user = inviter_user, let accepted = accepted {
+        let connectionObject = try Connection.init(inviter_id: inviter_user.assertExists(), invitee_id: invitee_user.assertExists(), accepted: accepted, message: "Hey, i'd like to connect!")
+        try connectionObject.save()
+      }
+    }
   }
   
   func run(arguments: [String]) throws {
