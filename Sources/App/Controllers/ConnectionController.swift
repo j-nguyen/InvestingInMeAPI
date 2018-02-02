@@ -24,6 +24,11 @@ final class ConnectionController {
       throw Abort.notFound
     }
     
+    // check the connection and make sure that the req header userId
+    guard let user_id = request.headers["user_id"]?.int, user_id == invite.invitee_id.int || user_id == invite.inviter_id.int else {
+      throw Abort(.forbidden, reason: "You can't view another user's connection!")
+    }
+    
     //Return connection as JSON
     return try invite.makeJSON()
     }
