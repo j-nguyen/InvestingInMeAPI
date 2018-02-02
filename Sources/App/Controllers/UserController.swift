@@ -68,6 +68,25 @@ final class UserController {
     return try Project.makeQuery().filter("user_id", user_id).all().makeJSON()
   }
   
+  //MARK: Shows all connection from that user
+  func connection(_ req: Request) throws -> ResponseRepresentable {
+    guard let id = req.parameters["id"]?.int else {
+      throw Abort.badRequest
+    }
+    
+    // check to make sure that user is you
+    guard req.headers["user_id"]?.int == id else {
+      throw Abort(.forbidden, reason: "You can only view your own connections!")
+    }
+    
+    let connection = try Connection.makeQuery()
+      .filter("inviter_id", id)
+      .or( { try $0.filter("invitee_id", id) })
+      .all()
+    
+    return try connection.makeJSON()
+  }
+  
   //MARK: Update User
   func update(_ request: Request) throws -> ResponseRepresentable {
     
