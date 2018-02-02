@@ -83,6 +83,15 @@
         }
       },
       {
+        "package": "Fakery",
+        "repositoryURL": "https://github.com/vadymmarkov/Fakery.git",
+        "state": {
+          "branch": null,
+          "revision": "a1fa544a8ea1db64cf36c04185e4eda1fad71e84",
+          "version": "3.3.0"
+        }
+      },
+      {
         "package": "Fluent",
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
