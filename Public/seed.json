@@ -1,0 +1,328 @@
+ [
+  {
+  "projects": [
+       {
+       "id": 0,
+       "user_id": 0,
+       "name": "Project Carrie",
+       "category_id": 4,
+       "role_id": 3,
+       "project_description": "Consectetur reprehenderit ullamco cillum ullamco excepteur velit mollit magna veniam irure officia velit voluptate. Ut labore aliquip consectetur veniam Lorem amet magna anim culpa. Consequat eiusmod do esse eiusmod labore nulla Lorem adipisicing irure culpa laboris labore tempor nulla. Fugiat deserunt cillum amet in fugiat qui enim occaecat exercitation minim ipsum minim occaecat eu. Ad voluptate amet cillum deserunt mollit irure consequat cillum. Lorem ad qui sit nulla cupidatat deserunt ex. Laboris Lorem ad commodo officia officia eiusmod.\r\n",
+       "project_needs": "Do dolore veniam cillum magna eu ex non eu dolore officia aute minim. Elit fugiat excepteur laborum labore sint anim duis duis duis incididunt aliquip in. Eiusmod commodo officia amet nostrud cillum fugiat anim mollit nulla. Aliqua consectetur ut adipisicing excepteur occaecat fugiat. Cupidatat consequat occaecat laboris magna esse ipsum ex ex sit. Anim cupidatat excepteur culpa et nostrud. Quis tempor non id consequat sit quis.\r\n"
+       },
+       {
+       "id": 1,
+       "user_id": 3,
+       "name": "Project Tracie",
+       "category_id": 2,
+       "role_id": 3,
+       "project_description": "Esse irure duis eu Lorem est adipisicing velit ex. Fugiat aliqua cupidatat laborum dolor laboris consequat pariatur. Enim veniam excepteur nulla sunt tempor proident reprehenderit voluptate irure sint amet dolore duis.\r\n",
+       "project_needs": "Duis magna eu reprehenderit eiusmod. Aliqua amet est fugiat sit deserunt dolor voluptate veniam et eiusmod adipisicing aute occaecat eu. Cupidatat tempor ullamco do ea mollit esse pariatur culpa excepteur tempor. Proident aliquip ipsum anim minim aliqua incididunt deserunt dolore amet ullamco qui.\r\n"
+       },
+       {
+       "id": 2,
+       "user_id": 4,
+       "name": "Project Isabel",
+       "category_id": 5,
+       "role_id": 1,
+       "project_description": "Non aute velit aute quis magna duis officia dolore irure nulla veniam eu. Reprehenderit eu nisi elit exercitation eiusmod fugiat cillum. Eiusmod adipisicing est ullamco reprehenderit duis magna ea in excepteur ad. Nulla ex ut elit exercitation id mollit occaecat nulla occaecat ut sunt anim incididunt culpa. Ullamco nisi anim cupidatat est duis adipisicing proident incididunt.\r\n",
+       "project_needs": "Voluptate ut proident aliqua eu id ea ea tempor laboris exercitation culpa qui. Duis mollit aliqua eiusmod excepteur occaecat qui aliqua aliquip quis excepteur aliqua minim cillum fugiat. Magna aliqua cupidatat consequat proident dolor aliquip consequat sunt nulla ex est exercitation. Anim est non veniam ut duis ad aliqua dolor. Non laborum ex culpa in officia Lorem anim labore voluptate occaecat sunt ut occaecat tempor.\r\n"
+       },
+       {
+       "id": 3,
+       "user_id": 2,
+       "name": "Project Sears",
+       "category_id": 3,
+       "role_id": 5,
+       "project_description": "Elit eu nulla elit officia et excepteur aliquip ullamco aute fugiat. Veniam sit enim id est ea et. Commodo elit cupidatat culpa quis id. Laborum Lorem labore sit deserunt ut occaecat.\r\n",
+       "project_needs": "Amet eu deserunt magna do aliqua sit nostrud voluptate id labore. Tempor quis nostrud tempor minim culpa tempor cillum ex ad. Pariatur incididunt tempor est in anim eu. Aute reprehenderit aliquip minim veniam.\r\n"
+       },
+       {
+       "id": 4,
+       "user_id": 3,
+       "name": "Project Chambers",
+       "category_id": 5,
+       "role_id": 5,
+       "project_description": "Ea commodo nostrud deserunt ipsum proident sunt consequat occaecat mollit. Eiusmod incididunt voluptate fugiat Lorem fugiat esse incididunt. In pariatur qui irure qui occaecat esse do. Consectetur labore ullamco velit aliqua elit ad irure do. Aute anim do culpa exercitation aliqua do exercitation adipisicing fugiat veniam magna veniam nisi. Enim duis ad fugiat ullamco commodo ea reprehenderit minim non minim consequat.\r\n",
+       "project_needs": "Officia sit nisi duis qui consequat eiusmod anim esse est id tempor aute. Proident minim culpa ad culpa pariatur mollit aliquip dolor aute occaecat eiusmod adipisicing dolore. Dolor tempor sint pariatur nostrud exercitation eu mollit cillum labore mollit dolor magna consequat adipisicing. Deserunt labore consequat pariatur enim quis. Culpa consectetur voluptate occaecat sit duis ullamco deserunt et amet sint Lorem.\r\n"
+       },
+       {
+       "id": 5,
+       "user_id": 2,
+       "name": "Project Barry",
+       "category_id": 6,
+       "role_id": 2,
+       "project_description": "Nulla sint nostrud exercitation cupidatat. Nisi exercitation eu reprehenderit cupidatat labore consequat commodo magna quis. Irure aliquip ipsum adipisicing consectetur esse fugiat eu consectetur. Sunt adipisicing dolor est eu ut aute ea. Reprehenderit ipsum mollit cupidatat quis consectetur nostrud incididunt tempor enim quis reprehenderit occaecat.\r\n",
+       "project_needs": "Officia exercitation nostrud non tempor nisi non minim ut adipisicing eu exercitation. Elit commodo aliquip velit reprehenderit id non quis labore sint excepteur do. Mollit amet dolore laboris consectetur voluptate fugiat dolore aliqua culpa Lorem dolor adipisicing officia cupidatat. Sit ea et consequat exercitation est. Occaecat proident aute proident occaecat ut esse Lorem aute voluptate.\r\n"
+       },
+       {
+       "id": 6,
+       "user_id": 2,
+       "name": "Project Delgado",
+       "category_id": 5,
+       "role_id": 4,
+       "project_description": "Tempor Lorem irure officia excepteur. Veniam non veniam deserunt aute commodo labore sint enim et ad. Labore deserunt dolor exercitation et aute enim minim exercitation exercitation reprehenderit ex labore sint nisi. Anim in adipisicing sunt quis velit exercitation reprehenderit consequat elit non excepteur.\r\n",
+       "project_needs": "Nostrud mollit incididunt laborum et velit tempor irure duis incididunt quis nisi. Enim nulla mollit esse est eu elit adipisicing dolore labore velit labore qui amet. Qui sint excepteur qui nisi sunt consequat aliquip enim dolor aliqua labore. Sunt ipsum ad ex officia officia eiusmod nostrud exercitation voluptate amet fugiat id irure eu. Id aliquip amet adipisicing nostrud cupidatat.\r\n"
+       },
+       {
+       "id": 7,
+       "user_id": 3,
+       "name": "Project Vanessa",
+       "category_id": 6,
+       "role_id": 1,
+       "project_description": "Non sint qui est duis laborum laboris ex fugiat quis consequat do do aute. Fugiat ullamco ea aute veniam nostrud labore eiusmod labore aute in dolore. Ut eiusmod qui pariatur cillum nulla culpa dolor. Anim eiusmod consequat sit aute ut duis in sunt tempor consequat est commodo in duis. Occaecat ullamco sunt labore dolore pariatur culpa occaecat esse cupidatat ex quis laborum aliquip commodo. Mollit aliqua ea sit ex nostrud mollit est deserunt est dolor magna Lorem.\r\n",
+       "project_needs": "Laboris occaecat ad Lorem voluptate ad nisi elit deserunt nulla sit. Nisi Lorem mollit anim occaecat laborum fugiat ipsum tempor sunt anim cupidatat quis veniam. Incididunt nulla nisi commodo aliquip ex.\r\n"
+       },
+       {
+       "id": 8,
+       "user_id": 2,
+       "name": "Project Kimberley",
+       "category_id": 6,
+       "role_id": 3,
+       "project_description": "Cillum cillum eiusmod fugiat anim incididunt sunt sint. Est elit Lorem irure exercitation id. Officia id veniam eiusmod aliqua eu non exercitation enim voluptate ullamco elit nisi mollit. Velit veniam enim id ex commodo sint veniam elit exercitation reprehenderit tempor id duis cillum. Eiusmod sit velit duis aliqua magna nostrud excepteur voluptate qui aliqua mollit sint. Nostrud sunt magna consequat velit. Est anim Lorem ullamco duis sit quis fugiat voluptate sit et anim excepteur cillum incididunt.\r\n",
+       "project_needs": "Quis quis laboris do nisi consectetur eu irure aliqua consectetur esse tempor veniam occaecat nostrud. Cupidatat cupidatat culpa esse consequat laborum. In ex enim occaecat voluptate est commodo irure exercitation eiusmod aute sunt dolore. Excepteur aute reprehenderit culpa aliquip. Ullamco aliqua irure adipisicing aliquip reprehenderit ullamco amet eiusmod elit eu.\r\n"
+       },
+       {
+       "id": 9,
+       "user_id": 4,
+       "name": "Project Ginger",
+       "category_id": 2,
+       "role_id": 2,
+       "project_description": "Laborum amet excepteur sint cupidatat proident in do aute excepteur Lorem amet aute duis. Reprehenderit ipsum occaecat nostrud tempor tempor enim enim aliqua duis. Ea laborum Lorem labore magna id minim. Id officia voluptate laborum ullamco qui nostrud nisi eu. Nulla quis aute sit veniam esse amet voluptate voluptate do aute velit.\r\n",
+       "project_needs": "Voluptate velit magna magna laboris eu sit velit velit ullamco. Aliqua ex consectetur duis magna do occaecat laborum. Qui tempor tempor esse cillum consectetur amet sit eiusmod nulla mollit proident nostrud eiusmod.\r\n"
+       },
+       {
+       "id": 10,
+       "user_id": 1,
+       "name": "Project Stephens",
+       "category_id": 6,
+       "role_id": 4,
+       "project_description": "Elit deserunt aliquip est non dolor. Est et eiusmod eiusmod esse ex consequat amet ea. Fugiat est sunt excepteur et irure.\r\n",
+       "project_needs": "Anim aliqua pariatur magna ad consequat in id ex culpa elit voluptate cupidatat. Ipsum proident tempor ipsum anim reprehenderit velit sint non occaecat laborum ut laboris cillum laboris. Aliquip non amet excepteur dolor nisi. Et reprehenderit incididunt veniam enim id anim nisi. Qui duis eiusmod incididunt dolore nisi tempor duis esse cillum cupidatat veniam amet anim proident. Eiusmod nostrud irure enim dolore excepteur duis ex laboris id consequat velit veniam.\r\n"
+       },
+       {
+       "id": 11,
+       "user_id": 4,
+       "name": "Project Carole",
+       "category_id": 4,
+       "role_id": 4,
+       "project_description": "Fugiat laborum exercitation sint quis labore adipisicing. Elit deserunt id ut id consectetur cillum eiusmod. Eiusmod dolor fugiat do eu. Ad aute duis ut mollit nulla laboris fugiat exercitation nostrud dolor irure ea.\r\n",
+       "project_needs": "Velit tempor officia aliqua qui sint anim. Nulla non eiusmod voluptate nostrud eiusmod labore eiusmod sint. Magna aliqua et nulla irure velit duis enim dolor exercitation ut amet Lorem incididunt id.\r\n"
+       },
+       {
+       "id": 12,
+       "user_id": 1,
+       "name": "Project Daniels",
+       "category_id": 1,
+       "role_id": 4,
+       "project_description": "Aliqua anim veniam ullamco eu laborum ullamco consectetur do deserunt. Culpa ut occaecat reprehenderit exercitation deserunt esse velit exercitation consectetur reprehenderit voluptate veniam officia. Voluptate pariatur et aliqua nisi ex nostrud sunt et consequat culpa labore nulla aute. Sint nostrud culpa dolor tempor officia irure consectetur deserunt tempor cupidatat irure. Dolor dolore laborum sit consectetur magna tempor sit mollit culpa adipisicing nostrud ullamco ea.\r\n",
+       "project_needs": "Magna commodo non nisi exercitation. Ipsum sit occaecat non cillum reprehenderit amet do sit aliquip aliquip. Duis qui voluptate consequat ullamco velit aliqua labore ullamco amet amet ad adipisicing eiusmod. Est reprehenderit aute ex tempor cupidatat excepteur magna.\r\n"
+       },
+       {
+       "id": 13,
+       "user_id": 1,
+       "name": "Project Patricia",
+       "category_id": 1,
+       "role_id": 1,
+       "project_description": "Laborum reprehenderit velit id labore pariatur magna. Veniam proident cupidatat in do cupidatat ea. Est cillum mollit tempor qui ex aute deserunt sunt tempor dolor cupidatat. Mollit aliquip excepteur eu officia do irure amet occaecat aliquip velit velit. Do incididunt labore voluptate Lorem amet irure dolor incididunt duis nulla commodo. Commodo dolor tempor ex aute. Aute non sit est quis veniam qui sit.\r\n",
+       "project_needs": "Amet eu culpa officia ipsum duis ipsum excepteur. Magna culpa ex ad eiusmod cillum laborum amet cupidatat reprehenderit ullamco reprehenderit. Voluptate in ipsum ut velit qui culpa proident Lorem velit officia aliqua anim ut magna. Incididunt voluptate velit laboris ea ea ex do irure reprehenderit aliquip ullamco sunt. Veniam mollit magna aute pariatur sit veniam et labore eiusmod. Nulla mollit esse incididunt ea exercitation sint laborum elit tempor id.\r\n"
+       },
+       {
+       "id": 14,
+       "user_id": 4,
+       "name": "Project Aguilar",
+       "category_id": 5,
+       "role_id": 5,
+       "project_description": "Amet ut proident officia nostrud non enim. Pariatur commodo ad reprehenderit aute esse proident sint non duis incididunt exercitation deserunt. In consectetur ad sit nisi esse id. Id irure laborum cupidatat tempor pariatur exercitation excepteur dolore pariatur culpa sit duis sint occaecat.\r\n",
+       "project_needs": "Exercitation exercitation ex est deserunt et magna commodo sint ex. Veniam eiusmod consequat veniam dolore cillum in. Culpa ex proident in excepteur consequat aliqua duis laboris adipisicing proident ad fugiat.\r\n"
+       },
+       {
+       "id": 15,
+       "user_id": 1,
+       "name": "Project Terri",
+       "category_id": 1,
+       "role_id": 2,
+       "project_description": "Tempor occaecat irure ullamco aliquip fugiat. Enim enim dolor eiusmod tempor ad cillum exercitation mollit ex ipsum. Pariatur adipisicing enim sint velit esse cillum Lorem. Incididunt in nisi anim minim ea Lorem id reprehenderit exercitation cillum voluptate dolor.\r\n",
+       "project_needs": "Anim ut proident dolor enim ut culpa. Consectetur et consectetur ut laboris aliquip aliquip incididunt aute officia ullamco consequat eiusmod labore adipisicing. Id et dolore aliquip occaecat fugiat exercitation irure eu duis. Sunt velit fugiat occaecat nisi ipsum qui nulla occaecat quis eiusmod exercitation magna voluptate.\r\n"
+       },
+       {
+       "id": 16,
+       "user_id": 4,
+       "name": "Project Barlow",
+       "category_id": 4,
+       "role_id": 2,
+       "project_description": "In culpa ullamco ea ullamco irure enim tempor veniam dolor in aliqua est labore. Labore excepteur tempor mollit labore excepteur duis nisi incididunt aliquip labore. Dolore nisi ea et tempor magna esse proident do. Velit minim velit Lorem laboris adipisicing proident consequat aliqua officia quis duis. Mollit eiusmod esse Lorem ut ad ex ut dolor. Nulla in fugiat fugiat nulla mollit ad anim. Et nulla eu nulla enim minim culpa proident.\r\n",
+       "project_needs": "Adipisicing nostrud voluptate anim cillum velit labore excepteur mollit dolor incididunt. Nostrud cupidatat labore velit anim consequat irure fugiat nisi pariatur voluptate nostrud qui amet. Quis laborum nostrud Lorem velit veniam sunt nulla sit consectetur proident officia.\r\n"
+       },
+       {
+       "id": 17,
+       "user_id": 2,
+       "name": "Project Jodi",
+       "category_id": 2,
+       "role_id": 3,
+       "project_description": "Aute occaecat ad excepteur cillum aliqua id. Nulla eu veniam duis culpa exercitation qui ad nisi aliqua. Incididunt consectetur tempor do amet cillum do cillum sunt anim. Labore voluptate in velit commodo non do non aliqua labore.\r\n",
+       "project_needs": "In nostrud fugiat officia ullamco ullamco velit laborum aliqua culpa sit ad exercitation ullamco. Dolore eu dolore elit occaecat aliqua occaecat consectetur nostrud. Magna dolore nisi ullamco anim laborum ea aliqua deserunt sit mollit. Officia aliquip ullamco ea fugiat minim. Veniam et ullamco est reprehenderit commodo laborum sint fugiat.\r\n"
+       },
+       {
+       "id": 18,
+       "user_id": 2,
+       "name": "Project Virgie",
+       "category_id": 4,
+       "role_id": 4,
+       "project_description": "Nulla commodo enim ad incididunt commodo mollit ullamco qui dolore minim ad dolore nisi voluptate. Commodo eiusmod tempor et do incididunt culpa et Lorem esse labore adipisicing pariatur dolore mollit. Consequat eiusmod do esse eiusmod et reprehenderit consequat. Ea veniam cupidatat est adipisicing eiusmod occaecat elit nisi.\r\n",
+       "project_needs": "Occaecat enim sit excepteur cupidatat culpa. Ut labore occaecat consectetur nulla. Minim deserunt sint sit eu laboris esse nulla est aliqua id. Dolore officia irure id quis aliquip ex sit excepteur aliqua incididunt incididunt duis eu. Ea aliquip aliquip pariatur incididunt nulla duis nostrud ipsum minim sit eiusmod adipisicing. Quis quis id ut occaecat.\r\n"
+       },
+       {
+       "id": 19,
+       "user_id": 0,
+       "name": "Project Sampson",
+       "category_id": 1,
+       "role_id": 5,
+       "project_description": "Cillum ex occaecat aliqua proident irure ex dolor incididunt magna incididunt dolor occaecat aute. Eiusmod qui incididunt ex mollit. Aute ipsum nisi ut pariatur. Officia est minim anim ex elit ex nisi quis occaecat irure.\r\n",
+       "project_needs": "Esse cupidatat amet magna esse aute veniam reprehenderit sit sint veniam amet. Aliqua mollit proident cillum do adipisicing exercitation quis duis sit quis cillum consectetur. Minim duis laborum reprehenderit quis do do deserunt do aliquip aute excepteur ex. Esse aliquip esse aliqua amet dolore sit sit velit reprehenderit qui elit officia officia commodo. Consequat dolor ipsum nulla ipsum ullamco proident sunt est ad.\r\n"
+       }
+    ],
+  "users": [
+        {
+        "id": 0,
+        "google_id": 4,
+        "email": "alejandralloyd@quotezart.com",
+        "name": "<ReferenceError: Can't find variable: givenName>",
+        "picture": "http://kb4images.com/images/free-image/37531199-free-image.jpg",
+        "email_verification": true,
+        "description": "Voluptate ipsum ex veniam aute laboris eu dolor. Nisi occaecat nulla deserunt consectetur aute velit quis cillum. Sunt aute ullamco aliqua est minim. Laborum nisi sit sit reprehenderit et officia aute elit occaecat exercitation ea esse.\r\n",
+        "role_id": 2,
+        "location": "Bridgetown, Indiana",
+        "phone_number": "(992) 453-3482",
+        "experience_and_credentials": "Aliqua nisi anim tempor consequat excepteur magna deserunt aliqua. Eu et sit Lorem irure ex consectetur voluptate esse labore minim. Labore eiusmod aliqua anim aliqua aliqua eu. Consequat fugiat dolore amet nulla et aliqua. In elit et incididunt commodo laboris eiusmod adipisicing aute ut nisi exercitation sit eu.\r\n",
+        "player_id": 1
+        },
+        {
+        "id": 1,
+        "google_id": 3,
+        "email": "carpenterlloyd@quotezart.com",
+        "name": "<ReferenceError: Can't find variable: givenName>",
+        "picture": "http://kb4images.com/images/free-image/37531199-free-image.jpg",
+        "email_verification": true,
+        "description": "Nulla sunt do nisi pariatur qui eiusmod. Laboris proident aliqua fugiat dolor Lorem ut enim et est sit. Enim veniam eu ipsum magna. Adipisicing sit commodo dolor anim ullamco quis dolor ullamco anim enim dolor do. Ipsum deserunt tempor sit labore.\r\n",
+        "role_id": 2,
+        "location": "Kidder, Kansas",
+        "phone_number": "(899) 479-3205",
+        "experience_and_credentials": "Occaecat laborum nostrud voluptate dolor est ullamco deserunt labore. Officia do officia Lorem dolore nostrud non elit ea proident nulla occaecat deserunt sit sunt. In reprehenderit consequat deserunt deserunt magna voluptate. Elit eu qui non nostrud quis cupidatat aliquip deserunt ex deserunt. Nostrud velit quis nulla et.\r\n",
+        "player_id": 1
+        },
+        {
+        "id": 2,
+        "google_id": 2,
+        "email": "monroelloyd@quotezart.com",
+        "name": "<ReferenceError: Can't find variable: givenName>",
+        "picture": "http://kb4images.com/images/free-image/37531199-free-image.jpg",
+        "email_verification": true,
+        "description": "Sit consequat est voluptate magna laborum. Occaecat labore duis enim cupidatat mollit ex Lorem enim. Irure magna do adipisicing est in nulla do consectetur ipsum enim. Laboris nisi eu occaecat laboris consectetur dolore anim anim ex excepteur minim. Et excepteur ipsum culpa incididunt tempor occaecat irure commodo ad. Reprehenderit consequat tempor ut ullamco. Ex amet duis cupidatat excepteur.\r\n",
+        "role_id": 3,
+        "location": "Cucumber, Illinois",
+        "phone_number": "(940) 420-3849",
+        "experience_and_credentials": "Quis est ad pariatur veniam anim pariatur non ex sit ullamco excepteur. Amet enim nulla laborum cupidatat deserunt ex laboris voluptate elit. Reprehenderit sunt adipisicing duis reprehenderit ut ad. Sint sit do magna mollit aute. Cupidatat non deserunt anim ea ex Lorem in veniam commodo laboris.\r\n",
+        "player_id": 1
+        },
+        {
+        "id": 3,
+        "google_id": 4,
+        "email": "dukelloyd@quotezart.com",
+        "name": "<ReferenceError: Can't find variable: givenName>",
+        "picture": "http://kb4images.com/images/free-image/37531199-free-image.jpg",
+        "email_verification": true,
+        "description": "Dolor esse deserunt magna velit sunt eu dolor culpa officia. Labore deserunt sunt sit magna sunt consequat. Labore nulla quis exercitation commodo cupidatat in dolore in fugiat duis. Id aute incididunt excepteur pariatur enim aute in ut. Cillum culpa qui cillum reprehenderit Lorem voluptate.\r\n",
+        "role_id": 3,
+        "location": "Lewis, Marshall Islands",
+        "phone_number": "(904) 563-3813",
+        "experience_and_credentials": "Sint est aute consectetur do Lorem irure reprehenderit sunt do aute pariatur excepteur occaecat exercitation. Nulla duis sit veniam incididunt. Officia dolor eiusmod occaecat occaecat ad aliqua nisi deserunt cillum amet culpa do laboris. Eu reprehenderit et qui voluptate. Nostrud nisi ea sint consectetur sint.\r\n",
+        "player_id": 1
+        },
+        {
+        "id": 4,
+        "google_id": 1,
+        "email": "marionlloyd@quotezart.com",
+        "name": "<ReferenceError: Can't find variable: givenName>",
+        "picture": "http://kb4images.com/images/free-image/37531199-free-image.jpg",
+        "email_verification": true,
+        "description": "Anim esse mollit est qui et labore ea commodo dolor sit est aliquip commodo ut. In id adipisicing amet anim magna elit anim. Eu labore adipisicing officia deserunt Lorem est ea mollit minim. Eu eiusmod sint sunt ipsum irure aute enim officia aute dolore velit. Lorem laborum do adipisicing est est minim eu duis voluptate excepteur quis aliqua exercitation. Magna velit aute ea cillum proident ex consectetur. Adipisicing nisi fugiat tempor excepteur excepteur do.\r\n",
+        "role_id": 4,
+        "location": "Woodruff, West Virginia",
+        "phone_number": "(815) 484-3658",
+        "experience_and_credentials": "Ea in amet sunt nisi laboris pariatur do magna aliqua sint ullamco. Tempor sunt sit ullamco ex officia commodo nostrud. Est incididunt elit amet exercitation quis aliqua esse deserunt laborum mollit ea. Laboris commodo duis cupidatat sunt excepteur adipisicing.\r\n",
+        "player_id": 1
+        }
+        ],
+  "featured_projects": [
+         {
+         "id": 0,
+         "project_id": 8,
+         "duration": 86400
+         },
+         {
+         "id": 1,
+         "project_id": 9,
+         "duration": 86400
+         },
+         {
+         "id": 2,
+         "project_id": 5,
+         "duration": 86400
+         }
+     ],
+  "connections": [
+        [
+         {
+         "id": 0,
+         "inviter_id": 1,
+         "invitee_id": 4,
+         "accepted": true,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         },
+         {
+         "id": 1,
+         "inviter_id": 0,
+         "invitee_id": 4,
+         "accepted": true,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         },
+         {
+         "id": 2,
+         "inviter_id": 0,
+         "invitee_id": 1,
+         "accepted": true,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         },
+         {
+         "id": 3,
+         "inviter_id": 1,
+         "invitee_id": 2,
+         "accepted": true,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         },
+         {
+         "id": 4,
+         "inviter_id": 3,
+         "invitee_id": 1,
+         "accepted": true,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         },
+         {
+         "id": 5,
+         "inviter_id": 0,
+         "invitee_id": 2,
+         "accepted": true,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         },
+         {
+         "id": 6,
+         "inviter_id": 0,
+         "invitee_id": 3,
+         "accepted": false,
+         "message": "Hey, I'd love to connect, I think we could work together."
+         }
+         ]
+        ]
+  }
+]

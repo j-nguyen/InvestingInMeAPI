@@ -20,7 +20,6 @@ final class SeedCommand: Command {
   
   func run(arguments: [String]) throws {
     
-    
     // Changed it up so that now it'll only delete if the specified values do not exist
     if try Role.count() == 0 {
       //Declare the roles we will allow
@@ -51,6 +50,24 @@ final class SeedCommand: Command {
         //Save the category
         try category.save()
       }
+    }
+    
+    if try Project.count() == 0 {
+      
+//
+//
+//      //Declare the categories we will allow
+//      let names = []
+//
+//      //Iterate through the list of categories
+//      for current_category in categories {
+//
+//        //Create a new category based on the current_category
+//        let category = Category(type: current_category)
+//
+//        //Save the category
+//        try category.save()
+//      }
     }
   }
 }
