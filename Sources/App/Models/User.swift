@@ -92,7 +92,7 @@ extension User: Preparation {
       db.string("location")
       db.string("phone_number")
       db.custom("experience_and_credentials", type: "TEXT")
-      db.int("player_id")
+      db.int("player_id", optional: true)
       
     }
   }
