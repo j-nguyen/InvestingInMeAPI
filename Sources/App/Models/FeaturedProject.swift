@@ -13,7 +13,6 @@ final class FeaturedProject: Model, Timestampable {
   // MARK: Properties
   var project_id: Identifier
   var duration: Int64
-  
   let storage: Storage = Storage()
   
   /**

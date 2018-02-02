@@ -14,8 +14,18 @@ final class FeaturedProjectController {
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
+    var projects = try FeaturedProject.all()
+    
+    for (index, project) in projects.enumerated() {
+       let expire_time = project.createdAt?.addingTimeInterval(Double(project.duration))
+      if let expire_time = expire_time, expire_time < Date() {
+        try project.delete()
+        projects.remove(at: index)
+      }
+    }
+    
     //Return all Featured Projects
-    return try FeaturedProject.all().makeJSON()
+    return try projects.makeJSON()
   }
   
   //MARK: Create Feature Project
