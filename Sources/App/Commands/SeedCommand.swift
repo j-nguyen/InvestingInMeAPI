@@ -14,23 +14,45 @@ final class SeedCommand: Command {
   let console: ConsoleProtocol
   let environment: Environment
   let user: Config?
+  let project: Config?
   
   init(console: ConsoleProtocol, environment: Environment, seeds: Config?) {
     self.console = console
     self.environment = environment
     self.user = seeds?["user"]
+    self.project = seeds?["project"]
   }
   
   func createUsers() throws {
     if let user = user {
+      let tempVariable:[String] = try user.get("phone_number")
+      let roles = try Role.all()
       for i in 1...10 {
-        var email: String = try String(i) + user.get("email")
-        let userObject = try User.init(google_id: URandom().makeInt(), email: email, name: user.get("name"), picture: user.get("picture"), email_verification: user.get("email_verification"))
-        var tempVariable:[String] = try user.get("phone_number")
-        userObject.phone_number = tempVariable.random ?? ""
-      
-        
-        try userObject.save()
+        let email: String = try String(i) + user.get("email")
+        let role = roles.random
+        if let role = role {
+          let userObject = try User.init(google_id: URandom().makeInt(), email: email, name: user.get("name"), picture: user.get("picture"), email_verification: user.get("email_verification"), description: user.get("description"), role_id: role.assertExists(), experience_and_credentials: user.get("experience_and_credentials"))
+          userObject.phone_number = tempVariable.random ?? ""
+          try userObject.save()
+        }
+      }
+    }
+  }
+  
+  func createProjects() throws {
+    if let project = project {
+      let users = try User.all()
+      let categories = try Category.all()
+      let roles = try Role.all()
+      for i in 1...50 {
+        let user = users.random
+        let category = categories.random
+        let role = roles.random
+        if let user = user, let category = category, let role = role {
+          let name: String = try project.get("name") + String(i)
+          let projectObject = try Project.init(user_id: user.assertExists(), name: name, category_id: category.assertExists(), role_id: role.assertExists(), project_description: project.get("project_description"), description_needs: project.get("description_needs"))
+          try projectObject.save()
+        }
       }
     }
   }
@@ -73,6 +95,7 @@ final class SeedCommand: Command {
     
     if environment == .development {
       try createUsers()
+      try createProjects()
     }
   }
 }
