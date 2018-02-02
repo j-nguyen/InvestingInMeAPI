@@ -76,13 +76,24 @@ final class SeedCommand: Command {
     let users = try User.all()
     let accepted_types = [true, false]
     for _ in 1...10 {
-      let invitee_user = users.random
-      var inviter_user = users.random
-      repeat { inviter_user = users.random } while inviter_user !== invitee_user
+      guard let invitee_user = users.random else {return}
+      guard var inviter_user = users.random else {return}
+      repeat { inviter_user = users.random! } while inviter_user.id! == invitee_user.id!
       let accepted = accepted_types.random
-      if let invitee_user = invitee_user, let inviter_user = inviter_user, let accepted = accepted {
+      if let accepted = accepted {
         let connectionObject = try Connection.init(inviter_id: inviter_user.assertExists(), invitee_id: invitee_user.assertExists(), accepted: accepted, message: "Hey, i'd like to connect!")
-        try connectionObject.save()
+        try? connectionObject.save()
+      }
+    }
+  }
+  
+  func createFeaturedProjects() throws {
+    for _ in 1...3 {
+      let projects = try Project.all()
+      let project = projects.random
+      if let project = project {
+        let featuredProjectObject = try FeaturedProject.init(project_id: project.assertExists(), duration: 86400)
+        try? featuredProjectObject.save()
       }
     }
   }
@@ -125,6 +136,8 @@ final class SeedCommand: Command {
       try createUsers()
       try createProjects()
       try createAssets()
+      try createConnections()
+      try createFeaturedProjects()
     }
   }
 }
