@@ -61,8 +61,19 @@ final class SeedCommand: Command {
   
   func createAssets() throws {
     if let asset = asset {
-      let projects 
+      let projects = try Project.all()
+      for _ in 1...50 {
+        let project = projects.random
+        if let project = project {
+          let assetObject = try Asset.init(project_id: project.assertExists(), file_type: asset.get("file_type"), url: asset.get("url"), file_name: asset.get("file_name"), file_size: asset.get("file_size"), project_icon: asset.get("project_icon"), public_id: "123")
+          try assetObject.save()
+        }
+      }
     }
+  }
+  
+  func createConnections() throws {
+    
   }
   
   func run(arguments: [String]) throws {
@@ -102,6 +113,7 @@ final class SeedCommand: Command {
     if environment == .development {
       try createUsers()
       try createProjects()
+      try createAssets()
     }
   }
 }
