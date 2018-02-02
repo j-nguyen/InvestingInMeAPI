@@ -18,3 +18,10 @@ echo "Checking back to ${LOCAL_BRANCH}"
 echo "Attempting to merge git branch..."
 git checkout $LOCAL_BRANCH
 git merge staging
+echo "Merged.."
+
+# Now attempt to build and generate the xcode
+echo "Attempting to build vapor and generating xcode file..."
+vapor build --verbose
+vapor xcode -y
+echo "Successful."
