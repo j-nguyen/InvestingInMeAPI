@@ -7,6 +7,8 @@
 # We need to first ensure that the services are installed
 # If it's not installed, then we can just update the homebrew
 
+set -e
+
 which -s brew
 if [[ $? != 0 ]] ; then
   # Install Homebrew

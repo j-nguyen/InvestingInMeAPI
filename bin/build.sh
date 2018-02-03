@@ -4,6 +4,8 @@
 # Created by: Johnny Nguyen
 # Version: 1.0.0
 
+set -e
+
 LOCAL_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 # We can run the setup script here, but im not going to

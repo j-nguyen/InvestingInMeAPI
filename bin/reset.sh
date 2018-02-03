@@ -3,6 +3,8 @@
 # Resets the project back to its normal settings
 # This means clearing the database, and resetting the seeds with vapor
 
+set -e
+
 echo "Building project..."
 vapor build --verbose
 echo "Done."
