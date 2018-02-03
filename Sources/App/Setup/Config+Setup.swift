@@ -24,12 +24,6 @@ extension Config {
     addConfigurable(command: DropCommand.init, name: "drop")
   }
   
-  // Setup the seeds for the database
-  private func setupSeedDatabase() {
-    Role.database = drop?.database
-    Category.database = drop?.database
-  }
-  
   /// Add all models that should have their
   /// schemas prepared before the app boots
   private func setupPreparations() throws {
