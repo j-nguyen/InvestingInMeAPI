@@ -39,6 +39,16 @@ class ConnectionControllerTests: TestCase {
     XCTAssertNotNil(connection)
   }
   
+  func testReadConnection() throws {
+    // make sure it's there
+    let connection = try Connection.makeQuery().first()!
+    
+    XCTAssertNotNil(connection)
+    
+    // and now check the json
+    try XCTAssertTrue(!connection.makeJSON().isNull)
+  }
+  
   func testUpdateConnection() throws {
     // get the first connection and test
     let connection = try Connection.makeQuery().first()!
@@ -51,6 +61,12 @@ class ConnectionControllerTests: TestCase {
     try connection.save()
     
     XCTAssertNotEqual(tmpMessage, connection.message)
+  }
+  
+  func testDeleteConnection() throws {
+    try Connection.makeQuery().delete()
+    
+    XCTAssertEqual(0, try Connection.count())
   }
 }
 
