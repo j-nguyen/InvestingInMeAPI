@@ -39,20 +39,20 @@ class ConnectionControllerTests: TestCase {
     XCTAssertNotNil(connection)
   }
   
-  func testReadConnection() throws {
-    // make sure it's there
-    let connection = try Connection.makeQuery().first()!
-    
-    XCTAssertNotNil(connection)
-    
-    // and now check the json
-    try XCTAssertTrue(!connection.makeJSON().isNull)
-  }
-  
   func testUpdateConnection() throws {
-    // get the first connection and test
-    let connection = try Connection.makeQuery().first()!
-    // make sure it's not nil
+    let user = try User.makeQuery().filter("email", "fakeuser@example.com").first()!
+    let otherUser = try User.makeQuery().filter("email", "fakeuser2@example.com").first()!
+    
+    // set up the connection here
+    let connection: Connection
+    if try Connection.makeQuery().filter("inviter_id", user.assertExists()).first() == nil {
+      connection = try Connection(inviter_id: user.assertExists(), invitee_id: otherUser.assertExists(), accepted: true, message: "I want to connect with you")
+      try connection.save()
+    } else {
+      connection = try Connection.makeQuery().filter("inviter_id", user.assertExists()).first()!
+    }
+    
+    // make sure it's not
     XCTAssertNotNil(connection)
     
     // update the connnection and make sure it's not the same
@@ -74,6 +74,7 @@ class ConnectionControllerTests: TestCase {
 extension ConnectionControllerTests {
   static let allTests = [
     ("testCreateConnection", testCreateConnection),
-    ("testUpdateConnection", testUpdateConnection)
+    ("testUpdateConnection", testUpdateConnection),
+    ("testDeleteConnection", testDeleteConnection)
   ]
 }
