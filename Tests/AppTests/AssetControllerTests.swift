@@ -17,16 +17,14 @@ class AssetControllerTests: TestCase {
   
   let drop = try! Droplet.testable()
   
-  var user: User?
   var project: Project?
   
   override func setUp() {
     super.setUp()
     Testing.onFail = XCTFail
-    // create some initial setup for project and user
-    user = try! User(google_id: URandom().makeInt(), email: "fakeuser@example.com", name: "Fake User", picture: "", email_verification: true)
-    try! user!.save()
     // attempt to create the project next
+    let user = try! User.makeQuery().first()
+    
     project = try! Project(
       user_id: user!.assertExists(),
       name: "Project",
@@ -62,4 +60,12 @@ class AssetControllerTests: TestCase {
     
     XCTAssertEqual(0, try Asset.count())
   }
+}
+
+// MARK: XCTest - Linux
+extension AssetControllerTests {
+  static let allTests = [
+    ("testCreateAsset", testCreateAsset),
+    ("testDeleteAssets", testDeleteAssets)
+  ]
 }
