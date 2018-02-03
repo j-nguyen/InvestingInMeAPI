@@ -19,12 +19,13 @@ class AssetControllerTests: TestCase {
   override func setUp() {
     super.setUp()
     Testing.onFail = XCTFail
+    // create some initial setup
+    
   }
 
-  func testInfo() throws {
-    try drop
-      .testResponse(to: .get, at: "info")
-      .assertStatus(is: .ok)
-      .assertBody(contains: "0.0.0.0")
+  func testCreateAsset() throws {
+    // we don't want to use the cloudinary service, so we'll use the manual test in here
+    let asset = Asset(project_id: <#T##Identifier#>, file_type: <#T##String#>, url: <#T##String#>, file_name: <#T##String#>, file_size: <#T##Int64#>, project_icon: <#T##Bool#>, public_id: <#T##String#>)
+    
   }
 }
