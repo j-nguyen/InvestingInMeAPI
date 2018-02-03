@@ -15,9 +15,9 @@ import Random
 
 class FeaturedProjectControllerTests: TestCase {
   let drop = try! Droplet.testable()
+  let user = try! User.makeQuery().filter("email", "fakeuser@example.com").first()!
   
   func testCreateFeaturedProject() throws {
-    let user = try User.makeQuery().filter("email", "fakeuser@example.com").first()!
     let project = try Project(
       user_id: user.assertExists(),
       name: "Featured Project Test",
@@ -37,19 +37,26 @@ class FeaturedProjectControllerTests: TestCase {
     XCTAssertNotNil(featured)
   }
   
-  func testReadFeaturedProject() throws {
-    // make sure it's there
-    let featured = try FeaturedProject.makeQuery().first()
-    
-    XCTAssertNotNil(featured)
-    
-    // and now check the json
-    try XCTAssertTrue(!featured!.makeJSON().isNull)
-  }
-  
   func testUpdateFeaturedProject() throws {
     // make sure it's there
-    let featured = try FeaturedProject.makeQuery().first()!
+    let featured: FeaturedProject
+    if try FeaturedProject.makeQuery().first() == nil {
+      // recreate the project and test the description
+      let project = try Project(
+        user_id: user.assertExists(),
+        name: "Featured Project Test",
+        category_id: Category.Group.mobileApp.category().assertExists(),
+        role_id: Role.Group.developer.role().assertExists(),
+        project_description: "SDFgdfgd",
+        description_needs: "sdofisjodf"
+      )
+      try project.save()
+      // and then attempt for the featured project here
+      featured = try FeaturedProject(project_id: project.assertExists(), duration: 123423)
+      try featured.save()
+    } else {
+      featured = try FeaturedProject.makeQuery().first()!
+    }
     
     XCTAssertNotNil(featured)
     
@@ -71,7 +78,6 @@ class FeaturedProjectControllerTests: TestCase {
 extension FeaturedProjectControllerTests {
   static let allTests = [
     ("testCreatedFeaturedProject", testCreateFeaturedProject),
-    ("testReadFeaturedProject", testReadFeaturedProject),
     ("testUpdateFeaturedProject", testUpdateFeaturedProject),
     ("testDeleteFeaturedProject", testDeleteFeaturedProject)
   ]
