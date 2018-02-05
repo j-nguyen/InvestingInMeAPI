@@ -2,47 +2,70 @@
 //  AssetControllerTests.swift
 //  AppTests
 //
-//  Created by Johnny Nguyen on 2018-01-25.
+//  Created by Johnny Nguyen on 2018-02-02.
 //
 
 import XCTest
+import Foundation
 import Testing
 import HTTP
-import Sockets
+import Random
 @testable import Vapor
 @testable import App
 
-/**
- AssetController setup, this is done without a "live" server, since it's much more effective.
- Unfournately, AssetController requires me to actually use a live server, so I can't do this
-*/
 class AssetControllerTests: TestCase {
-  // our intitializers are at the setup here
   
-  let controller = AssetController()
+  let drop = try! Droplet.testable()
   
-  /**
-    We'll test creating a route aka creating an asset
-  */
-  func testCreateRoute() throws {
+  var project: Project?
+  
+  override func setUp() {
+    super.setUp()
+    Testing.onFail = XCTFail
+    // attempt to create the project next
+    let user = try! User.makeQuery().first()
     
+    project = try! Project(
+      user_id: user!.assertExists(),
+      name: "Project",
+      category_id: Category.Group.mobileApp.category().assertExists(),
+      role_id: Role.Group.developer.role().assertExists(),
+      project_description: "sdfsdf",
+      description_needs: "sdfspdf"
+    )
+    try! project!.save()
+  }
+
+  func testCreateAsset() throws {
+    // we don't want to use the cloudinary service, so we'll use the manual test in here
+    let asset = try Asset(
+      project_id: project!.assertExists(),
+      file_type: "Image",
+      url: "http://via.placeholder.com/1x1",
+      file_name: "placeholder",
+      file_size: 12351,
+      project_icon: false,
+      public_id: "dsopfk"
+    )
+    
+    try asset.save()
+    
+    // attempt
+    XCTAssertNotNil(asset)
   }
   
-  /**
-   Test based on the delete route
-  */
-  func testDeleteRoute() throws {
+  func testDeleteAssets() throws {
+    // attempt to delete all assets
+    try Asset.makeQuery().delete()
     
+    XCTAssertEqual(0, try Asset.count())
   }
 }
 
-// MARK: Manifest
+// MARK: XCTest - Linux
 extension AssetControllerTests {
-  /// This is a requirement for XCTest on Linux
-  /// to function properly.
-  /// See ./Tests/LinuxMain.swift for examples
   static let allTests = [
-    ("testCreateRoute", testCreateRoute),
-    ("testDeleteRoute", testDeleteRoute)
+    ("testCreateAsset", testCreateAsset),
+    ("testDeleteAssets", testDeleteAssets)
   ]
 }

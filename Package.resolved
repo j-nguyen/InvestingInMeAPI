@@ -83,6 +83,15 @@
         }
       },
       {
+        "package": "Fakery",
+        "repositoryURL": "https://github.com/vadymmarkov/Fakery.git",
+        "state": {
+          "branch": null,
+          "revision": "a1fa544a8ea1db64cf36c04185e4eda1fad71e84",
+          "version": "3.3.0"
+        }
+      },
+      {
         "package": "Fluent",
         "repositoryURL": "https://github.com/vapor/fluent.git",
         "state": {
@@ -107,6 +116,15 @@
           "branch": null,
           "revision": "6c7ce40d30b322d45cc49a8f1d742609d3228eb7",
           "version": "2.2.2"
+        }
+      },
+      {
+        "package": "JWT",
+        "repositoryURL": "https://github.com/vapor/jwt.git",
+        "state": {
+          "branch": null,
+          "revision": "84f4cabfa702208bddfd93cd76df88df9e6ef4ef",
+          "version": "2.3.0"
         }
       },
       {

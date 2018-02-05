@@ -26,28 +26,30 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     
     //MARK: User Routes
     api.group("users") { user in
-      user.get(":id", handler: userController.show)
-      user.patch(":id", handler: userController.update)
-      user.get(":id","projects", handler: userController.userProjects)
+      user.grouped(AuthMiddleware()).get(":id", handler: userController.show)
+      user.grouped(AuthMiddleware()).patch(":id", handler: userController.update)
+      user.grouped(AuthMiddleware()).get(":id","projects", handler: userController.userProjects)
+      user.grouped(AuthMiddleware()).post(":id", "projects", handler: userController.createProject)
+      user.grouped(AuthMiddleware()).get(":id", "connections", handler: userController.connection)
+      user.post("login", handler: userController.login)
     }
     
     // MARK: Asset Routes
-    api.group("assets") { asset in
+    api.grouped(AuthMiddleware()).group("assets") { asset in
       asset.post("/", handler: assetController.create)
       asset.delete(":id", handler: assetController.delete)
     }
     
     //MARK: Project Routes
-    api.group("projects") { project in
+    api.grouped(AuthMiddleware()).group("projects") { project in
       project.get("/", handler: projectController.index)
       project.get(":id", handler: projectController.show)
-      project.post("/", handler: projectController.create)
       project.patch(":id", handler: projectController.update)
       project.delete(":id", handler: projectController.delete)
     }
     
     //MARK: Connection Routes
-    api.group("connections") { connection in
+    api.grouped(AuthMiddleware()).group("connections") { connection in
       connection.get(":id", handler: connectionController.show)
       connection.patch(":id", handler: connectionController.update)
       connection.post("/", handler: connectionController.create)
@@ -55,7 +57,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     }
     
     //MARK: Featured Project Routes
-    api.group("featured") { featured_project in
+    api.grouped(AuthMiddleware()).group("featured") { featured_project in
       featured_project.get("/", handler: featuredProjectController.index)
       featured_project.post("/", handler: featuredProjectController.create)
       featured_project.delete(":id", handler: featuredProjectController.delete)

@@ -19,15 +19,15 @@ final class User: Model, Timestampable {
   var picture: String
   var email_verification: Bool
   var description: String
-  var role_id: Identifier
+  var role_id: Identifier?
   var location: String
   var phone_number: String
   var experience_and_credentials: String
-  var player_id: Int
+  var player_id: Int?
   
   //MARK: Initialize User Table
   init(google_id: Int, email: String, name: String, picture: String, email_verification: Bool,
-       description: String, role_id: Identifier, location: String, phone_number: String, experience_and_credentials: String, player_id: Int) {
+       description: String = "", role_id: Identifier? = nil, location: String = "", phone_number: String = "", experience_and_credentials: String = "", player_id: Int? = nil) {
     self.google_id = google_id
     self.email = email
     self.name = name
@@ -88,11 +88,11 @@ extension User: Preparation {
       db.string("picture")
       db.bool("email_verification")
       db.custom("description", type: "TEXT")
-      db.parent(Role.self)
+      db.foreignId(for: Role.self, optional: true)
       db.string("location")
       db.string("phone_number")
       db.custom("experience_and_credentials", type: "TEXT")
-      db.int("player_id")
+      db.int("player_id", optional: true)
       
     }
   }
