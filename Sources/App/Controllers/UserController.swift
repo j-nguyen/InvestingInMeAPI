@@ -155,7 +155,7 @@ final class UserController {
     }
     
     // check for the sub and make sure that there's a user existing
-    guard let sub = jwt.payload["sub"]?.int else {
+    guard let sub = jwt.payload["sub"]?.string else {
       throw Abort(.unprocessableEntity, reason: "Could not find your user data!")
     }
     
