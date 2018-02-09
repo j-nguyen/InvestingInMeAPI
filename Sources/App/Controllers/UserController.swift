@@ -182,7 +182,7 @@ final class UserController {
     // not the best way to sign for now, but this is for a developmental purpose standpoint.
     let authToken = try JWT(payload: payload, signer: HS512(key: "login".bytes))
     
-    return try JSON(node: ["token": authToken])
+    return try JSON(node: ["token": authToken.createToken()])
   }
   
 }
