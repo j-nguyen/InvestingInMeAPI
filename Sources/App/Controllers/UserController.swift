@@ -120,8 +120,8 @@ final class UserController {
   
   func login(_ request: Request) throws -> ResponseRepresentable {
     // check for authorization token in the header
-    guard let token = request.headers["Authorization"]?.string else {
-      throw Abort(.notFound, reason: "Authorization header not found or invalid.")
+    guard let token = request.json?["token"]?.string else {
+      throw Abort(.notFound, reason: "Token not found or invalid.")
     }
     
     let jwt = try JWT(token: token)
