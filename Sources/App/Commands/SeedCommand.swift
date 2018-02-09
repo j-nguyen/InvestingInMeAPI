@@ -33,7 +33,7 @@ final class SeedCommand: Command {
         let email: String = try String(i) + user.get("email")
         let role = roles.random
         if let role = role {
-          let userObject = try User.init(google_id: URandom().makeInt(), email: email, name: user.get("name"), picture: user.get("picture"), email_verification: user.get("email_verification"), description: user.get("description"), role_id: role.assertExists(), experience_and_credentials: user.get("experience_and_credentials"))
+          let userObject = try User.init(google_id: "\(URandom().makeInt())", email: email, name: user.get("name"), picture: user.get("picture"), email_verification: user.get("email_verification"), description: user.get("description"), role_id: role.assertExists(), experience_and_credentials: user.get("experience_and_credentials"))
           userObject.phone_number = tempVariable.random ?? ""
           try userObject.save()
         }
