@@ -87,6 +87,7 @@ extension Project: JSONRepresentable {
     try json.set("name", name)
     try json.set("category", category.get()?.makeJSON())
     try json.set("role", role.get()?.makeJSON())
+    try json.set("assets", assets.all())
     try json.set("project_description", project_description)
     try json.set("description_needs", description_needs)
     
@@ -104,5 +105,8 @@ extension Project {
   }
   var user: Parent<Project,User> {
     return parent(id: user_id)
+  }
+  var assets: Children<Project, Asset> {
+    return children()
   }
 }

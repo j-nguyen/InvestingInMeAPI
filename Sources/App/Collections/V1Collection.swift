@@ -41,7 +41,7 @@ final class V1Collection: RouteCollection, EmptyInitializable {
     }
     
     //MARK: Project Routes
-    api.grouped(AuthMiddleware()).group("projects") { project in
+    api.group("projects") { project in
       project.get("/", handler: projectController.index)
       project.get(":id", handler: projectController.show)
       project.patch(":id", handler: projectController.update)

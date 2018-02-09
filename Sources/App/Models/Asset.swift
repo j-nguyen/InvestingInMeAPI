@@ -98,7 +98,6 @@ extension Asset: JSONRepresentable {
     var json = JSON()
     
     try json.set("id", id)
-    try json.set("project", project.get()?.makeJSON())
     try json.set("file_type", file_type)
     try json.set("file_name", file_name)
     try json.set("url", url)
