@@ -33,7 +33,7 @@ final class SeedCommand: Command {
         let email: String = try String(i) + user.get("email")
         let role = roles.random
         if let role = role {
-          let userObject = try User.init(google_id: "\(URandom().makeInt())", email: email, name: user.get("name"), picture: user.get("picture"), email_verification: user.get("email_verification"), description: user.get("description"), role_id: role.assertExists(), experience_and_credentials: user.get("experience_and_credentials"))
+          let userObject = try User(google_id: "\(URandom().makeInt())", email: email, name: user.get("name"), picture: user.get("picture"), email_verification: user.get("email_verification"), description: user.get("description"), role_id: role.assertExists(), experience_and_credentials: user.get("experience_and_credentials"))
           userObject.phone_number = tempVariable.random ?? ""
           try userObject.save()
         }
@@ -52,7 +52,7 @@ final class SeedCommand: Command {
         let role = roles.random
         if let user = user, let category = category, let role = role {
           let name: String = try project.get("name") + String(i)
-          let projectObject = try Project.init(user_id: user.assertExists(), name: name, category_id: category.assertExists(), role_id: role.assertExists(), project_description: project.get("project_description"), description_needs: project.get("description_needs"))
+          let projectObject = try Project(user_id: user.assertExists(), name: name, category_id: category.assertExists(), role_id: role.assertExists(), project_description: project.get("project_description"), description_needs: project.get("description_needs"))
           try projectObject.save()
         }
       }
@@ -65,7 +65,7 @@ final class SeedCommand: Command {
       for _ in 1...50 {
         let project = projects.random
         if let project = project {
-          let assetObject = try Asset.init(project_id: project.assertExists(), file_type: asset.get("file_type"), url: asset.get("url"), file_name: asset.get("file_name"), file_size: asset.get("file_size"), project_icon: asset.get("project_icon"), public_id: "123")
+          let assetObject = try Asset(project_id: project.assertExists(), file_type: asset.get("file_type"), url: asset.get("url"), file_name: asset.get("file_name"), file_size: asset.get("file_size"), project_icon: asset.get("project_icon"), public_id: "123")
           try assetObject.save()
         }
       }
@@ -81,7 +81,7 @@ final class SeedCommand: Command {
       repeat { inviter_user = users.random! } while inviter_user.id! == invitee_user.id!
       let accepted = accepted_types.random
       if let accepted = accepted {
-        let connectionObject = try Connection.init(inviter_id: inviter_user.assertExists(), invitee_id: invitee_user.assertExists(), accepted: accepted, message: "Hey, i'd like to connect!")
+        let connectionObject = try Connection(inviter_id: inviter_user.assertExists(), invitee_id: invitee_user.assertExists(), accepted: accepted, message: "Hey, i'd like to connect!")
         try? connectionObject.save()
       }
     }
@@ -92,7 +92,7 @@ final class SeedCommand: Command {
       let projects = try Project.all()
       let project = projects.random
       if let project = project {
-        let featuredProjectObject = try FeaturedProject.init(project_id: project.assertExists(), duration: 86400)
+        let featuredProjectObject = try FeaturedProject(project_id: project.assertExists(), duration: 86400)
         try? featuredProjectObject.save()
       }
     }
