@@ -76,13 +76,34 @@ final class SeedCommand: Command {
     let users = try User.all()
     let accepted_types = [true, false]
     for _ in 1...10 {
-      guard let invitee_user = users.random else {return}
-      guard var inviter_user = users.random else {return}
+      guard let invitee_user = users.random else { return }
+      guard var inviter_user = users.random else { return }
       repeat { inviter_user = users.random! } while inviter_user.id! == invitee_user.id!
       let accepted = accepted_types.random
       if let accepted = accepted {
         let connectionObject = try Connection(inviter_id: inviter_user.assertExists(), invitee_id: invitee_user.assertExists(), accepted: accepted, message: "Hey, i'd like to connect!")
         try? connectionObject.save()
+      }
+    }
+  }
+  
+  
+  func createProjectIcons() throws {
+    let users = try User.all()
+    
+    // iterate through and make sure that at least one of them has a project icon
+    for user in users {
+      let projects = try Project.makeQuery().filter("user_id", user.id).all()
+      for project in projects {
+        // check if there's at least a project icon
+        if let _ = try project.assets.makeQuery().filter("project_icon", true).first() {
+          
+        } else {
+          // if there isn't then we can set one of them randomly
+          let asset = try project.assets.first()
+          asset?.project_icon = true
+          try? asset?.save()
+        }
       }
     }
   }
@@ -136,6 +157,7 @@ final class SeedCommand: Command {
       try createUsers()
       try createProjects()
       try createAssets()
+      try createProjectIcons()
       try createConnections()
       try createFeaturedProjects()
     }
