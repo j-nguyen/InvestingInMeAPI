@@ -9,12 +9,6 @@ import Foundation
 */
 final class AuthMiddleware: Middleware {
   func respond(to request: Request, chainingTo next: Responder) throws -> Response {
-    
-    if drop?.config.environment == .development {
-      request.headers["user_id"] = String(1)
-      return try next.respond(to: request)
-    }
-    
     // get our token string, if there isn't any then we know it doesn't exist
     guard let token = request.headers["Authorization"]?.string else {
       throw Abort(.forbidden, metadata: "No token found!")
