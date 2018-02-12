@@ -13,7 +13,7 @@ final class User: Model, Timestampable {
   let storage: Storage = Storage()
 
   //MARK: User Table Variables
-  var google_id: Int
+  var google_id: String
   var email: String
   var name: String
   var picture: String
@@ -26,7 +26,7 @@ final class User: Model, Timestampable {
   var player_id: Int?
   
   //MARK: Initialize User Table
-  init(google_id: Int, email: String, name: String, picture: String, email_verification: Bool,
+  init(google_id: String, email: String, name: String, picture: String, email_verification: Bool,
        description: String = "", role_id: Identifier? = nil, location: String = "", phone_number: String = "", experience_and_credentials: String = "", player_id: Int? = nil) {
     self.google_id = google_id
     self.email = email
@@ -82,7 +82,7 @@ extension User: Preparation {
   static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
-      db.int("google_id")
+      db.string("google_id")
       db.string("email")
       db.string("name")
       db.string("picture")

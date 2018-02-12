@@ -120,8 +120,8 @@ final class UserController {
   
   func login(_ request: Request) throws -> ResponseRepresentable {
     // check for authorization token in the header
-    guard let token = request.headers["Authorization"]?.string else {
-      throw Abort(.notFound, reason: "Authorization header not found or invalid.")
+    guard let token = request.json?["token"]?.string else {
+      throw Abort(.notFound, reason: "Token not found or invalid.")
     }
     
     let jwt = try JWT(token: token)
@@ -155,7 +155,7 @@ final class UserController {
     }
     
     // check for the sub and make sure that there's a user existing
-    guard let sub = jwt.payload["sub"]?.int else {
+    guard let sub = jwt.payload["sub"]?.string else {
       throw Abort(.unprocessableEntity, reason: "Could not find your user data!")
     }
     
@@ -182,7 +182,7 @@ final class UserController {
     // not the best way to sign for now, but this is for a developmental purpose standpoint.
     let authToken = try JWT(payload: payload, signer: HS512(key: "login".bytes))
     
-    return try JSON(node: ["token": authToken])
+    return try JSON(node: ["token": authToken.createToken()])
   }
   
 }
