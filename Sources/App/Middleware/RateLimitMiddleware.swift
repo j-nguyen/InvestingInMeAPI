@@ -62,7 +62,6 @@ final class RateLimitMiddleware: Middleware {
       }
     }
     
-    print (requestsLeft)
     // subtract the requests after, since a request has been made
     requestsLeft -= 1
     
