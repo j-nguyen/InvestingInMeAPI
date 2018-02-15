@@ -62,11 +62,24 @@ final class SeedCommand: Command {
   func createAssets() throws {
     if let asset = asset {
       let projects = try Project.all()
-      for _ in 1...5 {
-        let project = projects.random
-        if let project = project {
-          let assetObject = try Asset(project_id: project.assertExists(), file_type: asset.get("file_type"), url: asset.get("url"), file_name: asset.get("file_name"), file_size: asset.get("file_size"), project_icon: asset.get("project_icon"), public_id: "123")
-          try assetObject.save()
+      for project in projects {
+        var isSet = true
+        for _ in 1...10 {
+          // Set the beginning to have the icon true and the rest not
+          let assetObj = try Asset(
+            project_id: project.assertExists(),
+            file_type: asset.get("file_type"),
+            url: asset.get("url"),
+            file_name: asset.get("file_name"),
+            file_size: asset.get("file_size"),
+            project_icon: isSet,
+            public_id: "1234"
+          )
+          try assetObj.save()
+          // this is only set once
+          if isSet {
+            isSet = false
+          }
         }
       }
     }
@@ -83,27 +96,6 @@ final class SeedCommand: Command {
       if let accepted = accepted {
         let connectionObject = try Connection(inviter_id: inviter_user.assertExists(), invitee_id: invitee_user.assertExists(), accepted: accepted, message: "Hey, i'd like to connect!")
         try? connectionObject.save()
-      }
-    }
-  }
-  
-  
-  func createProjectIcons() throws {
-    let users = try User.all()
-    
-    // iterate through and make sure that at least one of them has a project icon
-    for user in users {
-      let projects = try Project.makeQuery().filter("user_id", user.id).all()
-      for project in projects {
-        // check if there's at least a project icon
-        if let _ = try project.assets.makeQuery().filter("project_icon", true).first() {
-          
-        } else {
-          // if there isn't then we can set one of them randomly
-          let asset = try project.assets.first()
-          asset?.project_icon = true
-          try? asset?.save()
-        }
       }
     }
   }
@@ -157,7 +149,6 @@ final class SeedCommand: Command {
       try createUsers()
       try createProjects()
       try createAssets()
-      try createProjectIcons()
       try createConnections()
       try createFeaturedProjects()
     }
