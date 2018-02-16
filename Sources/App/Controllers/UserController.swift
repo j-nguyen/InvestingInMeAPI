@@ -105,6 +105,8 @@ final class UserController {
     //Update description, and experience_and_credentials if they have been passed through the url
     user.description = request.json?["description"]?.string ?? user.description
     user.experience_and_credentials = request.json?["experience_and_credentials"]?.string ?? user.experience_and_credentials
+    user.location = request.json?["location"]?.string ?? user.location
+    user.phone_number = request.json?["phone_number"]?.string ?? user.phone_number
     
     //Update role_id if it has been passed through the url
     if let role_id = request.json?["role_id"]?.int {
@@ -183,6 +185,13 @@ final class UserController {
     let authToken = try JWT(payload: payload, signer: HS512(key: "login".bytes))
     
     return try JSON(node: ["token": authToken.createToken()])
+  }
+  
+  //Return all roles to allow the user to select a new role
+  func roles(_ request: Request) throws -> ResponseRepresentable {
+    
+    //Return all roles in JSON format
+    return Role.all().makeJSON()
   }
   
 }
