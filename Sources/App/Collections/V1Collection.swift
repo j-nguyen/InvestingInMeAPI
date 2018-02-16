@@ -42,6 +42,7 @@ final class V1Collection: RouteCollection {
       user.grouped(authMiddleware, rateMiddleware).get(":id","projects", handler: userController.userProjects)
       user.grouped(authMiddleware, rateMiddleware).post(":id", "projects", handler: userController.createProject)
       user.grouped(authMiddleware, rateMiddleware).get(":id", "connections", handler: userController.connection)
+      user.get("roles", handler: userController.roles)
       user.post("login", handler: userController.login)
     }
     
