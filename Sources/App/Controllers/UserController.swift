@@ -187,8 +187,11 @@ final class UserController {
     return try JSON(node: ["token": authToken.createToken()])
   }
   
+  //Return all roles to allow the user to select a new role
   func roles(_ request: Request) throws -> ResponseRepresentable {
     
+    //Return all roles in JSON format
+    return Role.all().makeJSON()
   }
   
 }
