@@ -64,7 +64,7 @@ final class SeedCommand: Command {
       let projects = try Project.all()
       for project in projects {
         var isSet = true
-        for _ in 1...10 {
+        for _ in 1...4 {
           // Set the beginning to have the icon true and the rest not
           let assetObj = try Asset(
             project_id: project.assertExists(),
