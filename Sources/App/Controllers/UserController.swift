@@ -191,7 +191,7 @@ final class UserController {
   func roles(_ request: Request) throws -> ResponseRepresentable {
     
     //Return all roles in JSON format
-    return Role.all().makeJSON()
+    return try Role.all().makeJSON()
   }
   
 }
