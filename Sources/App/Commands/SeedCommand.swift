@@ -122,28 +122,15 @@ final class SeedCommand: Command {
   }
   
   func createConnections() throws {
-    for _ in 1...5 {
-      let inviter_id = 1, let invitee_id = Random(19) + 1
-      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: false, message: "This is my message request." )
+    let dev = User.makeQuery().filter("email", "investinginme.dev@gmail.com").first().id
+    let users = User.makeQuery().filter("email", .notEquals, "investinginme.dev@gmail.com").all
+    let vals = [true, false]
+    
+    for user in users {
+      let connection = try Connection(inviter_id: dev.id, invitee_id: user.id, accepted: vals.random!, message: "This is my message.")
+      let connection2 = try Connection(inviter_id: user.id, dev.id, accepted: vals.random!, message: "This is my message.")
       try? connection.save()
-      console.print("~~~~ Saved Connection ~~~~")
-    }
-    for _ in 1...5 {
-      let inviter_id = Random(19) + 1, let invitee_id = 1
-      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: false, message: "This is my message request." )
-      try? connection.save()
-      console.print("~~~~ Saved Connection ~~~~")
-    }
-    for _ in 1...5 {
-      let inviter_id = 1, let invitee_id = Random(19) + 1
-      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: true, message: "This is my message request." )
-      try? connection.save()
-      console.print("~~~~ Saved Connection ~~~~")
-    }
-    for _ in 1...5 {
-      let inviter_id = Random(19) + 1, let invitee_id = 1
-      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: true, message: "This is my message request." )
-      try? connection.save()
+      try? connection2.save()
       console.print("~~~~ Saved Connection ~~~~")
     }
   }
