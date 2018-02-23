@@ -43,7 +43,7 @@ final class SeedCommand: Command {
     for i in 1...15 {
       let userObj = try User(
         name: "User " + i,
-        picture: picture: user.get("picture")
+        picture: user.get("picture")
       )
       userObj.role = 2
       try userObj.save()
