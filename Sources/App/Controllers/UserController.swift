@@ -73,15 +73,17 @@ final class UserController {
     guard let id = req.parameters["id"]?.int else {
       throw Abort.badRequest
     }
-    
+
     // check to make sure that user is you
     guard req.headers["user_id"]?.int == id else {
       throw Abort(.forbidden, reason: "You can only view your own connections!")
     }
-    
+  
     let connection = try Connection.makeQuery()
-      .filter("inviter_id", id)
-      .or( { try $0.filter("invitee_id", id) })
+      .or { orGroup in
+        try orGroup.filter("inviter_id", id)
+        try orGroup.filter("invitee_id", id)
+      }
       .all()
     
     return try connection.makeJSON()
