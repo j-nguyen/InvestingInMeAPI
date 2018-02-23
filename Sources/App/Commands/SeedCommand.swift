@@ -37,6 +37,15 @@ final class SeedCommand: Command {
       userObj.description = try user.get("description")
       userObj.experience_and_credentials = try user.get("experience_and_credentials")
       userObj.phone_number = try user.get("phone_number")
+      userObj.role = 2
+      try userObj.save()
+    }
+    for i in 1...15 {
+      let userObj = try User(
+        name: "User " + i,
+        picture: picture: user.get("picture")
+      )
+      userObj.role = 2
       try userObj.save()
     }
   }
@@ -112,6 +121,33 @@ final class SeedCommand: Command {
     }
   }
   
+  func createConnections() throws {
+    for _ in 1...5 {
+      let inviter_id = 1, let invitee_id = Random(19) + 1
+      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: false, message: "This is my message request." )
+      try? connection.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+    for _ in 1...5 {
+      let inviter_id = Random(19) + 1, let invitee_id = 1
+      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: false, message: "This is my message request." )
+      try? connection.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+    for _ in 1...5 {
+      let inviter_id = 1, let invitee_id = Random(19) + 1
+      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: true, message: "This is my message request." )
+      try? connection.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+    for _ in 1...5 {
+      let inviter_id = Random(19) + 1, let invitee_id = 1
+      let connection = try Connection(inviter_id: inviter_id, invitee_id: invitee_id, accepted: true, message: "This is my message request." )
+      try? connection.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+  }
+  
   func run(arguments: [String]) throws {
     
     // Changed it up so that now it'll only delete if the specified values do not exist
@@ -151,6 +187,7 @@ final class SeedCommand: Command {
       try createProjects()
       try createAssets()
       try createFeaturedProjects()
+      try createConnections
     }
   }
 }
