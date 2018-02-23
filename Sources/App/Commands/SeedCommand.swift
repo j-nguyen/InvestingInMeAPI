@@ -37,6 +37,18 @@ final class SeedCommand: Command {
       userObj.description = try user.get("description")
       userObj.experience_and_credentials = try user.get("experience_and_credentials")
       userObj.phone_number = try user.get("phone_number")
+      userObj.role_id = 2
+      try userObj.save()
+    }
+    for i in 1...15 {
+      let userObj = try User(
+        google_id: "\(URandom.makeInt())",
+        email: "\(i)email@example.com",
+        name: "User \(i)",
+        picture: "https://lh4.googleusercontent.com/-odK3p3pgzIc/AAAAAAAAAAI/AAAAAAAAAAA/ACSILjUEWrHe0j_9GxV1yT2oVaObU557-Q/s96-c/photo.jpg",
+        email_verification: true
+      )
+      userObj.role_id = 2
       try userObj.save()
     }
   }
@@ -112,6 +124,20 @@ final class SeedCommand: Command {
     }
   }
   
+  func createConnections() throws {
+    let dev = try User.makeQuery().filter("email", "investinginme.dev@gmail.com").first()
+    let users = try User.makeQuery().filter("email", .notEquals, "investinginme.dev@gmail.com").all()
+    let vals = [true, false]
+    
+    for user in users {
+      let connection = try Connection(inviter_id: dev!.assertExists(), invitee_id: user.assertExists(), accepted: vals.random!, message: "This is my message.")
+      let connection2 = try Connection(inviter_id: user.assertExists(), invitee_id: dev!.assertExists(), accepted: vals.random!, message: "This is my message.")
+      try? connection.save()
+      try? connection2.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+  }
+  
   func run(arguments: [String]) throws {
     
     // Changed it up so that now it'll only delete if the specified values do not exist
@@ -151,6 +177,7 @@ final class SeedCommand: Command {
       try createProjects()
       try createAssets()
       try createFeaturedProjects()
+      try createConnections()
     }
   }
 }
