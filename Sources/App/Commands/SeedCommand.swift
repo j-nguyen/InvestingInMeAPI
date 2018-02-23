@@ -174,7 +174,7 @@ final class SeedCommand: Command {
       try createProjects()
       try createAssets()
       try createFeaturedProjects()
-      try createConnections
+      try createConnections()
     }
   }
 }
