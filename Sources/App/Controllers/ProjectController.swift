@@ -45,6 +45,13 @@ final class ProjectController {
           .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
           .all()
           .makeJSON()
+    } else if let search = request.query?["search"]?.string {
+      // attempt to search through by project name
+      
+      return try Project.makeQuery()
+        .filter("name", .custom("~*"), search)
+        .all()
+        .makeJSON()
     }
     
     //Return all Projects
