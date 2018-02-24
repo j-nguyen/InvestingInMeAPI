@@ -13,9 +13,53 @@ final class ProjectController {
   
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
+    // Check if there's a category query and a role query
+    if let category = request.query?["category"]?.string, let role = request.query?["role"]?.string {
+      guard let categoryGroup = Category.Group(rawValue: category), let roleGroup = Role.Group(rawValue: role) else {
+        throw Abort(.badRequest, reason: "There is no category or role named this!")
+      }
+      return try Project.makeQuery()
+        .filter("category_id", categoryGroup.category().assertExists())
+        .and { try $0.filter("role_id", roleGroup.role().assertExists()) }
+        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
+        .all()
+        .makeJSON()
+    } else if let role = request.query?["role"]?.string {
+      // If it's just the role, then we can do this
+      guard let roleGroup = Role.Group(rawValue: role) else {
+        throw Abort(.badRequest, reason: "This is an invalid role!")
+      }
+      // only role
+      return try Project.makeQuery()
+        .filter("role_id", roleGroup.role().assertExists())
+        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
+        .all()
+        .makeJSON()
+    } else if let category = request.query?["category"]?.string {
+        guard let categoryGroup = Category.Group(rawValue: category) else {
+          throw Abort(.badRequest, reason: "There is no category named this!")
+        }
+      
+        return try Project.makeQuery()
+          .filter("category_id", categoryGroup.category().assertExists())
+          .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
+          .all()
+          .makeJSON()
+    } else if let search = request.query?["search"]?.string {
+      // attempt to search through by project name
+      
+      return try Project.makeQuery()
+        .filter("name", .custom("~*"), search)
+        .all()
+        .makeJSON()
+    }
     
     //Return all Projects
-    return try Project.all().makeJSON()
+    return try Project
+      .makeQuery()
+      .filter("user_id", .notEquals, request.headers["user_id"]?.int)
+      .all()
+      .makeJSON()
   }
   
   //MARK: Show Project
