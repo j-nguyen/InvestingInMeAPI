@@ -14,8 +14,27 @@ final class ProjectController {
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
+    // Check if there's a category query
+    if let category = request.query?["category"]?.string {
+      
+      guard let categoryGroup = Category.Group(rawValue: category) else {
+        throw Abort(.badRequest, reason: "There is no category named this!")
+      }
+      
+      // check to see if it's in there and search
+      return try Project.makeQuery()
+        .filter("category_id", categoryGroup.category().assertExists())
+        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
+        .all()
+        .makeJSON()
+    }
+    
     //Return all Projects
-    return try Project.all().makeJSON()
+    return try Project
+      .makeQuery()
+      .filter("user_id", .notEquals, request.headers["user_id"]?.int)
+      .all()
+      .makeJSON()
   }
   
   //MARK: Show Project
