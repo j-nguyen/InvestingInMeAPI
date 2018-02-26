@@ -77,7 +77,17 @@ final class SeedCommand: Command {
     if let assets = assets {
       let projects = try Project.all()
       for project in projects {
-        var isSet = true
+        let assetProfile = try Asset(
+          project_id: project.assertExists(),
+          file_type: assets[0].get("file_type"),
+          url: "https://via.placeholder.com/100x100",
+          file_name: "file-\(project.assertExists().int!)",
+          file_size: assets[0].get("file_size"),
+          project_icon: true,
+          public_id: "1235"
+        )
+        try assetProfile.save()
+        console.print("~~~~ Saved App Profile Icon ~~~~")
         for _ in 1...4 {
           // Set the beginning to have the icon true and the rest not
           let assetObj = try Asset(
@@ -86,15 +96,11 @@ final class SeedCommand: Command {
             url: assets[0].get("url"),
             file_name: assets[0].get("file_name"),
             file_size: assets[0].get("file_size"),
-            project_icon: isSet,
+            project_icon: false,
             public_id: "1234"
           )
           try assetObj.save()
           console.print("~~~~ Saved Picture ~~~~~")
-          // this is only set once
-          if isSet {
-            isSet = false
-          }
         }
         // Create the video here
         let videoObj = try Asset(
@@ -103,7 +109,7 @@ final class SeedCommand: Command {
           url: assets[1].get("url"),
           file_name: assets[1].get("file_name"),
           file_size: assets[1].get("file_size"),
-          project_icon: isSet,
+          project_icon: false,
           public_id: "1234"
         )
         try videoObj.save()
