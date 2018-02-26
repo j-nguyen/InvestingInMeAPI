@@ -135,11 +135,16 @@ final class SeedCommand: Command {
     let users = try User.makeQuery().filter("email", .notEquals, "investinginme.dev@gmail.com").all()
     let vals = [true, false]
     
-    for user in users {
-      let connection = try Connection(inviter_id: dev!.assertExists(), invitee_id: user.assertExists(), accepted: vals.random!, message: "This is my message.")
-      let connection2 = try Connection(inviter_id: user.assertExists(), invitee_id: dev!.assertExists(), accepted: vals.random!, message: "This is my message.")
+    for i in 0...users.count / 2 {
+      // We'll add half based on the dev, and the other half based on some
+      let connection = try Connection(inviter_id: dev!.assertExists(), invitee_id: users[i].assertExists(), accepted: vals.random!, message: "This is my message")
       try? connection.save()
-      try? connection2.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+  
+    for i in (users.count / 2)+1...users.count - 1 {
+      let connection = try Connection(inviter_id: users[i].assertExists(), invitee_id: dev!.assertExists(), accepted: vals.random!, message: "This is my message")
+      try? connection.save()
       console.print("~~~~ Saved Connection ~~~~")
     }
   }
