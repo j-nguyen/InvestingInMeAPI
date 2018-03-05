@@ -150,5 +150,12 @@ final class ProjectController {
     }
   }
   
+  // MARK: Gets all categories
+  /// Gets all the categories
+  func categories(_ req: Request) throws -> ResponseRepresentable {
+    return try Category
+      .all()
+      .makeJSON()
+  }
 }
 
