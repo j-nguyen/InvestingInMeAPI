@@ -54,6 +54,7 @@ final class ProjectController {
         .makeJSON()
     }
     
+    
     //Return all Projects
     return try Project
       .makeQuery()
