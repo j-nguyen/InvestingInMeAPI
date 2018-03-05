@@ -55,13 +55,9 @@ final class CloudinaryService {
     - parameter type: The file type of its used
     - parameter file: A Data URI base64-encoded used to save the image files for us
     - parameter projectIcon: This asks to make sure it's a profileIcon or not
-    - parameter projectId: The relationship between the project and the asset
+    - parameter project: The project model so that we can insert it into our asset model
   */
-  func uploadFile(type: ContentType, file: String, projectIcon: Bool, projectId: Int) throws -> ResponseRepresentable {
-    guard let _ = try Project.find(projectId) else {
-      throw Abort(.notFound, reason: "Could not find the project you specified!")
-    }
-    
+  func uploadFile(type: ContentType, file: String, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
@@ -89,14 +85,14 @@ final class CloudinaryService {
     }
     
     // attempt to create the asset
-    let asset = Asset(
-      project_id: Identifier(projectId),
-      file_type: try responseJSON.get("resource_type"),
-      url: try responseJSON.get("secure_url"),
-      file_name: try responseJSON.get("public_id"),
-      file_size: try responseJSON.get("bytes"),
+    let asset = try Asset(
+      project_id: project.assertExists(),
+      file_type: responseJSON.get("resource_type"),
+      url: responseJSON.get("secure_url"),
+      file_name: responseJSON.get("public_id"),
+      file_size: responseJSON.get("bytes"),
       project_icon: projectIcon,
-      public_id: try responseJSON.get("public_id")
+      public_id: responseJSON.get("public_id")
     )
     
     // attempt to save once finished
@@ -110,13 +106,9 @@ final class CloudinaryService {
    
      - parameter type: The file type of its used
      - parameter file: String
-     - parameter projectId: The Identifier of the relation of the project
+     - parameter project: The project model needed to upload with asset to create a relation
    */
-  func uploadFile(type: ContentType, file: Bytes, projectId: Int) throws -> ResponseRepresentable {
-    guard let _ = try Project.find(projectId) else {
-      throw Abort(.notFound, reason: "Could not find the project you specified!")
-    }
-    
+  func uploadFile(type: ContentType, file: Bytes, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
@@ -144,14 +136,14 @@ final class CloudinaryService {
     }
     
     // attempt to create the asset
-    let asset = Asset(
-      project_id: Identifier(projectId),
-      file_type: try responseJSON.get("resource_type"),
-      url: try responseJSON.get("secure_url"),
-      file_name: try responseJSON.get("public_id"),
-      file_size: try responseJSON.get("bytes"),
+    let asset = try Asset(
+      project_id: project.assertExists(),
+      file_type: responseJSON.get("resource_type"),
+      url: responseJSON.get("secure_url"),
+      file_name: responseJSON.get("public_id"),
+      file_size: responseJSON.get("bytes"),
       project_icon: false,
-      public_id: try responseJSON.get("public_id")
+      public_id: responseJSON.get("public_id")
     )
     
     // attempt to save once finished
@@ -176,7 +168,7 @@ final class CloudinaryService {
     // setup hash
     let timestamp = Int(Date().timeIntervalSince1970)
     let hash = CryptoHasher(hash: .sha1, encoding: .hex)
-    let encrypt: String = ["public_id=\(asset.public_id)", "timestamp=\(timestamp)"].joined(separator: "&") + apiSecret
+    let encrypt: String = ["public_id=\(asset.public_id!)", "timestamp=\(timestamp)"].joined(separator: "&") + apiSecret
     let signature = try hash.make(encrypt)
     
     // set up body

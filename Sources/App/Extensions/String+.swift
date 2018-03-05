@@ -17,6 +17,6 @@ extension String {
     
     let color = colors.random ?? ("F44336", "FFFFFF")
     
-    return "http://via.placeholder.com/100/\(color.background)/\(color.foreground)/?text=\(letter)"
+    return "https://via.placeholder.com/100/\(color.background)/\(color.foreground)/?text=\(letter)"
   }
 }
