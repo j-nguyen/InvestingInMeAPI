@@ -50,11 +50,10 @@ final class SeedCommand: Command {
       )
       userObj.role_id = 2
       try userObj.save()
-      for ii in 1...3 {
+      for i in 1...3 {
         if let project = project  {
           let category = try Category.Group.mobileApp.category()
           let role = try Role.Group.developer.role()
-          for i in 1...25 {
             let name: String = try project.get("name") + String(i)
             let projectObject = try Project(
               user_id: userObj.assertExists(),
@@ -66,7 +65,6 @@ final class SeedCommand: Command {
             )
             try projectObject.save()
             console.print("~~~~ Saved \(projectObject.name) ~~~~~")
-          }
         }
       }
     }
