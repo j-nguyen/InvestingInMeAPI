@@ -77,12 +77,29 @@ final class ConnectionController {
   // Create Connection
   func create(_ request: Request) throws -> ResponseRepresentable {
     
-    guard let inviter_id = request.json?["inviter_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
+    guard let inviter_id = request.headers["user_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
       throw Abort.badRequest
     }
     
-   let connection = Connection(inviter_id: Identifier(inviter_id), invitee_id: Identifier(invitee_id), accepted: accepted, message: message)
+    let existingConnection = try Connection
+      .makeQuery()
+      .or { orGroup in
+        try orGroup.and { andGroup in
+          try andGroup.filter("inviter_id", inviter_id)
+          try andGroup.filter("invitee_id", invitee_id)
+        }
+        try orGroup.and { andGroup in
+          try andGroup.filter("inviter_id", invitee_id)
+          try andGroup.filter("invitee_id", inviter_id)
+        }
+      }.first()
     
+    guard existingConnection == nil else {
+      throw Abort(.conflict, reason: "An invitation has already been created!")
+    }
+    
+    let connection = Connection(inviter_id: Identifier(inviter_id), invitee_id: Identifier(invitee_id), accepted: accepted, message: message)
+  
     try connection.save()
     
     return try connection.makeJSON()

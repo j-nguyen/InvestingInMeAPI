@@ -96,7 +96,16 @@ final class SeedCommand: Command {
     if let assets = assets {
       let projects = try Project.all()
       for project in projects {
-        var isSet = true
+        let assetProfile = try Asset(
+          project_id: project.assertExists(),
+          file_type: assets[0].get("file_type"),
+          url: project.name.generatePlaceholder(),
+          file_name: "file-\(project.assertExists().int!)",
+          file_size: assets[0].get("file_size"),
+          project_icon: true
+        )
+        try assetProfile.save()
+        console.print("~~~~ Saved App Profile Icon ~~~~")
         for _ in 1...4 {
           // Set the beginning to have the icon true and the rest not
           let assetObj = try Asset(
@@ -105,15 +114,11 @@ final class SeedCommand: Command {
             url: assets[0].get("url"),
             file_name: assets[0].get("file_name"),
             file_size: assets[0].get("file_size"),
-            project_icon: isSet,
+            project_icon: false,
             public_id: "1234"
           )
           try assetObj.save()
           console.print("~~~~ Saved Picture ~~~~~")
-          // this is only set once
-          if isSet {
-            isSet = false
-          }
         }
         // Create the video here
         let videoObj = try Asset(
@@ -122,7 +127,7 @@ final class SeedCommand: Command {
           url: assets[1].get("url"),
           file_name: assets[1].get("file_name"),
           file_size: assets[1].get("file_size"),
-          project_icon: isSet,
+          project_icon: false,
           public_id: "1234"
         )
         try videoObj.save()
@@ -148,11 +153,16 @@ final class SeedCommand: Command {
     let users = try User.makeQuery().filter("email", .notEquals, "investinginme.dev@gmail.com").all()
     let vals = [true, false]
     
-    for user in users {
-      let connection = try Connection(inviter_id: dev!.assertExists(), invitee_id: user.assertExists(), accepted: vals.random!, message: "This is my message.")
-      let connection2 = try Connection(inviter_id: user.assertExists(), invitee_id: dev!.assertExists(), accepted: vals.random!, message: "This is my message.")
+    for i in 0...users.count / 2 {
+      // We'll add half based on the dev, and the other half based on some
+      let connection = try Connection(inviter_id: dev!.assertExists(), invitee_id: users[i].assertExists(), accepted: vals.random!, message: "This is my message")
       try? connection.save()
-      try? connection2.save()
+      console.print("~~~~ Saved Connection ~~~~")
+    }
+  
+    for i in (users.count / 2)+1...users.count - 1 {
+      let connection = try Connection(inviter_id: users[i].assertExists(), invitee_id: dev!.assertExists(), accepted: vals.random!, message: "This is my message")
+      try? connection.save()
       console.print("~~~~ Saved Connection ~~~~")
     }
   }
