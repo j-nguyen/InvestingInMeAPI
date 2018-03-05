@@ -80,11 +80,10 @@ final class SeedCommand: Command {
         let assetProfile = try Asset(
           project_id: project.assertExists(),
           file_type: assets[0].get("file_type"),
-          url: "https://via.placeholder.com/100x100",
+          url: project.name.generatePlaceholder(),
           file_name: "file-\(project.assertExists().int!)",
           file_size: assets[0].get("file_size"),
-          project_icon: true,
-          public_id: "1235"
+          project_icon: true
         )
         try assetProfile.save()
         console.print("~~~~ Saved App Profile Icon ~~~~")
