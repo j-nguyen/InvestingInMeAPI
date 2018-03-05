@@ -67,7 +67,7 @@ final class SeedCommand: Command {
             console.print("~~~~ Saved \(projectObject.name) ~~~~~")
         }
       }
-      for i in 1...3 {
+      for a in 1...3 {
         if let project = project  {
           let category = try Category.Group.mobileGameApp.category()
           let role = try Role.Group.marketer.role()
@@ -84,7 +84,7 @@ final class SeedCommand: Command {
           console.print("~~~~ Saved \(projectObject.name) ~~~~~")
         }
       }
-      for i in 1...3 {
+      for b in 1...3 {
         if let project = project  {
           let category = try Category.Group.desktop.category()
           let role = try Role.Group.investor.role()
