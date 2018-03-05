@@ -35,24 +35,92 @@ final class UserController {
   func createProject(_ request: Request) throws -> ResponseRepresentable {
     
     //Pull the values from the request for each column
-    guard let user_id = request.json?["user_id"]?.int, let name = request.json?["name"]?.string, let category_id = request.json?["category_id"]?.int, let role_id = request.json?["role_id"]?.int, let project_description = request.json?["project_description"]?.string, let description_needs = request.json?["description_needs"]?.string else {
-      throw Abort.badRequest
+    guard
+      let user_id = request.json?["user_id"]?.int,
+      let name = request.json?["name"]?.string,
+      let category_id = request.json?["category_id"]?.int,
+      let role_id = request.json?["role_id"]?.int,
+      let project_description = request.json?["project_description"]?.string,
+      let description_needs = request.json?["description_needs"]?.string
+    else {
+      throw Abort(.unprocessableEntity, reason: "Missing required fields!")
     }
     
     //Check if the user_id in the authorization header is the user_id of the project
-    if request.headers["user_id"]?.int == user_id {
-      
-      //Instaniate the project using the variables we created
-      let project = Project(user_id: Identifier(user_id), name: name, category_id: Identifier(category_id), role_id: Identifier(role_id), project_description: project_description, description_needs: description_needs)
-      
-      //Save the new project
-      try project.save()
-      
-      //Return the newly created project
-      return try project.makeJSON()
-    } else {
+    guard request.headers["user_id"]?.int == user_id else {
       throw Abort(.forbidden, reason: "You don't have the permissions to create a project under this user.")
     }
+    
+    // Check if the category exists
+    guard try Category.find(category_id) != nil else {
+      throw Abort(.notFound, reason: "This category doesn't exist!")
+    }
+    
+    // Check if role exists
+    guard try Role.find(role_id) != nil else {
+      throw Abort(.notFound, reason: "This role doesn't exist!")
+    }
+    
+    // Make sure that we've gathered at least 1 image
+    guard let images: [String] = try request.json?.get("images"), images.count > 0 && images.count < 3 else {
+      throw Abort(.unprocessableEntity, reason: "We need at least 1 to 3 screenshots of the project!")
+    }
+      
+    //Instaniate the project using the variables we created
+    let project = Project(
+      user_id: Identifier(user_id),
+      name: name,
+      category_id: Identifier(category_id),
+      role_id: Identifier(role_id),
+      project_description: project_description,
+      description_needs: description_needs
+    )
+    
+    // Save the new project
+    try project.save()
+    
+    // Set up the configurations
+    guard let config = drop?.config["cloudinary"] else { throw Abort.serverError }
+    let cloudService = try CloudinaryService(config: config)
+    
+    // In here, we'll check if the user has an image placed. If not, then it'll create the others for us
+    var projectIconFile = request.json?["projectIcon"]?.string
+    
+    if let projectIconFile = projectIconFile {
+      
+      _ = try cloudService.uploadFile(
+        type: .image,
+        file: projectIconFile,
+        projectIcon: true,
+        project: project
+      )
+    } else {
+      // generate the placeholder like so
+      projectIconFile = project.name.generatePlaceholder()
+      // save the asset
+      let projectIconAsset = try Asset(
+        project_id: project.assertExists(),
+        file_type: "Image",
+        url: projectIconFile ?? "https://via.placeholder.com/100",
+        file_name: "Placeholder",
+        file_size: 0,
+        project_icon: true
+      )
+      try projectIconAsset.save()
+    }
+
+    // we can now add images into the project
+    for image in images {
+      _ = try cloudService.uploadFile(
+        type: .image,
+        file: image,
+        projectIcon: false,
+        project: project
+      )
+    }
+    
+    //Return the newly created project
+    return try project.makeJSON()
   }
   
   //MARK Show all Projects at User
@@ -73,15 +141,17 @@ final class UserController {
     guard let id = req.parameters["id"]?.int else {
       throw Abort.badRequest
     }
-    
+
     // check to make sure that user is you
     guard req.headers["user_id"]?.int == id else {
       throw Abort(.forbidden, reason: "You can only view your own connections!")
     }
-    
+  
     let connection = try Connection.makeQuery()
-      .filter("inviter_id", id)
-      .or( { try $0.filter("invitee_id", id) })
+      .or { orGroup in
+        try orGroup.filter("inviter_id", id)
+        try orGroup.filter("invitee_id", id)
+      }
       .all()
     
     return try connection.makeJSON()
@@ -105,6 +175,8 @@ final class UserController {
     //Update description, and experience_and_credentials if they have been passed through the url
     user.description = request.json?["description"]?.string ?? user.description
     user.experience_and_credentials = request.json?["experience_and_credentials"]?.string ?? user.experience_and_credentials
+    user.location = request.json?["location"]?.string ?? user.location
+    user.phone_number = request.json?["phone_number"]?.string ?? user.phone_number
     
     //Update role_id if it has been passed through the url
     if let role_id = request.json?["role_id"]?.int {
@@ -183,6 +255,13 @@ final class UserController {
     let authToken = try JWT(payload: payload, signer: HS512(key: "login".bytes))
     
     return try JSON(node: ["token": authToken.createToken()])
+  }
+  
+  //Return all roles to allow the user to select a new role
+  func roles(_ request: Request) throws -> ResponseRepresentable {
+    
+    //Return all roles in JSON format
+    return try Role.all().makeJSON()
   }
   
 }

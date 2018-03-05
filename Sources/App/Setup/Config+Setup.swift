@@ -1,5 +1,6 @@
 import FluentProvider
 import PostgreSQLProvider
+import RedisProvider
 
 extension Config {
   public func setup() throws {
@@ -16,6 +17,7 @@ extension Config {
   private func setupProviders() throws {
     try addProvider(FluentProvider.Provider.self)
     try addProvider(PostgreSQLProvider.Provider.self)
+    try addProvider(RedisProvider.Provider.self)
   }
   
   /// configures our custom commands that we have

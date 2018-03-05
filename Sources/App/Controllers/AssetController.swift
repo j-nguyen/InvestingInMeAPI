@@ -41,7 +41,7 @@ final class AssetController {
         throw Abort.badRequest
       }
       
-      // check project
+      // check project if exists
       guard let project = try Project.find(project_id) else {
         throw Abort(.notFound, reason: "Could not find project!")
       }
@@ -52,14 +52,20 @@ final class AssetController {
       
       let cloudService = try CloudinaryService(config: config)
       
-      return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon, projectId: project_id)
+      return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon, project: project)
     case .video:
       guard let file = req.formData?["file"]?.part.body, let project_id = req.formData?["project_id"]?.int else {
         throw Abort.badRequest
       }
+      
+      // check project if exists
+      guard let project = try Project.find(project_id) else {
+        throw Abort(.notFound, reason: "Could not find project!")
+      }
+      
       // set up the service and attempt to uplaod the file
       let cloudService = try CloudinaryService(config: config)
-      return try cloudService.uploadFile(type: fileType, file: file, projectId: project_id)
+      return try cloudService.uploadFile(type: fileType, file: file, project: project)
     }
     
   }

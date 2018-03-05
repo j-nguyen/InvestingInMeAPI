@@ -1,23 +1,33 @@
 {
   "user": {
-    "email": "example@test.com",
-    "name": "Barbara Maeckeler",
-    "picture": "http://via.placeholder.com/350x150",
+    "email": "investinginme.dev@gmail.com",
+    "name": "Dev InvestingInMe",
+    "picture": "https://lh4.googleusercontent.com/-odK3p3pgzIc/AAAAAAAAAAI/AAAAAAAAAAA/ACSILjUEWrHe0j_9GxV1yT2oVaObU557-Q/s96-c/photo.jpg",
+    "google_id": "115087936934019172257",
     "email_verification": true,
     "description": "This is my description.",
-    "phone_number": [ "111-111-1111", "222-222-2222", "333-333-3333", "444-444-4444", "555-555-5555" ],
-    "experience_and_credentials": "I am experienced in this field, and have a many credentials."
+    "experience_and_credentials": "I am experienced in this field, and have a many credentials.",
+    "phone_number": "(555)-555-5555"
   },
   "project": {
     "name": "Project - ",
     "project_description": "This is the project description.",
     "description_needs": "I want an investor to give me $10,000 for 30% of my company"
   },
-  "asset": {
-    "url": "http://via.placeholder.com/350x150",
-    "file_type": "Image",
-    "file_name": "First Image",
-    "file_size": 103924,
-    "project_icon": false
-  }
+  "assets": [
+     {
+       "url": "https://via.placeholder.com/350x150",
+       "file_type": "Image",
+       "file_name": "First Image",
+       "file_size": 103924,
+       "project_icon": false
+     },
+     {
+       "url": "https://cf-e2.streamablevideo.com/video/mp4/dvmj4.mp4?token=1518808653-7isV8Rapt55KYpo6h6rMY2VcEL2Vk9AYhJRkHeUfJTg%3D",
+       "file_type": "Video",
+       "file_name": "First Video",
+       "file_size": 10353,
+       "project_icon": false
+     }
+  ]
 }

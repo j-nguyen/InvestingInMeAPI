@@ -31,7 +31,7 @@ final class ConnectionController {
     
     //Return connection as JSON
     return try invite.makeJSON()
-    }
+  }
   
   //MARK: Update Connection
   func update(_ request: Request) throws -> ResponseRepresentable {
@@ -77,12 +77,29 @@ final class ConnectionController {
   // Create Connection
   func create(_ request: Request) throws -> ResponseRepresentable {
     
-    guard let inviter_id = request.json?["inviter_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
+    guard let inviter_id = request.headers["user_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
       throw Abort.badRequest
     }
     
-   let connection = Connection(inviter_id: Identifier(inviter_id), invitee_id: Identifier(invitee_id), accepted: accepted, message: message)
+    let existingConnection = try Connection
+      .makeQuery()
+      .or { orGroup in
+        try orGroup.and { andGroup in
+          try andGroup.filter("inviter_id", inviter_id)
+          try andGroup.filter("invitee_id", invitee_id)
+        }
+        try orGroup.and { andGroup in
+          try andGroup.filter("inviter_id", invitee_id)
+          try andGroup.filter("invitee_id", inviter_id)
+        }
+      }.first()
     
+    guard existingConnection == nil else {
+      throw Abort(.conflict, reason: "An invitation has already been created!")
+    }
+    
+    let connection = Connection(inviter_id: Identifier(inviter_id), invitee_id: Identifier(invitee_id), accepted: accepted, message: message)
+  
     try connection.save()
     
     return try connection.makeJSON()
@@ -102,21 +119,14 @@ final class ConnectionController {
         throw Abort.notFound
     }
     
-    //Declare the invitee and inviter ids
-    guard let invitee_id = connection.invitee_id.int else { throw Abort.badRequest }
-    guard let inviter_id = connection.inviter_id.int else { throw Abort.badRequest }
-    
-    //Check if the user requesting the update is equal to the connection user_id
-    if request.headers["user_id"]?.int == invitee_id || request.headers["user_id"]?.int == inviter_id {
-    
-      //Delete the connection
-      try connection.delete()
-
-      //Return a JSON confirmation message
-      return try JSON(node: ["message": "Connection removed."])
-
-    } else {
-      throw Abort(.forbidden, reason: "You don't have the permissions to delete a connection under this user.")
+    // check the connection and make sure that the req header userId
+    guard let user_id = request.headers["user_id"]?.int, user_id == connection.invitee_id.int || user_id == connection.inviter_id.int else {
+      throw Abort(.forbidden, reason: "You can't delete another user's connection!")
     }
+    //Delete the connection
+    try connection.delete()
+
+    //Return a JSON confirmation message
+    return try JSON(node: ["message": "Connection removed."])
   }
 }
