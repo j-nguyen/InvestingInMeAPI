@@ -66,11 +66,9 @@ final class SeedCommand: Command {
             try projectObject.save()
             console.print("~~~~ Saved \(projectObject.name) ~~~~~")
         }
-      }
-      for a in 1...3 {
         if let project = project  {
-          let category = try Category.Group.mobileGameApp.category()
-          let role = try Role.Group.marketer.role()
+          let category = try Category.Group.desktop.category()
+          let role = try Role.Group.investor.role()
           let name: String = try project.get("name") + String(i)
           let projectObject = try Project(
             user_id: userObj.assertExists(),
@@ -83,11 +81,9 @@ final class SeedCommand: Command {
           try projectObject.save()
           console.print("~~~~ Saved \(projectObject.name) ~~~~~")
         }
-      }
-      for b in 1...3 {
         if let project = project  {
-          let category = try Category.Group.desktop.category()
-          let role = try Role.Group.investor.role()
+          let category = try Category.Group.mobileGameApp.category()
+          let role = try Role.Group.finance.role()
           let name: String = try project.get("name") + String(i)
           let projectObject = try Project(
             user_id: userObj.assertExists(),
