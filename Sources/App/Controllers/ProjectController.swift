@@ -54,17 +54,6 @@ final class ProjectController {
         .makeJSON()
     }
     
-    guard let user_id = request.headers["user_id"]?.int else { throw Abort.badRequest }
-    
-    if let search = request.query?["search"]?.string {
-      let users = try User.makeQuery()
-        .filter("name", .custom("~*"), search)
-        .filter("id", .notEquals, user_id)
-        .all()
-      
-      return try users.makeJSON()
-    }
-    
     
     //Return all Projects
     return try Project
