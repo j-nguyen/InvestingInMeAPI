@@ -13,52 +13,35 @@ final class ProjectController {
   
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
-    // Check if there's a category query and a role query
-    if let category = request.query?["category"]?.string, let role = request.query?["role"]?.string {
-      guard let categoryGroup = Category.Group(rawValue: category), let roleGroup = Role.Group(rawValue: role) else {
-        throw Abort(.badRequest, reason: "There is no category or role named this!")
-      }
-      return try Project.makeQuery()
-        .filter("category_id", categoryGroup.category().assertExists())
-        .and { try $0.filter("role_id", roleGroup.role().assertExists()) }
-        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
-        .all()
-        .makeJSON()
-    } else if let role = request.query?["role"]?.string {
-      // If it's just the role, then we can do this
-      guard let roleGroup = Role.Group(rawValue: role) else {
-        throw Abort(.badRequest, reason: "This is an invalid role!")
-      }
-      // only role
-      return try Project.makeQuery()
-        .filter("role_id", roleGroup.role().assertExists())
-        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
-        .all()
-        .makeJSON()
-    } else if let category = request.query?["category"]?.string {
+    let projects = try Project
+          .makeQuery()
+          .filter("user_id", .notEquals, request.headers["user_id"]?.int)
+    
+    if let categories: [String] = try request.query?.get("category") {
+      for category in categories {
         guard let categoryGroup = Category.Group(rawValue: category) else {
           throw Abort(.badRequest, reason: "There is no category named this!")
         }
-      
-        return try Project.makeQuery()
-          .filter("category_id", categoryGroup.category().assertExists())
-          .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
-          .all()
-          .makeJSON()
-    } else if let search = request.query?["search"]?.string {
+        try projects.and { try $0.filter("category_id", categoryGroup.category().assertExists()) }
+      }
+    }
+    
+    if let roles: [String] = try request.query?.get("role") {
+      for role in roles {
+        guard let roleGroup = Role.Group(rawValue: role) else {
+          throw Abort(.badRequest, reason: "There is no role named this!")
+        }
+        try projects.and { try $0.filter("role_id", roleGroup.role().assertExists()) }
+      }
+    }
+    if let search = request.query?["search"]?.string {
       // attempt to search through by project name
-      
-      return try Project.makeQuery()
-        .filter("name", .custom("~*"), search)
-        .all()
-        .makeJSON()
+       try projects.and { try $0.filter("name", .custom("~*"), search) }
     }
     
     
     //Return all Projects
-    return try Project
-      .makeQuery()
-      .filter("user_id", .notEquals, request.headers["user_id"]?.int)
+    return try projects
       .all()
       .makeJSON()
   }
