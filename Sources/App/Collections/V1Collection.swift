@@ -67,6 +67,7 @@ final class V1Collection: RouteCollection {
       connection.patch(":id", handler: connectionController.update)
       connection.post("/", handler: connectionController.create)
       connection.delete(":id", handler: connectionController.delete)
+      connection.get("doesExist", handler: connectionController.doesExist)
     }
     
     //MARK: Featured Project Routes
