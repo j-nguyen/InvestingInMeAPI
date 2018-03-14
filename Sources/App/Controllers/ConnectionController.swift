@@ -10,7 +10,6 @@ import Vapor
 import HTTP
 
 final class ConnectionController {
-  public init() {}
   
   //MARK: Show Connection Invite
   func show(_ request: Request) throws -> ResponseRepresentable {
