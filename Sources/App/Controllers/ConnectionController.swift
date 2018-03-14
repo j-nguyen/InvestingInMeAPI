@@ -148,11 +148,17 @@ final class ConnectionController {
     guard
       let connection = try Connection.makeQuery().filter("inviter_id", inviter_id).and({ try $0.filter("invitee_id", invitee_id) }).first(),
       let alternateConnection = try Connection.makeQuery().filter("inviter_id", invitee_id).and({ try $0.filter("invitee_id", inviter_id) }).first()
-      else throw Abort.notFound
+      else {
+        throw Abort.notFound
     }
     
+    if connection.exists {
+      return try connection.makeJSON()
+    } else if alternateConnection.exists {
+      return try alternateConnection.makeJSON()
+    }
     
-    
+    return try JSON(node: ["message": "No Connection between those users exist."])
     
   }
 }
