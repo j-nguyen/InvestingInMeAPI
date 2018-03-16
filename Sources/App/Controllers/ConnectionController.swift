@@ -130,34 +130,4 @@ final class ConnectionController {
     return try JSON(node: ["message": "Connection removed."])
   }
   
-  func doesExist(_ request: Request) throws -> ResponseRepresentable {
-    
-    //Declare the passed ids
-    guard let inviter_id = request.parameters["inviter_id"]?.int
-      else {
-        throw Abort.badRequest
-    }
-    
-    guard let invitee_id = request.headers["invitee_id"]?.int
-      else {
-        throw Abort.badRequest
-    }
-    
-    //Declare the connection by searching the connection model at the given connection_id
-    guard
-      let connection = try Connection.makeQuery().filter("inviter_id", inviter_id).and({ try $0.filter("invitee_id", invitee_id) }).first(),
-      let alternateConnection = try Connection.makeQuery().filter("inviter_id", invitee_id).and({ try $0.filter("invitee_id", inviter_id) }).first()
-      else {
-        throw Abort.notFound
-    }
-    
-    if connection.exists {
-      return try connection.makeJSON()
-    } else if alternateConnection.exists {
-      return try alternateConnection.makeJSON()
-    }
-    
-    return try JSON(node: ["message": "No Connection between those users exist."])
-    
-  }
 }
