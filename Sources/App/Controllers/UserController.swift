@@ -154,28 +154,25 @@ final class UserController {
       }
       .all()
     
-    guard let connectionId = req.parameters["connection_id"]?.int else {
-      return try connection.makeJSON()
+    if let connectionId = req.query?["connection_id"]?.int {
+      guard let existingConnection = try Connection
+        .makeQuery()
+        .or({ orGroup in
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", id)
+            try andGroup.filter("invitee_id", connectionId)
+          }
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", connectionId)
+            try andGroup.filter("invitee_id", id)
+          }
+        }).first() else {
+          throw Abort(.notFound, reason: "Could not find connection!")
+      }
+      return try existingConnection.makeJSON()
     }
     
-    let existingConnection = try Connection
-      .makeQuery()
-      .or { orGroup in
-        try orGroup.and { andGroup in
-          try andGroup.filter("inviter_id", id)
-          try andGroup.filter("invitee_id", connectionId)
-        }
-        try orGroup.and { andGroup in
-          try andGroup.filter("inviter_id", connectionId)
-          try andGroup.filter("invitee_id", id)
-        }
-      }.first()
-    
-    guard existingConnection == nil else {
-      throw Abort(.conflict, reason: "Already Connected")
-    }
-    
-    return Response(status: .ok)
+    return try connection.makeJSON()
   }
   
   //MARK: Update User
