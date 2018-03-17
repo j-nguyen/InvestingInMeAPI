@@ -154,6 +154,24 @@ final class UserController {
       }
       .all()
     
+    if let connectionId = req.query?["connection_id"]?.int {
+      guard let existingConnection = try Connection
+        .makeQuery()
+        .or({ orGroup in
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", id)
+            try andGroup.filter("invitee_id", connectionId)
+          }
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", connectionId)
+            try andGroup.filter("invitee_id", id)
+          }
+        }).first() else {
+          throw Abort(.notFound, reason: "Could not find connection!")
+      }
+      return try existingConnection.makeJSON()
+    }
+    
     return try connection.makeJSON()
   }
   
