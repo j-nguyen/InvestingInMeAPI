@@ -57,7 +57,7 @@ final class CloudinaryService {
     - parameter projectIcon: This asks to make sure it's a profileIcon or not
     - parameter project: The project model so that we can insert it into our asset model
   */
-  func uploadFile(type: ContentType, file: Bytes, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
+  func uploadFile(type: ContentType, file: String, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
@@ -65,7 +65,7 @@ final class CloudinaryService {
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
     // set up our body content
     var json = JSON()
-    try json.set("file", "data:video/mp4;base64,\(file.base64Encoded.makeString())")
+    try json.set("file", "data:image/png;base64,\(file)")
     try json.set("upload_preset", uploadPreset)
     
     // set up the request
