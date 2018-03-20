@@ -50,15 +50,13 @@ final class ProjectController {
   func show(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the project_id requested in the url
-    guard let project_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let project_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
     
     //Declare the project by searching the Project model at the given project_id
-    guard let project = try Project.find(project_id)
-      else {
-        throw Abort.notFound
+    guard let project = try Project.find(project_id) else {
+      throw Abort.notFound
     }
     
     //Return project as JSON
