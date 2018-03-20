@@ -43,7 +43,7 @@ final class UserController {
       let project_description = request.json?["project_description"]?.string,
       let description_needs = request.json?["description_needs"]?.string
     else {
-      throw Abort(.unprocessableEntity, reason: "Missing required fields!")
+      throw Abort(.badRequest, reason: "Missing required fields!")
     }
     
     //Check if the user_id in the authorization header is the user_id of the project
@@ -60,11 +60,6 @@ final class UserController {
     guard try Role.find(role_id) != nil else {
       throw Abort(.notFound, reason: "This role doesn't exist!")
     }
-    
-    // Make sure that we've gathered at least 1 image
-    guard let images: [String] = try request.json?.get("images"), images.count > 0 && images.count < 3 else {
-      throw Abort(.unprocessableEntity, reason: "We need at least 1 to 3 screenshots of the project!")
-    }
       
     //Instaniate the project using the variables we created
     let project = Project(
@@ -78,46 +73,6 @@ final class UserController {
     
     // Save the new project
     try project.save()
-    
-    // Set up the configurations
-    guard let config = drop?.config["cloudinary"] else { throw Abort.serverError }
-    let cloudService = try CloudinaryService(config: config)
-    
-    // In here, we'll check if the user has an image placed. If not, then it'll create the others for us
-    var projectIconFile = request.json?["projectIcon"]?.string
-    
-    if let projectIconFile = projectIconFile {
-      
-      _ = try cloudService.uploadFile(
-        type: .image,
-        file: projectIconFile,
-        projectIcon: true,
-        project: project
-      )
-    } else {
-      // generate the placeholder like so
-      projectIconFile = project.name.generatePlaceholder()
-      // save the asset
-      let projectIconAsset = try Asset(
-        project_id: project.assertExists(),
-        file_type: "Image",
-        url: projectIconFile ?? "https://via.placeholder.com/100",
-        file_name: "Placeholder",
-        file_size: 0,
-        project_icon: true
-      )
-      try projectIconAsset.save()
-    }
-
-    // we can now add images into the project
-    for image in images {
-      _ = try cloudService.uploadFile(
-        type: .image,
-        file: image,
-        projectIcon: false,
-        project: project
-      )
-    }
     
     //Return the newly created project
     return try project.makeJSON()
