@@ -57,23 +57,20 @@ final class CloudinaryService {
     - parameter projectIcon: This asks to make sure it's a profileIcon or not
     - parameter project: The project model so that we can insert it into our asset model
   */
-  func uploadFile(type: ContentType, file: String, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
+  func uploadFile(type: ContentType, file: Bytes, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(type.rawValue)/upload"
     
     // set up our headers here
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
-    
     // set up our body content
     var json = JSON()
-    try json.set("file", file)
+    try json.set("file", "data:video/mp4;base64,\(file.base64Encoded.makeString())")
     try json.set("upload_preset", uploadPreset)
     
     // set up the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
-    
     let response = try EngineClient.factory.respond(to: request)
-    
     // if response is successful we can continue
     guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
       throw Abort(.badRequest, reason: "Something went wrong with the image!")
