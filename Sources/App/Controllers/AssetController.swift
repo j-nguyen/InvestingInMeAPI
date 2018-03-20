@@ -35,8 +35,8 @@ final class AssetController {
     switch fileType {
     case .image:
       guard
-        let file = req.json?["file"]?.bytes,
-        let projectIcon = req.json?["projectIcon"]?.string,
+        let file = req.json?["file"]?.string,
+        let projectIcon = req.json?["projectIcon"]?.bool,
         let project_id = req.json?["project_id"]?.int else {
         throw Abort(.badRequest, reason: "Invalid Parameters")
       }
