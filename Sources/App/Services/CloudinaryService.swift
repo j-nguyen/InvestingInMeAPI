@@ -90,6 +90,8 @@ final class CloudinaryService {
       try asset.public_id = responseJSON.get("public_id")
       // attempt to save once finished
       try asset.save()
+      
+      return try asset.makeJSON()
     } else {
       let asset = try Asset(
         project_id: project.assertExists(),
@@ -103,9 +105,9 @@ final class CloudinaryService {
       
       // attempt to save once finished
       try asset.save()
+      
+      return try asset.makeJSON()
     }
-    
-    return try asset.makeJSON()
   }
   
   /**
