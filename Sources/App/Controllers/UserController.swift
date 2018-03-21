@@ -73,6 +73,21 @@ final class UserController {
     
     // Save the new project
     try project.save()
+      
+    // generate the placeholder like so
+    let projectIconFile = project.name.generatePlaceholder()
+    
+    // save the asset
+    let projectIconAsset = try Asset(
+      project_id: project.assertExists(),
+      file_type: "Image",
+      url: projectIconFile ?? "https://via.placeholder.com/100",
+      file_name: "Placeholder",
+      file_size: 0,
+      project_icon: true
+    )
+    
+    try projectIconAsset.save()
     
     //Return the newly created project
     return try project.makeJSON()
