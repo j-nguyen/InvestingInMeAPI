@@ -82,18 +82,28 @@ final class CloudinaryService {
     }
     
     // attempt to create the asset
-    let asset = try Asset(
-      project_id: project.assertExists(),
-      file_type: responseJSON.get("resource_type"),
-      url: responseJSON.get("secure_url"),
-      file_name: responseJSON.get("public_id"),
-      file_size: responseJSON.get("bytes"),
-      project_icon: projectIcon,
-      public_id: responseJSON.get("public_id")
-    )
-    
-    // attempt to save once finished
-    try asset.save()
+    if let asset = try Asset.makeQuery().filter("project_id", project.id).and({ try $0.filter("projectIcon", true) }).first() {
+      asset.file_type = responseJSON.get("resource_type")
+      asset.url = responseJSON.get("secure_url")
+      asset.file_name = responseJSON.get("public_id")
+      asset.file_size = responseJSON.get("bytes")
+      asset.public_id = responseJSON.get("public_id")
+      // attempt to save once finished
+      try asset.save()
+    } else {
+      let asset = try Asset(
+        project_id: project.assertExists(),
+        file_type: responseJSON.get("resource_type"),
+        url: responseJSON.get("secure_url"),
+        file_name: responseJSON.get("public_id"),
+        file_size: responseJSON.get("bytes"),
+        project_icon: projectIcon,
+        public_id: responseJSON.get("public_id")
+      )
+      
+      // attempt to save once finished
+      try asset.save()
+    }
     
     return try asset.makeJSON()
   }
