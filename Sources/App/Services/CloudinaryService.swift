@@ -65,7 +65,7 @@ final class CloudinaryService {
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
     // set up our body content
     var json = JSON()
-    try json.set("file", file)
+    try json.set("file", "data:image/png;base64,\(file)")
     try json.set("upload_preset", uploadPreset)
     
     // set up the request
