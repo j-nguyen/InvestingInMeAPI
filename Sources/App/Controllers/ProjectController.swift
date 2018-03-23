@@ -22,7 +22,7 @@ final class ProjectController {
         guard let categoryGroup = Category.Group(rawValue: category) else {
           throw Abort(.badRequest, reason: "There is no category named this!")
         }
-        try projects.and { try $0.filter("category_id", categoryGroup.category().assertExists()) }
+        try projects.or { try $0.filter("category_id", categoryGroup.category().assertExists()) }
       }
     }
     
@@ -31,12 +31,12 @@ final class ProjectController {
         guard let roleGroup = Role.Group(rawValue: role) else {
           throw Abort(.badRequest, reason: "There is no role named this!")
         }
-        try projects.and { try $0.filter("role_id", roleGroup.role().assertExists()) }
+        try projects.or { try $0.filter("role_id", roleGroup.role().assertExists()) }
       }
     }
     if let search = request.query?["search"]?.string {
       // attempt to search through by project name
-       try projects.and { try $0.filter("name", .custom("~*"), search) }
+       try projects.or { try $0.filter("name", .custom("~*"), search) }
     }
     
     
