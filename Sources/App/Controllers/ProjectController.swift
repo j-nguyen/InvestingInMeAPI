@@ -13,26 +13,29 @@ final class ProjectController {
   
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
-    let projects = try Project
-          .makeQuery()
-          .filter("user_id", .notEquals, request.headers["user_id"]?.int)
+    let projects = try Project.makeQuery()
     
     if let categories: [String] = try request.query?.get("category") {
-      for category in categories {
-        guard let categoryGroup = Category.Group(rawValue: category) else {
-          throw Abort(.badRequest, reason: "There is no category named this!")
+      try projects.or { orGroup in
+        for category in categories {
+          guard let categoryGroup = Category.Group(rawValue: category) else {
+            throw Abort(.badRequest, reason: "There is no category named this!")
+          }
+          try orGroup.filter("category_id", categoryGroup.category().assertExists())
         }
-        try projects.or { try $0.filter("category_id", categoryGroup.category().assertExists()) }
       }
     }
     
     if let roles: [String] = try request.query?.get("role") {
-      for role in roles {
-        guard let roleGroup = Role.Group(rawValue: role) else {
-          throw Abort(.badRequest, reason: "There is no role named this!")
+      try projects.or { orGroup in
+        for role in roles {
+          guard let roleGroup = Role.Group(rawValue: role) else {
+            throw Abort(.badRequest, reason: "There is no role named this!")
+          }
+          try orGroup.filter("role_id", roleGroup.role().assertExists())
         }
-        try projects.or { try $0.filter("role_id", roleGroup.role().assertExists()) }
       }
+      
     }
     if let search = request.query?["search"]?.string {
       // attempt to search through by project name
@@ -42,6 +45,7 @@ final class ProjectController {
     
     //Return all Projects
     return try projects
+      .filter("user_id", .notEquals, request.headers["user_id"]?.int)
       .all()
       .makeJSON()
   }
