@@ -82,7 +82,7 @@ final class CloudinaryService {
     }
     
     // attempt to create the asset
-    if let asset = try Asset.makeQuery().filter("project_id", project.id).and({ try $0.filter("project_icon", true) }).first() {
+    if let asset = try Asset.makeQuery().filter("project_id", project.id).and({ try $0.filter("project_icon", projectIcon) }).first() {
       try asset.file_type = responseJSON.get("resource_type")
       try asset.url = responseJSON.get("secure_url")
       try asset.file_name = responseJSON.get("public_id")
