@@ -13,50 +13,38 @@ final class ProjectController {
   
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
-    // Check if there's a category query and a role query
-    if let category = request.query?["category"]?.string, let role = request.query?["role"]?.string {
-      guard let categoryGroup = Category.Group(rawValue: category), let roleGroup = Role.Group(rawValue: role) else {
-        throw Abort(.badRequest, reason: "There is no category or role named this!")
-      }
-      return try Project.makeQuery()
-        .filter("category_id", categoryGroup.category().assertExists())
-        .and { try $0.filter("role_id", roleGroup.role().assertExists()) }
-        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
-        .all()
-        .makeJSON()
-    } else if let role = request.query?["role"]?.string {
-      // If it's just the role, then we can do this
-      guard let roleGroup = Role.Group(rawValue: role) else {
-        throw Abort(.badRequest, reason: "This is an invalid role!")
-      }
-      // only role
-      return try Project.makeQuery()
-        .filter("role_id", roleGroup.role().assertExists())
-        .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
-        .all()
-        .makeJSON()
-    } else if let category = request.query?["category"]?.string {
-        guard let categoryGroup = Category.Group(rawValue: category) else {
-          throw Abort(.badRequest, reason: "There is no category named this!")
+    let projects = try Project.makeQuery()
+    
+    if let categories: [String] = try request.query?.get("category") {
+      try projects.or { orGroup in
+        for category in categories {
+          guard let categoryGroup = Category.Group(rawValue: category) else {
+            throw Abort(.badRequest, reason: "There is no category named this!")
+          }
+          try orGroup.filter("category_id", categoryGroup.category().assertExists())
         }
-      
-        return try Project.makeQuery()
-          .filter("category_id", categoryGroup.category().assertExists())
-          .and { try $0.filter("user_id", .notEquals, request.headers["user_id"]?.int) }
-          .all()
-          .makeJSON()
-    } else if let search = request.query?["search"]?.string {
-      // attempt to search through by project name
-      
-      return try Project.makeQuery()
-        .filter("name", .custom("~*"), search)
-        .all()
-        .makeJSON()
+      }
     }
     
+    if let roles: [String] = try request.query?.get("role") {
+      try projects.or { orGroup in
+        for role in roles {
+          guard let roleGroup = Role.Group(rawValue: role) else {
+            throw Abort(.badRequest, reason: "There is no role named this!")
+          }
+          try orGroup.filter("role_id", roleGroup.role().assertExists())
+        }
+      }
+      
+    }
+    if let search = request.query?["search"]?.string {
+      // attempt to search through by project name
+       try projects.or { try $0.filter("name", .custom("~*"), search) }
+    }
+    
+    
     //Return all Projects
-    return try Project
-      .makeQuery()
+    return try projects
       .filter("user_id", .notEquals, request.headers["user_id"]?.int)
       .all()
       .makeJSON()
@@ -66,15 +54,13 @@ final class ProjectController {
   func show(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the project_id requested in the url
-    guard let project_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let project_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
     
     //Declare the project by searching the Project model at the given project_id
-    guard let project = try Project.find(project_id)
-      else {
-        throw Abort.notFound
+    guard let project = try Project.find(project_id) else {
+      throw Abort.notFound
     }
     
     //Return project as JSON
@@ -150,5 +136,12 @@ final class ProjectController {
     }
   }
   
+  // MARK: Gets all categories
+  /// Gets all the categories
+  func categories(_ req: Request) throws -> ResponseRepresentable {
+    return try Category
+      .all()
+      .makeJSON()
+  }
 }
 

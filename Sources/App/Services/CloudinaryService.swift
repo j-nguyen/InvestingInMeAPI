@@ -63,17 +63,14 @@ final class CloudinaryService {
     
     // set up our headers here
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
-    
     // set up our body content
     var json = JSON()
-    try json.set("file", file)
+    try json.set("file", "data:image/png;base64,\(file)")
     try json.set("upload_preset", uploadPreset)
     
     // set up the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
-    
     let response = try EngineClient.factory.respond(to: request)
-    
     // if response is successful we can continue
     guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
       throw Abort(.badRequest, reason: "Something went wrong with the image!")
@@ -85,20 +82,32 @@ final class CloudinaryService {
     }
     
     // attempt to create the asset
-    let asset = try Asset(
-      project_id: project.assertExists(),
-      file_type: responseJSON.get("resource_type"),
-      url: responseJSON.get("secure_url"),
-      file_name: responseJSON.get("public_id"),
-      file_size: responseJSON.get("bytes"),
-      project_icon: projectIcon,
-      public_id: responseJSON.get("public_id")
-    )
-    
-    // attempt to save once finished
-    try asset.save()
-    
-    return try asset.makeJSON()
+    if let asset = try Asset.makeQuery().filter("project_id", project.id).and({ try $0.filter("project_icon", projectIcon) }).first() {
+      try asset.file_type = responseJSON.get("resource_type")
+      try asset.url = responseJSON.get("secure_url")
+      try asset.file_name = responseJSON.get("public_id")
+      try asset.file_size = responseJSON.get("bytes")
+      try asset.public_id = responseJSON.get("public_id")
+      // attempt to save once finished
+      try asset.save()
+      
+      return try asset.makeJSON()
+    } else {
+      let asset = try Asset(
+        project_id: project.assertExists(),
+        file_type: responseJSON.get("resource_type"),
+        url: responseJSON.get("secure_url"),
+        file_name: responseJSON.get("public_id"),
+        file_size: responseJSON.get("bytes"),
+        project_icon: projectIcon,
+        public_id: responseJSON.get("public_id")
+      )
+      
+      // attempt to save once finished
+      try asset.save()
+      
+      return try asset.makeJSON()
+    }
   }
   
   /**

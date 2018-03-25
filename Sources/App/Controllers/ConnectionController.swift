@@ -129,4 +129,5 @@ final class ConnectionController {
     //Return a JSON confirmation message
     return try JSON(node: ["message": "Connection removed."])
   }
+  
 }

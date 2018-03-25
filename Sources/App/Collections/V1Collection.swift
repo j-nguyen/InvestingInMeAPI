@@ -58,6 +58,7 @@ final class V1Collection: RouteCollection {
       project.get(":id", handler: projectController.show)
       project.patch(":id", handler: projectController.update)
       project.delete(":id", handler: projectController.delete)
+      project.get("categories", handler: projectController.categories)
     }
     
     //MARK: Connection Routes
