@@ -24,7 +24,7 @@ final class AssetController {
     }
     
     guard let fileType = CloudinaryService.ContentType(rawValue: type) else {
-      throw Abort(.unprocessableEntity, reason: "Unsupported file type!")
+      throw Abort(.badRequest, reason: "Unsupported file type!")
     }
     
     // attempt to retrieve file
@@ -36,16 +36,16 @@ final class AssetController {
     case .image:
       guard
         let file = req.json?["file"]?.string,
-        let projectIcon = req.json?["project_icon"]?.bool,
+        let projectIcon = req.json?["projectIcon"]?.bool,
         let project_id = req.json?["project_id"]?.int else {
-        throw Abort.badRequest
+        throw Abort(.badRequest, reason: "Invalid Parameters")
       }
       
       // check project if exists
       guard let project = try Project.find(project_id) else {
         throw Abort(.notFound, reason: "Could not find project!")
       }
-      
+    
       guard req.headers["user_id"]?.int == project.user_id.int else {
         throw Abort(.forbidden, reason: "You are not the owner of this project!")
       }

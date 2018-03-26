@@ -22,7 +22,20 @@ final class Project: Model, Timestampable {
   var description_needs: String
 
   //MARK: Initialize Project Table
-  init(user_id: Identifier, name: String, category_id: Identifier, role_id: Identifier, project_description: String, description_needs: String) {
+  init(
+    user_id: Identifier,
+    name: String,
+    category_id: Identifier,
+    role_id: Identifier,
+    project_description: String,
+    description_needs: String
+  ) throws {
+    // Validate before beginning
+    try CustomAlphaNumericValidator().validate(name)
+    try CustomAlphaNumericValidator().validate(project_description)
+    try CustomAlphaNumericValidator().validate(description_needs)
+    
+    // Set up our values
     self.user_id = user_id
     self.name = name
     self.category_id = category_id

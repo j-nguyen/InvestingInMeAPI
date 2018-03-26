@@ -13,35 +13,39 @@ final class ProjectController {
   
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
-    let projects = try Project
-          .makeQuery()
-          .filter("user_id", .notEquals, request.headers["user_id"]?.int)
+    let projects = try Project.makeQuery()
     
     if let categories: [String] = try request.query?.get("category") {
-      for category in categories {
-        guard let categoryGroup = Category.Group(rawValue: category) else {
-          throw Abort(.badRequest, reason: "There is no category named this!")
+      try projects.or { orGroup in
+        for category in categories {
+          guard let categoryGroup = Category.Group(rawValue: category) else {
+            throw Abort(.badRequest, reason: "There is no category named this!")
+          }
+          try orGroup.filter("category_id", categoryGroup.category().assertExists())
         }
-        try projects.and { try $0.filter("category_id", categoryGroup.category().assertExists()) }
       }
     }
     
     if let roles: [String] = try request.query?.get("role") {
-      for role in roles {
-        guard let roleGroup = Role.Group(rawValue: role) else {
-          throw Abort(.badRequest, reason: "There is no role named this!")
+      try projects.or { orGroup in
+        for role in roles {
+          guard let roleGroup = Role.Group(rawValue: role) else {
+            throw Abort(.badRequest, reason: "There is no role named this!")
+          }
+          try orGroup.filter("role_id", roleGroup.role().assertExists())
         }
-        try projects.and { try $0.filter("role_id", roleGroup.role().assertExists()) }
       }
+      
     }
     if let search = request.query?["search"]?.string {
       // attempt to search through by project name
-       try projects.and { try $0.filter("name", .custom("~*"), search) }
+       try projects.or { try $0.filter("name", .custom("~*"), search) }
     }
     
     
     //Return all Projects
     return try projects
+      .filter("user_id", .notEquals, request.headers["user_id"]?.int)
       .all()
       .makeJSON()
   }
@@ -50,15 +54,13 @@ final class ProjectController {
   func show(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the project_id requested in the url
-    guard let project_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let project_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
     
     //Declare the project by searching the Project model at the given project_id
-    guard let project = try Project.find(project_id)
-      else {
-        throw Abort.notFound
+    guard let project = try Project.find(project_id) else {
+      throw Abort.notFound
     }
     
     //Return project as JSON
@@ -86,9 +88,24 @@ final class ProjectController {
     }
     
     //Update name, project_description, and description_needs if they have been passed through the url
-    project.name = request.json?["name"]?.string ?? project.name
-    project.project_description = request.json?["project_description"]?.string ?? project.project_description
-    project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
+    
+    // Add validations for these specific naming schemes
+    if let name = request.json?["name"]?.string {
+      try CustomAlphaNumericValidator().validate(name)
+      project.name = name.trim()
+    }
+    
+    // Check for the project description
+    if let project_description = request.json?["project_description"]?.string {
+      try CustomAlphaNumericValidator().validate(project_description)
+      project.project_description = project_description.trim()
+    }
+    
+    // Now check for description needs
+    if let description_needs = request.json?["description_needs"]?.string {
+      try CustomAlphaNumericValidator().validate(description_needs)
+      project.description_needs = description_needs.trim()
+    }
     
     //Update category_id, and role_id if they have been requested to change
     if let category_id = request.json?["category_id"]?.int {

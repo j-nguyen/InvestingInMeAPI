@@ -98,7 +98,12 @@ final class ConnectionController {
       throw Abort(.conflict, reason: "An invitation has already been created!")
     }
     
-    let connection = Connection(inviter_id: Identifier(inviter_id), invitee_id: Identifier(invitee_id), accepted: accepted, message: message)
+    let connection = try Connection(
+      inviter_id: Identifier(inviter_id),
+      invitee_id: Identifier(invitee_id),
+      accepted: accepted,
+      message: message
+    )
   
     try connection.save()
     
