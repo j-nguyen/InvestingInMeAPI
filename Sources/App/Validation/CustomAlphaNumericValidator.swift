@@ -24,13 +24,13 @@ public struct CustomAlphaNumericValidator: Validator {
    - throws: an error if validation fails
    */
   public func validate(_ input: String) throws {
-    let passed = !input
-      .lowercased()
-      .contains { !alphanumeric.contains($0) }
-    
-    guard passed else {
-      throw Abort(.badRequest, reason: "You've entered something naughty! Please try again.")
-    }
+//    let passed = !input
+//      .lowercased()
+//      .contains { !alphanumeric.contains($0) }
+//    
+//    guard passed else {
+//      throw Abort(.badRequest, reason: "You've entered something naughty! Please try again.")
+//    }
   }
 }
 
