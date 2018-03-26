@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 import FluentProvider
+import Validation
 
 final class Connection: Model, Timestampable {
   // MARK: Properties
