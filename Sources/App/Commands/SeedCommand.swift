@@ -230,6 +230,12 @@ final class SeedCommand: Command {
     }
     
     if environment == .development {
+      try User.makeQuery().delete()
+      try Project.makeQuery().delete()
+      try Asset.makeQuery().delete()
+      try FeaturedProject.makeQuery().delete()
+      try Connection.makeQuery().delete()
+      // Re-create
       try createUser()
       try createProjects()
       try createAssets()
