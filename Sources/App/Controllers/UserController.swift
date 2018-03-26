@@ -152,30 +152,28 @@ final class UserController {
         try orGroup.filter("inviter_id", id)
         try orGroup.filter("invitee_id", id)
       }
-      .all()
     
-    guard let connectionId = req.parameters["connection_id"]?.int else {
-      return try connection.makeJSON()
+    
+    if let connectionId = req.query?["connection_id"]?.int {
+      let existingConnection = try Connection
+        .makeQuery()
+        .or { orGroup in
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", id)
+            try andGroup.filter("invitee_id", connectionId)
+          }
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", connectionId)
+            try andGroup.filter("invitee_id", id)
+          }
+        }.first()
+      
+      guard (existingConnection != nil) else {
+        return Abort(.notFound) as! ResponseRepresentable
+      }
     }
     
-    let existingConnection = try Connection
-      .makeQuery()
-      .or { orGroup in
-        try orGroup.and { andGroup in
-          try andGroup.filter("inviter_id", id)
-          try andGroup.filter("invitee_id", connectionId)
-        }
-        try orGroup.and { andGroup in
-          try andGroup.filter("inviter_id", connectionId)
-          try andGroup.filter("invitee_id", id)
-        }
-      }.first()
-    
-    guard existingConnection == nil else {
-      throw Abort(.conflict, reason: "Already Connected")
-    }
-    
-    return Response(status: .ok)
+    return try connection.all().makeJSON()
   }
   
   //MARK: Update User

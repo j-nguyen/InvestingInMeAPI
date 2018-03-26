@@ -81,7 +81,7 @@ final class AssetController {
     guard let asset = try Asset.find(id) else {
       throw Abort.notFound
     }
-
+    
     try asset.delete()
     
     return try JSON(node: ["message": "Successfully deleted!"])
