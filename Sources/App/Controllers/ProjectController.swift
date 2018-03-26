@@ -88,9 +88,24 @@ final class ProjectController {
     }
     
     //Update name, project_description, and description_needs if they have been passed through the url
-    project.name = request.json?["name"]?.string ?? project.name
-    project.project_description = request.json?["project_description"]?.string ?? project.project_description
-    project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
+    
+    // Add validations for these specific naming schemes
+    if let name = request.json?["name"]?.string {
+      try CustomAlphaNumericValidator().validate(name)
+      project.name = name.trim()
+    }
+    
+    // Check for the project description
+    if let project_description = request.json?["project_description"]?.string {
+      try CustomAlphaNumericValidator().validate(project_description)
+      project.project_description = project_description.trim()
+    }
+    
+    // Now check for description needs
+    if let description_needs = request.json?["description_needs"]?.string {
+      try CustomAlphaNumericValidator().validate(description_needs)
+      project.description_needs = description_needs.trim()
+    }
     
     //Update category_id, and role_id if they have been requested to change
     if let category_id = request.json?["category_id"]?.int {
