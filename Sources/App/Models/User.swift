@@ -8,7 +8,6 @@
 import Foundation
 import Vapor
 import FluentProvider
-import Validation
 
 final class User: Model, Timestampable {
   let storage: Storage = Storage()
@@ -42,9 +41,9 @@ final class User: Model, Timestampable {
   ) throws {
     // Validate some data before conitinug
     try OnlyPhoneNumberValidator().validate(phone_number)
-    try OnlyAlphanumeric().validate(location)
-    try OnlyAlphanumeric().validate(location)
-    try OnlyAlphanumeric().validate(experience_and_credentials)
+    try CustomAlphaNumericValidator().validate(location)
+    try CustomAlphaNumericValidator().validate(location)
+    try CustomAlphaNumericValidator().validate(experience_and_credentials)
     
     // Set our values here
     self.google_id = google_id

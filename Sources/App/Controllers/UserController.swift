@@ -73,15 +73,12 @@ final class UserController {
     
     // Save the new project
     try project.save()
-      
-    // generate the placeholder like so
-    let projectIconFile = project.name.generatePlaceholder()
     
     // save the asset
     let projectIconAsset = try Asset(
       project_id: project.assertExists(),
       file_type: "Image",
-      url: projectIconFile ?? "https://via.placeholder.com/100",
+      url: project.name.generatePlaceholder(),
       file_name: "Placeholder",
       file_size: 0,
       project_icon: true
@@ -161,10 +158,25 @@ final class UserController {
     }
     
     //Update description, and experience_and_credentials if they have been passed through the url
-    user.description = request.json?["description"]?.string ?? user.description
-    user.experience_and_credentials = request.json?["experience_and_credentials"]?.string ?? user.experience_and_credentials
-    user.location = request.json?["location"]?.string ?? user.location
-    user.phone_number = request.json?["phone_number"]?.string ?? user.phone_number
+    if let description = request.json?["description"]?.string {
+      try CustomAlphaNumericValidator().validate(description)
+      user.description = description
+    }
+    
+    if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
+      try CustomAlphaNumericValidator().validate(experience_and_credentials)
+      user.experience_and_credentials = experience_and_credentials
+    }
+    
+    if let location = request.json?["location"]?.string {
+      try CustomAlphaNumericValidator().validate(location)
+      user.location = location
+    }
+    
+    if let phone_number = request.json?["phone_number"]?.string {
+      try OnlyPhoneNumberValidator().validate(phone_number)
+      user.phone_number = phone_number
+    }
     
     //Update role_id if it has been passed through the url
     if let role_id = request.json?["role_id"]?.int {
