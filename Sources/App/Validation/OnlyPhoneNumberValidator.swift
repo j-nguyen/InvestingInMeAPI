@@ -20,15 +20,8 @@ public struct OnlyPhoneNumberValidator: Validator {
    - throws: an error if validation fails
    */
   public func validate(_ input: String) throws {
-    let detector = try NSDataDetector(types: NSTextCheckingResult.CheckingType.phoneNumber.rawValue)
-    let matches = detector.matches(in: input, options: [], range: NSMakeRange(0, input.count))
-    
-    guard let res = matches.first else {
+    guard input.isPhone() else {
       throw Abort(.badRequest, reason: "This is not a valid phone number!")
-    }
-    
-    guard res.resultType == .phoneNumber && res.range.location == 0 && res.range.length == input.count && input.count == 10 else {
-      throw Abort(.badRequest, reason: "This isn't a valid phone number!")
     }
   }
 }
