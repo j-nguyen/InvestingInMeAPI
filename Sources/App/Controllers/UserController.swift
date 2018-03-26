@@ -226,7 +226,7 @@ final class UserController {
     if let user = try User.makeQuery().filter("google_id", sub).first() {
       try payload.set("user_id", user.id)
     } else {
-      let user = User(
+      let user = try User(
         google_id: sub,
         email: try jwt.payload.get("email"),
         name: try jwt.payload.get("name"),

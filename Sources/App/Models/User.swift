@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 import FluentProvider
+import Validation
 
 final class User: Model, Timestampable {
   let storage: Storage = Storage()
@@ -26,8 +27,26 @@ final class User: Model, Timestampable {
   var player_id: Int?
   
   //MARK: Initialize User Table
-  init(google_id: String, email: String, name: String, picture: String, email_verification: Bool,
-       description: String = "", role_id: Identifier? = nil, location: String = "", phone_number: String = "", experience_and_credentials: String = "", player_id: Int? = nil) {
+  init(
+    google_id: String,
+    email: String,
+    name: String,
+    picture: String,
+    email_verification: Bool,
+    description: String = "",
+    role_id: Identifier? = nil,
+    location: String = "",
+    phone_number: String = "",
+    experience_and_credentials: String = "",
+    player_id: Int? = nil
+  ) throws {
+    // Validate some data before conitinug
+    try OnlyPhoneNumberValidator().validate(phone_number)
+    try OnlyAlphanumeric().validate(location)
+    try OnlyAlphanumeric().validate(location)
+    try OnlyAlphanumeric().validate(experience_and_credentials)
+    
+    // Set our values here
     self.google_id = google_id
     self.email = email
     self.name = name
