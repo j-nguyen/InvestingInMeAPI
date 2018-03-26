@@ -1,4 +1,4 @@
-#!/usr/env/python
+#!/usr/bin/env python
 
 # This script seeks to try to build the project
 import subprocess
