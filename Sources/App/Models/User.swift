@@ -40,7 +40,7 @@ final class User: Model, Timestampable {
     player_id: Int? = nil
   ) throws {
     // Validate some data before conitinug
-    try OnlyPhoneNumberValidator().validate(phone_number)
+//    try OnlyPhoneNumberValidator().validate(phone_number)
     try CustomAlphaNumericValidator().validate(location)
     try CustomAlphaNumericValidator().validate(location)
     try CustomAlphaNumericValidator().validate(experience_and_credentials)

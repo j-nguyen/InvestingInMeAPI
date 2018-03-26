@@ -174,7 +174,7 @@ final class UserController {
     }
     
     if let phone_number = request.json?["phone_number"]?.string {
-      try OnlyPhoneNumberValidator().validate(phone_number)
+//      try OnlyPhoneNumberValidator().validate(phone_number)
       user.phone_number = phone_number
     }
     

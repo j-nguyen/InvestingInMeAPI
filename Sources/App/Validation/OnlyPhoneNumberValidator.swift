@@ -26,7 +26,7 @@ public struct OnlyPhoneNumberValidator: Validator {
       .lowercased()
       .contains { !allowedCharacters.contains($0) }
     
-    try Count.max(9).validate(input)
+    try Count.max(10).validate(input)
     
     guard passed else {
       throw Abort(.badRequest, reason: "You've entered something naughty! Please try again.")
