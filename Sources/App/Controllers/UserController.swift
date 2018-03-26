@@ -62,7 +62,7 @@ final class UserController {
     }
       
     //Instaniate the project using the variables we created
-    let project = Project(
+    let project = try Project(
       user_id: Identifier(user_id),
       name: name,
       category_id: Identifier(category_id),
