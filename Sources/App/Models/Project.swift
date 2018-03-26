@@ -32,6 +32,7 @@ final class Project: Model, Timestampable {
     description_needs: String
   ) throws {
     // Validate before beginning
+    try OnlyAlphanumeric().validate(name)
     try OnlyAlphanumeric().validate(project_description)
     try OnlyAlphanumeric().validate(description_needs)
     
