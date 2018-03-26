@@ -19,23 +19,4 @@ extension String {
     
     return "https://via.placeholder.com/100/\(color.background)/\(color.foreground)/?text=\(letter)"
   }
-  
-  /// Checks if the phone is right using regex
-  public func isPhone()->Bool {
-    if self.isAllDigits() == true {
-      let phoneRegex = "[235689][0-9]{6}([0-9]{3})?"
-      let predicate = NSPredicate(format: "SELF MATCHES %@", phoneRegex)
-      return predicate.evaluate(with: self)
-    }else {
-      return false
-    }
-  }
-  
-  /// Checks if the string provided are all digits
-  private func isAllDigits()->Bool {
-    let charcterSet = NSCharacterSet(charactersIn: "+0123456789").inverted
-    let inputString = self.components(separatedBy: charcterSet)
-    let filtered = inputString.joined(separator: "")
-    return self == filtered
-  }
 }
