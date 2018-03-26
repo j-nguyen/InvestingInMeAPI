@@ -84,7 +84,7 @@ def list_assignees():
 def assign_assignee(pull_request_id, login):
     """ Assigns an assignee for us """
     # initial values
-    url = 'https://api.github.com/repos/j-nguyen/InvestingInMe/issues/{0}/assignees'.format(pull_request_id)
+    url = 'https://api.github.com/repos/j-nguyen/InvestingInMeAPI/issues/{0}/assignees'.format(pull_request_id)
     config = read_config()
     # Start the request
     req = urllib2.Request(url)
