@@ -12,7 +12,7 @@ import Validation
 /// given string contains only alphanumeric characters
 public struct CustomAlphaNumericValidator: Validator {
   // MARK: Properties
-  private let alphanumeric = "abcdefghijklmnopqrstuvwxyz0123456789 .!?@"
+  private let alphanumeric = "abcdefghijklmnopqrstuvwxyz0123456789 .!?@$%"
   
   public init() {}
   /**
