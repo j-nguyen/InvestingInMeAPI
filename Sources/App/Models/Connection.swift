@@ -30,10 +30,7 @@ final class Connection: Model, Timestampable {
       - accepted: Checks if the user accepted the invite. By default, it's false
       - message: a message sent to the user about their request
   */
-  init(inviter_id: Identifier, invitee_id: Identifier, accepted: Bool = false, message: String) throws {
-    // Verify before beginning
-    try OnlyAlphanumeric().validate(message)
-    
+  init(inviter_id: Identifier, invitee_id: Identifier, accepted: Bool = false, message: String) throws {    
     // Set up our values
     self.inviter_id = inviter_id
     self.invitee_id = invitee_id
