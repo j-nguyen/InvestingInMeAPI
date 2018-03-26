@@ -8,7 +8,6 @@
 import Foundation
 import Vapor
 import HTTP
-import Validation
 
 final class ProjectController {
   
@@ -92,20 +91,20 @@ final class ProjectController {
     
     // Add validations for these specific naming schemes
     if let name = request.json?["name"]?.string {
-      try OnlyAlphanumeric().validate(name)
-      project.name = name
+      try CustomAlphaNumericValidator().validate(name)
+      project.name = name.trim()
     }
     
     // Check for the project description
     if let project_description = request.json?["project_description"]?.string {
-      try OnlyAlphanumeric().validate(project_description)
-      project.project_description = project_description
+      try CustomAlphaNumericValidator().validate(project_description)
+      project.project_description = project_description.trim()
     }
     
     // Now check for description needs
     if let description_needs = request.json?["description_needs"]?.string {
-      try OnlyAlphanumeric().validate(description_needs)
-      project.description_needs = description_needs
+      try CustomAlphaNumericValidator().validate(description_needs)
+      project.description_needs = description_needs.trim()
     }
     
     //Update category_id, and role_id if they have been requested to change
