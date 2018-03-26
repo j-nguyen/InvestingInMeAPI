@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/env/python
 
 """ This module is a helper-class util, designed to help out with specific methods """
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/env/python
 
 # Sets up the project, assumes you have rvm though
 import subprocess

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/env/python
 
 # Checkouts a new branch for you
 import subprocess

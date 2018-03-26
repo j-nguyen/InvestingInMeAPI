@@ -43,7 +43,7 @@ def create_pull_request():
         # Now attempt to get the title and name
         body = {'base': 'staging', 'head': get_current_branch(), 'title': '{0} - Submitting {0} to Staging'.format(get_current_branch())}
         # CALL THE REQUEST
-        url = 'https://api.github.com/repos/j-nguyen/InvestingInMe/pulls'
+        url = 'https://api.github.com/repos/j-nguyen/InvestingInMeAPI/pulls'
         req = urllib2.Request(url)
         encoded = base64.b64encode('{0}:{1}'.format(config['user'], config['token']))
         req.add_header('Authorization', 'Basic {0}'.format(encoded))
@@ -58,7 +58,7 @@ def create_pull_request():
 def list_assignees():
     """ Lists the assignees for us """
     # initial values
-    url = 'https://api.github.com/repos/j-nguyen/InvestingInMe/assignees'
+    url = 'https://api.github.com/repos/j-nguyen/InvestingInMeAPI/assignees'
     config = read_config()
     # Start the request
     req = urllib2.Request(url)
