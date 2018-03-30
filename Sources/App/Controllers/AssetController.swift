@@ -86,4 +86,23 @@ final class AssetController {
     
     return try JSON(node: ["message": "Successfully deleted!"])
   }
+  
+  /**
+   Delete all assets associated with a given user, used for Project Update
+   **/
+  func deleteProjectAssets(_ req: Request) throws -> ResponseRepresentable {
+    guard let projectId = req.parameters["project_id"]?.int else {
+      throw Abort.badRequest
+    }
+    
+    guard let assets = try Asset.all.find(project_id: projectId) else {
+      throw Abort.notFound
+    }
+    
+    for asset in assets {
+      try asset.delete()
+    }
+    
+    return try JSON(node: ["message": "Assets deleted!"])
+  }
 }
