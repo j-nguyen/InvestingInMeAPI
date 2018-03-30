@@ -16,24 +16,38 @@ final class FeaturedProjectController {
     
     let projects = try FeaturedProject.makeQuery().sort("startDate", .descending).limit(6).all()
     var notExpired: [FeaturedProject] = []
-    let half = projects.count / 2
-    var counterExpire = half
     
-    for i in 0..<half {
-      let startDate = TimeInterval(projects[i].startDate.timeIntervalSince1970 + TimeInterval(projects[i].duration))
+    if projects.count <= 1 {
+      let startDate = TimeInterval(projects[0].startDate.timeIntervalSince1970 + TimeInterval(projects[0].duration))
       let endDate = Date().timeIntervalSince1970
+      
       if startDate > endDate {
-        notExpired.append(projects[i])
+        notExpired.append(projects[0])
       } else {
-        counterExpire += 1
-        try projects[i].delete()
+        try projects[0].delete()
       }
-    }
+      
+    } else {
     
-    for i in half..<counterExpire {
-        projects[i].startDate = Date()
-        try projects[i].save()
-        notExpired.append(projects[i])
+      let half = projects.count / 2
+      var counterExpire = half
+      
+      for i in 0..<half {
+        let startDate = TimeInterval(projects[i].startDate.timeIntervalSince1970 + TimeInterval(projects[i].duration))
+        let endDate = Date().timeIntervalSince1970
+        if startDate > endDate {
+          notExpired.append(projects[i])
+        } else {
+          counterExpire += 1
+          try projects[i].delete()
+        }
+      }
+      
+      for i in half..<counterExpire {
+          projects[i].startDate = Date()
+          try projects[i].save()
+          notExpired.append(projects[i])
+      }
     }
     
     //Return all Featured Projects
