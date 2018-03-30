@@ -17,7 +17,7 @@ final class FeaturedProjectController {
     let projects = try FeaturedProject.makeQuery().sort("startDate", .descending).limit(6).all()
     var notExpired: [FeaturedProject] = []
     
-    if projects.count <= 1 {
+    if projects.count == 1 {
       let startDate = TimeInterval(projects[0].startDate.timeIntervalSince1970 + TimeInterval(projects[0].duration))
       let endDate = Date().timeIntervalSince1970
       
