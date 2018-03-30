@@ -71,7 +71,6 @@ final class FeaturedProjectController {
     
     //Save the new featured project
     try featuredProject.save()
-    }
     //Return the newly created featureProject
     return try featuredProject.makeJSON()
   }
