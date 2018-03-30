@@ -141,6 +141,17 @@ final class ProjectController {
     //Check if the user requesting the update is equal to the project user_id
     if request.headers["user_id"]?.int == project.user_id.int {
       
+      try project.featured.delete()
+      
+      //Declare the assets associated with the Project by searching the project_id
+      let assets = try project.assets.all()
+      
+      //Go through each asset and attempt to delete it
+      for asset in assets {
+        try asset.delete()
+      }
+      
+      
       //Delete the project
       try project.delete()
       

@@ -19,3 +19,4 @@ DerivedData/
 # End of https://www.gitignore.io/api/vapor
 **.pyc
 bin/config.json
+dump.rdb

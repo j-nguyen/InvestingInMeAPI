@@ -122,4 +122,8 @@ extension Project {
   var assets: Children<Project, Asset> {
     return children()
   }
+  
+  var featured: Children<Project, FeaturedProject> {
+    return children()
+  }
 }

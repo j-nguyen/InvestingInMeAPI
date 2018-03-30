@@ -13,6 +13,7 @@ final class FeaturedProject: Model, Timestampable {
   // MARK: Properties
   var project_id: Identifier
   var duration: Int64
+  var startDate: Date
   let storage: Storage = Storage()
   
   /**
@@ -21,21 +22,24 @@ final class FeaturedProject: Model, Timestampable {
       - project_id: The identifier needed for the relationship between a featured project and a normal project
       - duration: The amount of time that the featured project is going to be on for
    */
-  init(project_id: Identifier, duration: Int64) {
+    init(project_id: Identifier, duration: Int64, startDate: Date = Date()) {
     self.project_id = project_id
     self.duration = duration
+    self.startDate = startDate
   }
   
   // MARK: Row Properties used for connecting with the columns on the table
   init(row: Row) throws {
     project_id = try row.get("project_id")
     duration = try row.get("duration")
+    startDate = try row.get("startDate")
   }
   
   func makeRow() throws -> Row {
     var row = Row()
     try row.set("project_id", project_id)
     try row.set("duration", duration)
+    try row.set("startDate", startDate)
     return row
   }
 }
@@ -54,6 +58,7 @@ extension FeaturedProject: Preparation {
       db.id()
       db.parent(Project.self)
       db.int("duration")
+      db.date("startDate")
     }
   }
   
@@ -69,6 +74,7 @@ extension FeaturedProject: JSONRepresentable {
     try json.set("id", id)
     try json.set("project", project.get()?.makeJSON())
     try json.set("duration", duration)
+    try json.set("startDate", startDate)
     return json
   }
 }

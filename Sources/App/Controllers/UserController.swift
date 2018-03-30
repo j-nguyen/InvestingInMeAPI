@@ -4,7 +4,6 @@
 //
 //  Created by Liam Goodwin on 2018-01-25.
 //
-
 import Foundation
 import Vapor
 import HTTP
@@ -42,8 +41,8 @@ final class UserController {
       let role_id = request.json?["role_id"]?.int,
       let project_description = request.json?["project_description"]?.string,
       let description_needs = request.json?["description_needs"]?.string
-    else {
-      throw Abort(.badRequest, reason: "Missing required fields!")
+      else {
+        throw Abort(.badRequest, reason: "Missing required fields!")
     }
     
     //Check if the user_id in the authorization header is the user_id of the project
@@ -60,7 +59,7 @@ final class UserController {
     guard try Role.find(role_id) != nil else {
       throw Abort(.notFound, reason: "This role doesn't exist!")
     }
-      
+    
     //Instaniate the project using the variables we created
     let project = try Project(
       user_id: Identifier(user_id),
@@ -108,12 +107,12 @@ final class UserController {
     guard let id = req.parameters["id"]?.int else {
       throw Abort.badRequest
     }
-
+    
     // check to make sure that user is you
     guard req.headers["user_id"]?.int == id else {
       throw Abort(.forbidden, reason: "You can only view your own connections!")
     }
-  
+    
     let connection = try Connection.makeQuery()
       .or { orGroup in
         try orGroup.filter("inviter_id", id)
@@ -174,7 +173,7 @@ final class UserController {
     }
     
     if let phone_number = request.json?["phone_number"]?.string {
-//      try OnlyPhoneNumberValidator().validate(phone_number)
+      //      try OnlyPhoneNumberValidator().validate(phone_number)
       user.phone_number = phone_number
     }
     
