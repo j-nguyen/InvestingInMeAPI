@@ -100,7 +100,9 @@ final class AssetController {
     }
     
     for asset in assets {
-      try asset.delete()
+      if !asset.project_icon {
+        try asset.delete()
+      }
     }
     
     return try JSON(node: ["message": "Assets deleted!"])
