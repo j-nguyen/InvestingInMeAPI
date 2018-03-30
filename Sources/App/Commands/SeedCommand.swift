@@ -146,7 +146,7 @@ final class SeedCommand: Command {
   }
   
   func createFeaturedProjects() throws {
-    for _ in 1...3 {
+    for _ in 1...100 {
       let projects = try Project.all()
       let project = projects.random
       if let project = project {

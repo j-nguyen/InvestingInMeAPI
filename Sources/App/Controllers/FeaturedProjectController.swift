@@ -14,18 +14,30 @@ final class FeaturedProjectController {
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
-    var projects = try FeaturedProject.all()
+    let projects = try FeaturedProject.makeQuery().sort("startDate", .descending).limit(6).all()
+    var notExpired: [FeaturedProject] = []
+    let half = projects.count / 2
+    var counterExpire = half
     
-    for (index, project) in projects.enumerated() {
-       let expire_time = project.createdAt?.addingTimeInterval(Double(project.duration))
-      if let expire_time = expire_time, expire_time < Date() {
-        try project.delete()
-        projects.remove(at: index)
+    for i in 0..<half {
+      let startDate = TimeInterval(projects[i].startDate.timeIntervalSince1970 + TimeInterval(projects[i].duration))
+      let endDate = Date().timeIntervalSince1970
+      if startDate > endDate {
+        notExpired.append(projects[i])
+      } else {
+        counterExpire += 1
+        try projects[i].delete()
       }
     }
     
+    for i in half..<counterExpire {
+        projects[i].startDate = Date()
+        try projects[i].save()
+        notExpired.append(projects[i])
+    }
+    
     //Return all Featured Projects
-    return try projects.makeJSON()
+    return try notExpired.makeJSON()
   }
   
   //MARK: Create Feature Project
