@@ -63,11 +63,15 @@ final class FeaturedProjectController {
     }
     
     //Instaniate the featured project using the variables we created
+    guard try FeaturedProject.makeQuery().filter("project_id", project_id).first() == nil else {
+       throw Abort(.conflict, reason: "The project you’ve added is already featured!")
+    }
+    
     let featuredProject = FeaturedProject(project_id: Identifier(project_id), duration: Int64(duration))
     
     //Save the new featured project
     try featuredProject.save()
-    
+    }
     //Return the newly created featureProject
     return try featuredProject.makeJSON()
   }
