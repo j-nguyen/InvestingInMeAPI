@@ -4,7 +4,6 @@
 //
 //  Created by Liam Goodwin on 2018-01-25.
 //
-
 import Foundation
 import Vapor
 import HTTP
@@ -42,8 +41,8 @@ final class UserController {
       let role_id = request.json?["role_id"]?.int,
       let project_description = request.json?["project_description"]?.string,
       let description_needs = request.json?["description_needs"]?.string
-    else {
-      throw Abort(.unprocessableEntity, reason: "Missing required fields!")
+      else {
+        throw Abort(.badRequest, reason: "Missing required fields!")
     }
     
     //Check if the user_id in the authorization header is the user_id of the project
@@ -61,13 +60,8 @@ final class UserController {
       throw Abort(.notFound, reason: "This role doesn't exist!")
     }
     
-    // Make sure that we've gathered at least 1 image
-    guard let images: [String] = try request.json?.get("images"), images.count > 0 && images.count < 3 else {
-      throw Abort(.unprocessableEntity, reason: "We need at least 1 to 3 screenshots of the project!")
-    }
-      
     //Instaniate the project using the variables we created
-    let project = Project(
+    let project = try Project(
       user_id: Identifier(user_id),
       name: name,
       category_id: Identifier(category_id),
@@ -79,45 +73,17 @@ final class UserController {
     // Save the new project
     try project.save()
     
-    // Set up the configurations
-    guard let config = drop?.config["cloudinary"] else { throw Abort.serverError }
-    let cloudService = try CloudinaryService(config: config)
+    // save the asset
+    let projectIconAsset = try Asset(
+      project_id: project.assertExists(),
+      file_type: "Image",
+      url: project.name.generatePlaceholder(),
+      file_name: "Placeholder",
+      file_size: 0,
+      project_icon: true
+    )
     
-    // In here, we'll check if the user has an image placed. If not, then it'll create the others for us
-    var projectIconFile = request.json?["projectIcon"]?.string
-    
-    if let projectIconFile = projectIconFile {
-      
-      _ = try cloudService.uploadFile(
-        type: .image,
-        file: projectIconFile,
-        projectIcon: true,
-        project: project
-      )
-    } else {
-      // generate the placeholder like so
-      projectIconFile = project.name.generatePlaceholder()
-      // save the asset
-      let projectIconAsset = try Asset(
-        project_id: project.assertExists(),
-        file_type: "Image",
-        url: projectIconFile ?? "https://via.placeholder.com/100",
-        file_name: "Placeholder",
-        file_size: 0,
-        project_icon: true
-      )
-      try projectIconAsset.save()
-    }
-
-    // we can now add images into the project
-    for image in images {
-      _ = try cloudService.uploadFile(
-        type: .image,
-        file: image,
-        projectIcon: false,
-        project: project
-      )
-    }
+    try projectIconAsset.save()
     
     //Return the newly created project
     return try project.makeJSON()
@@ -141,18 +107,36 @@ final class UserController {
     guard let id = req.parameters["id"]?.int else {
       throw Abort.badRequest
     }
-
+    
     // check to make sure that user is you
     guard req.headers["user_id"]?.int == id else {
       throw Abort(.forbidden, reason: "You can only view your own connections!")
     }
-  
+    
     let connection = try Connection.makeQuery()
       .or { orGroup in
         try orGroup.filter("inviter_id", id)
         try orGroup.filter("invitee_id", id)
       }
       .all()
+    
+    if let connectionId = req.query?["connection_id"]?.int {
+      guard let existingConnection = try Connection
+        .makeQuery()
+        .or({ orGroup in
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", id)
+            try andGroup.filter("invitee_id", connectionId)
+          }
+          try orGroup.and { andGroup in
+            try andGroup.filter("inviter_id", connectionId)
+            try andGroup.filter("invitee_id", id)
+          }
+        }).first() else {
+          throw Abort(.notFound, reason: "Could not find connection!")
+      }
+      return try existingConnection.makeJSON()
+    }
     
     return try connection.makeJSON()
   }
@@ -173,10 +157,25 @@ final class UserController {
     }
     
     //Update description, and experience_and_credentials if they have been passed through the url
-    user.description = request.json?["description"]?.string ?? user.description
-    user.experience_and_credentials = request.json?["experience_and_credentials"]?.string ?? user.experience_and_credentials
-    user.location = request.json?["location"]?.string ?? user.location
-    user.phone_number = request.json?["phone_number"]?.string ?? user.phone_number
+    if let description = request.json?["description"]?.string {
+      try CustomAlphaNumericValidator().validate(description)
+      user.description = description
+    }
+    
+    if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
+      try CustomAlphaNumericValidator().validate(experience_and_credentials)
+      user.experience_and_credentials = experience_and_credentials
+    }
+    
+    if let location = request.json?["location"]?.string {
+      try CustomAlphaNumericValidator().validate(location)
+      user.location = location
+    }
+    
+    if let phone_number = request.json?["phone_number"]?.string {
+      //      try OnlyPhoneNumberValidator().validate(phone_number)
+      user.phone_number = phone_number
+    }
     
     //Update role_id if it has been passed through the url
     if let role_id = request.json?["role_id"]?.int {
@@ -238,7 +237,7 @@ final class UserController {
     if let user = try User.makeQuery().filter("google_id", sub).first() {
       try payload.set("user_id", user.id)
     } else {
-      let user = User(
+      let user = try User(
         google_id: sub,
         email: try jwt.payload.get("email"),
         name: try jwt.payload.get("name"),

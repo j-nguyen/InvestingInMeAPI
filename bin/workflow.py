@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Created by: Johnny Nguyen
 # Last modified: March 1st 2018
