@@ -17,12 +17,14 @@ final class Notification: Model, Timestampable {
   var message: String
   var type: String
   var type_id: Int
+  var have_read: Bool
   
-  init(user_id: Identifier, message: String, type: String, type_id: Int) {
+  init(user_id: Identifier, message: String, type: String, type_id: Int, have_read: Bool = false) {
     self.user_id = user_id
     self.message = message
     self.type = type
     self.type_id = type_id
+    self.have_read = have_read
   }
   
   init(row: Row) throws {
@@ -30,6 +32,7 @@ final class Notification: Model, Timestampable {
     message = try row.get("message")
     type = try row.get("type")
     type_id = try row.get("type_id")
+    have_read = try row.get("have_read")
   }
   
   func makeRow() throws -> Row {
@@ -56,6 +59,7 @@ extension Notification: Preparation {
       db.string("message")
       db.string("type")
       db.int("type_id")
+      db.bool("have_read")
     }
   }
   
@@ -71,6 +75,7 @@ extension Notification: JSONRepresentable {
     try json.set("message", message)
     try json.set("type", type)
     try json.set("type_id", type_id)
+    try json.set("have_read", have_read)
     return json
   }
 }
