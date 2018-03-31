@@ -71,17 +71,20 @@ final class FeaturedProjectController {
           .filter("startDate", .lessThanOrEquals, featuredProject.startDate)
           .sort("startDate", .descending)
           .all()
-          .reduce(Int64(highestDate.startDate.timeIntervalSince1970)) { (project, featuredProject)  in
-            project + featuredProject.duration
-          }
         
-        let date = Date(timeIntervalSince1970: TimeInterval(featuredProjects))
+        var totalTime = Int64(highestDate.startDate.timeIntervalSince1970)
+        
+        for i in 0..<(featuredProjects.count / 3) {
+          totalTime += featuredProjects[i].duration
+        }
+        
+        let date = Date(timeIntervalSince1970: TimeInterval(totalTime))
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
         
         let dateString = dateFormatter.string(from: date)
         
-        throw Abort(.conflict, reason: "The project you’ve added is already featured! It will be featured on \(dateString)")
+        throw Abort(.conflict, reason: "The project you’ve added is already featured! It will be featured roughly on \(dateString)")
       } else {
         throw Abort(.conflict, reason: "The project you've added is already featured.")
       }
