@@ -30,6 +30,7 @@ final class V1Collection: RouteCollection {
     let connectionController = ConnectionController()
     let featuredProjectController = FeaturedProjectController()
     let assetController = AssetController()
+    let notificationController = NotificationController()
     
     // Declare the middlewares
     let authMiddleware = AuthMiddleware()
@@ -74,6 +75,12 @@ final class V1Collection: RouteCollection {
       featured_project.get("/", handler: featuredProjectController.index)
       featured_project.post("/", handler: featuredProjectController.create)
       featured_project.delete(":id", handler: featuredProjectController.delete)
+    }
+    
+    // MARK: Notification routes
+    api.grouped(authMiddleware, rateMiddleware).group("notifications") { notifications in
+      notifications.get("/", handler: notificationController.index)
+      notifications.delete(":id", handler: notificationController.delete)
     }
   }
 }

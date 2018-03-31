@@ -36,5 +36,6 @@ extension Config {
     preparations.append(Project.self)
     preparations.append(Asset.self)
     preparations.append(FeaturedProject.self)
+    preparations.append(Notification.self)
   }
 }
