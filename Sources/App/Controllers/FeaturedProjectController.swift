@@ -62,9 +62,30 @@ final class FeaturedProjectController {
       throw Abort.badRequest
     }
     
+    
+    
     //Instaniate the featured project using the variables we created
     guard try FeaturedProject.makeQuery().filter("project_id", project_id).first() == nil else {
-       throw Abort(.conflict, reason: "The project you’ve added is already featured!")
+      let featuredProject = try FeaturedProject.makeQuery().filter("project_id", project_id).first()!
+      let featuredProjects = try FeaturedProject
+        .makeQuery()
+        .filter("startDate", .lessThanOrEquals, featuredProject.startDate)
+        .sort("startDate", .descending)
+        .all()
+        .reduce(0) { (project, featuredProject)  in
+          project + featuredProject.duration + Int64(featuredProject.startDate.timeIntervalSince1970)
+        }
+      
+      
+      
+      var date = Date(timeIntervalSince1970: TimeInterval(featuredProjects))
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
+      
+      let dateString = dateFormatter.string(from: date)
+      
+       throw Abort(.conflict, reason: "The project you’ve added is already featured! It will be featured on \(dateString)")
+      
     }
     
     let featuredProject = FeaturedProject(project_id: Identifier(project_id), duration: Int64(duration))
