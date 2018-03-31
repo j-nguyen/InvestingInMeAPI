@@ -59,10 +59,6 @@ final class ConnectionController {
         throw Abort.badRequest
       }
       
-      if request.headers["user_id"]?.int == invitee_id {
-        
-      }
-      
       //Update accepted
       connection.accepted = accepted
       
@@ -109,6 +105,31 @@ final class ConnectionController {
     )
   
     try connection.save()
+    
+    // Send a notification to both user
+    guard
+      let invitee = try connection.invitee.get(),
+      let inviter = try connection.inviter.get(),
+      let connectionId = connection.id?.int else {
+      throw Abort.notFound
+    }
+    
+    let notification = try Notification(
+      user_id: invitee.assertExists(),
+      message: "\(inviter.name) has requested to connect with you!",
+      type: Notification.NotificationType.connection.rawValue,
+      type_id: connectionId
+    )
+    
+    let otherNotification = try Notification(
+      user_id: inviter.assertExists(),
+      message: "\(invitee.name) has requested to connect with you!",
+      type: Notification.NotificationType.connection.rawValue,
+      type_id: connectionId
+    )
+    
+    try notification.save()
+    try otherNotification.save()
     
     return try connection.makeJSON()
     

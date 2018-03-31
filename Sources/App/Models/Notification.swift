@@ -49,6 +49,12 @@ extension Notification {
   var user: Parent<Notification, User> {
     return parent(id: user_id)
   }
+  
+  public enum NotificationType: String {
+    case connection = "Connection"
+    case project = "Project"
+    case featuredProject = "Featured Project"
+  }
 }
 
 extension Notification: Preparation {
