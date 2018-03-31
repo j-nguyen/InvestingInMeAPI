@@ -59,9 +59,12 @@ final class ConnectionController {
         throw Abort.badRequest
       }
       
+      if request.headers["user_id"]?.int == invitee_id {
+        
+      }
+      
       //Update accepted
       connection.accepted = accepted
-      
       
       //Save the connection
       try connection.save()
