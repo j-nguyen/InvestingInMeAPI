@@ -15,9 +15,8 @@ final class ConnectionController {
   func show(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the connection_id requested in the url
-    guard let connection_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let connection_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
   
     guard let invite = try Connection.find(connection_id) else {

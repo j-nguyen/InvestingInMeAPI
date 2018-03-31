@@ -151,7 +151,6 @@ final class ProjectController {
         try asset.delete()
       }
       
-      
       //Delete the project
       try project.delete()
       
