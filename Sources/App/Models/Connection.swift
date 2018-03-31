@@ -77,8 +77,6 @@ extension Connection: Preparation {
       db.parent(User.self, foreignIdKey: "invitee_id")
       db.bool("accepted", default: false)
       db.string("message")
-      // we'll want to set a raw unique constraint
-      db.raw("UNIQUE(\"inviter_id\", \"invitee_id\")")
     }
   }
   
