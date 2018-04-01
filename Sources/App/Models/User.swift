@@ -40,12 +40,6 @@ final class User: Model, Timestampable {
     experience_and_credentials: String = "",
     player_id: Int? = nil
   ) throws {
-    // Validate some data before conitinug
-    try OnlyPhoneNumberValidator().validate(phone_number)
-    try ASCIIValidator().validate(location)
-    try ASCIIValidator().validate(description)
-    try ASCIIValidator().validate(experience_and_credentials)
-    
     // Set our values here
     self.google_id = google_id
     self.email = email

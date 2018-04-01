@@ -20,8 +20,8 @@ public struct OnlyPhoneNumberValidator: Validator {
    - throws: an error if validation fails
    */
   public func validate(_ input: String) throws {
-    guard input.range(of: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", options: [.regularExpression]) != nil else {
-      throw Abort.badRequest
+    guard input.range(of: "^\\d{3}-\\d{3}-\\d{4}$", options: [.regularExpression]) != nil else {
+      throw Abort(.badRequest, reason: "Not a valid phone number!")
     }
     
   }
