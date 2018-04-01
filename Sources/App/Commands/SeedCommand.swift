@@ -203,6 +203,7 @@ final class SeedCommand: Command {
       try FeaturedProject.makeQuery().delete()
       try Project.makeQuery().delete()
       try Connection.makeQuery().delete()
+      try Notification.makeQuery().delete()
       try User.makeQuery().delete()
       try Role.makeQuery().delete()
       try Category.makeQuery().delete()
