@@ -37,6 +37,5 @@ extension Config {
     preparations.append(Asset.self)
     preparations.append(FeaturedProject.self)
     preparations.append(Notification.self)
-    preparations.append(AddUserIdToNotification.self)
   }
 }
