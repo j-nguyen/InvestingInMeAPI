@@ -52,11 +52,11 @@ final class User: Model, Timestampable {
     self.name = name
     self.picture = picture
     self.email_verification = email_verification
-    self.description = description
+    self.description = description.trim()
     self.role_id = role_id
-    self.location = location
-    self.phone_number = phone_number
-    self.experience_and_credentials = experience_and_credentials
+    self.location = location.trim()
+    self.phone_number = phone_number.trim()
+    self.experience_and_credentials = experience_and_credentials.trim()
     self.player_id = player_id
   }
   
