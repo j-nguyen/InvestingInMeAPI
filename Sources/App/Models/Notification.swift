@@ -31,7 +31,7 @@ final class Notification: Model, Timestampable {
   
   init(row: Row) throws {
     owner_id = try row.get("owner_id")
-    user_id = try row.get("row_id")
+    user_id = try row.get("user_id")
     message = try row.get("message")
     type = try row.get("type")
     type_id = try row.get("type_id")
