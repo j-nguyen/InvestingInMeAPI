@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 import FluentProvider
+import Validation
 
 final class Project: Model, Timestampable {
   
@@ -31,9 +32,9 @@ final class Project: Model, Timestampable {
     description_needs: String
   ) throws {
     // Validate before beginning
-    try CustomAlphaNumericValidator().validate(name)
-    try CustomAlphaNumericValidator().validate(project_description)
-    try CustomAlphaNumericValidator().validate(description_needs)
+    try ASCIIValidator().validate(name)
+    try ASCIIValidator().validate(project_description)
+    try ASCIIValidator().validate(description_needs)
     
     // Set up our values
     self.user_id = user_id

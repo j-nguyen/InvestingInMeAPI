@@ -10,8 +10,6 @@ import Validation
 
 public struct OnlyPhoneNumberValidator: Validator {
   
-  private let allowedCharacters = "0123456789"
-  
   public init() { }
   
   /**
@@ -22,14 +20,7 @@ public struct OnlyPhoneNumberValidator: Validator {
    - throws: an error if validation fails
    */
   public func validate(_ input: String) throws {
-//    let passed = !input
-//      .lowercased()
-//      .contains { !allowedCharacters.contains($0) }
-//
-//    try Count.max(10).validate(input)
-//
-//    guard passed else {
-//      throw Abort(.badRequest, reason: "You've entered something naughty! Please try again.")
-//    }
+    input.range(of: "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$", options: [.regularExpression])
+
   }
 }
