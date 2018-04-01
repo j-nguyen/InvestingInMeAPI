@@ -17,7 +17,7 @@ final class Notification: Model, Timestampable {
   var message: String
   var type: String
   var type_id: Int
-  var have_read: Bool
+  var have_read: Bool = false
   
   init(user_id: Identifier, message: String, type: String, type_id: Int, have_read: Bool = false) {
     self.user_id = user_id
@@ -41,6 +41,7 @@ final class Notification: Model, Timestampable {
     try row.set("message", message)
     try row.set("type", type)
     try row.set("type_id", type_id)
+    try row.set("have_read", have_read)
     return row
   }
 }
