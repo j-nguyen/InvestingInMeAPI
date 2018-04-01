@@ -16,7 +16,7 @@ final class NotificationController {
       throw Abort.badRequest
     }
     
-    let notifications = try Notification.makeQuery().filter("user_id", userId)
+    let notifications = try Notification.makeQuery().filter("owner_id", userId)
     
     // We'll set up search queries to make sure that it sorts, or it only gets read ones
     if let sort = req.query?["search"]?.string {
@@ -46,7 +46,7 @@ final class NotificationController {
     
     guard let notification = try Notification.makeQuery()
       .filter("id", notificationId)
-      .and({ try $0.filter("user_id", userId) })
+      .and({ try $0.filter("owner_id", userId) })
       .first() else {
         throw Abort.notFound
     }
