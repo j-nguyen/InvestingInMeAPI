@@ -66,7 +66,8 @@ final class ConnectionController {
       // Only send a notification to the one that exists, otherwise don't
       if request.headers["user_id"]?.int == invitee_id {
         let notification = try Notification(
-          user_id: inviter.assertExists(),
+          owner_id: inviter.assertExists(),
+          user_id: invitee.assertExists(),
           message: "\(invitee.name) has accepted your connection request!",
           type: Notification.NotificationType.connection.rawValue,
           type_id: connection_id
@@ -74,7 +75,8 @@ final class ConnectionController {
         try notification.save()
       } else {
         let notification = try Notification(
-          user_id: invitee.assertExists(),
+          owner_id: invitee.assertExists(),
+          user_id: inviter.assertExists(),
           message: "\(inviter.name) has accepted your connection request!",
           type: Notification.NotificationType.connection.rawValue,
           type_id: connection_id
@@ -138,14 +140,16 @@ final class ConnectionController {
     }
     
     let notification = try Notification(
-      user_id: invitee.assertExists(),
+      owner_id: invitee.assertExists(),
+      user_id: inviter.assertExists(),
       message: "\(inviter.name) has requested to connect with you!",
       type: Notification.NotificationType.connection.rawValue,
       type_id: connectionId
     )
     
     let otherNotification = try Notification(
-      user_id: inviter.assertExists(),
+      owner_id: inviter.assertExists(),
+      user_id: invitee.assertExists(),
       message: "\(invitee.name) has requested to connect with you!",
       type: Notification.NotificationType.connection.rawValue,
       type_id: connectionId

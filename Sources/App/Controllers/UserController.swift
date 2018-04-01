@@ -8,6 +8,7 @@ import Foundation
 import Vapor
 import HTTP
 import JWT
+import Validation
 
 final class UserController {
   
@@ -158,22 +159,22 @@ final class UserController {
     
     //Update description, and experience_and_credentials if they have been passed through the url
     if let description = request.json?["description"]?.string {
-      try CustomAlphaNumericValidator().validate(description)
+      try ASCIIValidator().validate(description)
       user.description = description
     }
     
     if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
-      try CustomAlphaNumericValidator().validate(experience_and_credentials)
+      try ASCIIValidator().validate(experience_and_credentials)
       user.experience_and_credentials = experience_and_credentials
     }
     
     if let location = request.json?["location"]?.string {
-      try CustomAlphaNumericValidator().validate(location)
+      try ASCIIValidator().validate(location)
       user.location = location
     }
     
     if let phone_number = request.json?["phone_number"]?.string {
-      //      try OnlyPhoneNumberValidator().validate(phone_number)
+      try OnlyPhoneNumberValidator().validate(phone_number)
       user.phone_number = phone_number
     }
     
