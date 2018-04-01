@@ -41,8 +41,8 @@ final class Project: Model, Timestampable {
     self.name = name
     self.category_id = category_id
     self.role_id = role_id
-    self.project_description = project_description
-    self.description_needs = description_needs
+    self.project_description = project_description.trim()
+    self.description_needs = description_needs.trim()
   }
   
   //MARK: Initialize Row
