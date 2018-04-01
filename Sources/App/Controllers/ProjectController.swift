@@ -93,16 +93,19 @@ final class ProjectController {
     // Add validations for these specific naming schemes
     if let name = request.json?["name"]?.string {
       try ASCIIValidator().validate(name)
+      project.name = name
     }
     
     // Check for the project description
     if let project_description = request.json?["project_description"]?.string {
       try ASCIIValidator().validate(project_description)
+      project.project_description = project_description
     }
     
     // Now check for description needs
     if let description_needs = request.json?["description_needs"]?.string {
       try ASCIIValidator().validate(description_needs)
+      project.description_needs = description_needs
     }
     
     //Update category_id, and role_id if they have been requested to change
