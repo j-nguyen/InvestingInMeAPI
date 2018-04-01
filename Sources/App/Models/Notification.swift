@@ -93,6 +93,8 @@ extension Notification: JSONRepresentable {
     try json.set("type", type)
     try json.set("type_id", type_id)
     try json.set("have_read", have_read)
+    try json.set("created_at", createdAt)
+    try json.set("updated_at", updatedAt)
     return json
   }
 }
