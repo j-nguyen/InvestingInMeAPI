@@ -27,9 +27,19 @@ class AssetControllerTests: TestCase {
   }
 
   func createAsset() throws -> Int? {
+    let project = try Project(
+      user_id: 1,
+      name: "OPFKSD",
+      category_id: try Category.makeQuery().first()!.assertExists(),
+      role_id: try Role.makeQuery().first()!.assertExists(),
+      project_description: "sdfksm",
+      description_needs: "sldkmf"
+    )
+    try project.save()
+    
     // we don't want to use the cloudinary service, so we'll use the manual test in here
-    let asset = Asset(
-      project_id: 1,
+    let asset = try Asset(
+      project_id: project.assertExists(),
       file_type: "Image",
       url: "http://via.placeholder.com/1x1",
       file_name: "placeholder",

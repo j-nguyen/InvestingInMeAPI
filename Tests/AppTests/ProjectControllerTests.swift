@@ -66,8 +66,8 @@ class ProjectControllerTests: TestCase {
 
 extension ProjectControllerTests {
   static let allTests = [
-    ("testCreateProject", testCreateProject),
-    ("testUpdateProject", testUpdateProject),
-    ("testDeleteProject", testDeleteProject)
+    ("testCreateProject", testCreateProject)
+//    ("testUpdateProject", testUpdateProject),
+//    ("testDeleteProject", testDeleteProject)
   ]
 }

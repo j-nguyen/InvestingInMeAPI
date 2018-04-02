@@ -16,11 +16,8 @@ import Random
 class ConnectionControllerTests: TestCase {
   let connectionController = ConnectionController()
   
-  // our connection id
-  var connectionId: Int!
-  
   func testRoutes() throws {
-    guard let id = try testCreateConnection() else {
+    guard let id = try createConnection() else {
       XCTFail()
       return
     }
@@ -72,7 +69,7 @@ class ConnectionControllerTests: TestCase {
     try XCTAssertNotEqual(res.makeResponse().json?["accepted"]?.bool, false)
   }
 
-  func testDeleteConnection(id: Int) throws {
+  func deleteConnection(id: Int) throws {
     let request = Request.makeTest(method: .delete, headers: ["user_id": "\(1)"])
     request.parameters["id"] = Parameters(id)
     
