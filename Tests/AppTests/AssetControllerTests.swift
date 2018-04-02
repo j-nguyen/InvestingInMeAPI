@@ -15,31 +15,21 @@ import Random
 
 class AssetControllerTests: TestCase {
   
-  let drop = try! Droplet.testable()
+  let assetController = AssetController()
   
-  var project: Project?
-  
-  override func setUp() {
-    super.setUp()
-    Testing.onFail = XCTFail
-    // attempt to create the project next
-    let user = try! User.makeQuery().first()
+  func testRoutes() throws {
+    guard let id = try createAsset() else {
+      XCTFail()
+      return
+    }
     
-    project = try! Project(
-      user_id: user!.assertExists(),
-      name: "Project",
-      category_id: Category.Group.mobileApp.category().assertExists(),
-      role_id: Role.Group.developer.role().assertExists(),
-      project_description: "sdfsdf",
-      description_needs: "sdfspdf"
-    )
-    try! project!.save()
+    try deleteAsset(id: id)
   }
 
-  func testCreateAsset() throws {
+  func createAsset() throws -> Int? {
     // we don't want to use the cloudinary service, so we'll use the manual test in here
-    let asset = try Asset(
-      project_id: project!.assertExists(),
+    let asset = Asset(
+      project_id: 1,
       file_type: "Image",
       url: "http://via.placeholder.com/1x1",
       file_name: "placeholder",
@@ -52,20 +42,23 @@ class AssetControllerTests: TestCase {
     
     // attempt
     XCTAssertNotNil(asset)
+    
+    return asset.id?.int
   }
   
-  func testDeleteAssets() throws {
-    // attempt to delete all assets
-    try Asset.makeQuery().delete()
+  func deleteAsset(id: Int) throws {
+    let req = Request.makeTest(method: .delete, headers: ["user_id": "\(1)"])
+    req.parameters["id"] = Parameters(id)
     
-    XCTAssertEqual(0, try Asset.count())
+    let res = try assetController.delete(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
   }
 }
 
 // MARK: XCTest - Linux
 extension AssetControllerTests {
   static let allTests = [
-    ("testCreateAsset", testCreateAsset),
-    ("testDeleteAssets", testDeleteAssets)
+    ("testRoutes", testRoutes)
   ]
 }
