@@ -173,8 +173,10 @@ final class UserController {
     }
     
     if let phone_number = request.json?["phone_number"]?.string {
-      //      try OnlyPhoneNumberValidator().validate(phone_number)
-      user.phone_number = phone_number
+      if !phone_number.isEmpty {
+        try OnlyPhoneNumberValidator().validate(phone_number)
+      }
+        user.phone_number = phone_number
     }
     
     //Update role_id if it has been passed through the url
