@@ -15,9 +15,8 @@ final class ConnectionController {
   func show(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the connection_id requested in the url
-    guard let connection_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let connection_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
   
     guard let invite = try Connection.find(connection_id) else {
@@ -43,14 +42,14 @@ final class ConnectionController {
     }
     
     //Declare the connection by searching the connection model at the given connection_id
-    guard let connection = try Connection.find(connection_id)
-      else {
-        throw Abort.notFound
+    guard let connection = try Connection.find(connection_id) else {
+      throw Abort.notFound
     }
     
     //Declare the invitee and inviter ids
-    guard let invitee_id = connection.invitee_id.int else { throw Abort.badRequest }
-    guard let inviter_id = connection.inviter_id.int else { throw Abort.badRequest }
+    guard let invitee_id = connection.invitee_id.int, let inviter_id = connection.inviter_id.int else {
+      throw Abort.badRequest
+    }
     
     //Check if the user requesting the update is equal to the connection user_id
     if request.headers["user_id"]?.int == invitee_id || request.headers["user_id"]?.int == inviter_id {
@@ -59,9 +58,34 @@ final class ConnectionController {
         throw Abort.badRequest
       }
       
+      // if the user was the invitee that was accepting it, then the invitee should get the notification that the connection was sent
+      guard let invitee = try connection.invitee.get(), let inviter = try connection.inviter.get() else {
+        throw Abort.notFound
+      }
+      
+      // Only send a notification to the one that exists, otherwise don't
+      if request.headers["user_id"]?.int == invitee_id {
+        let notification = try Notification(
+          owner_id: inviter.assertExists(),
+          user_id: invitee.assertExists(),
+          message: "\(invitee.name) has accepted your connection request!",
+          type: Notification.NotificationType.connection.rawValue,
+          type_id: connection_id
+        )
+        try notification.save()
+      } else {
+        let notification = try Notification(
+          owner_id: invitee.assertExists(),
+          user_id: inviter.assertExists(),
+          message: "\(inviter.name) has accepted your connection request!",
+          type: Notification.NotificationType.connection.rawValue,
+          type_id: connection_id
+        )
+        try notification.save()
+      }
+      
       //Update accepted
       connection.accepted = accepted
-      
       
       //Save the connection
       try connection.save()
@@ -106,6 +130,33 @@ final class ConnectionController {
     )
   
     try connection.save()
+    
+    // Send a notification to both user
+    guard
+      let invitee = try connection.invitee.get(),
+      let inviter = try connection.inviter.get(),
+      let connectionId = connection.id?.int else {
+      throw Abort.notFound
+    }
+    
+    let notification = try Notification(
+      owner_id: invitee.assertExists(),
+      user_id: inviter.assertExists(),
+      message: "\(inviter.name) has requested to connect with you!",
+      type: Notification.NotificationType.connection.rawValue,
+      type_id: connectionId
+    )
+    
+    let otherNotification = try Notification(
+      owner_id: inviter.assertExists(),
+      user_id: invitee.assertExists(),
+      message: "\(invitee.name) has requested to connect with you!",
+      type: Notification.NotificationType.connection.rawValue,
+      type_id: connectionId
+    )
+    
+    try notification.save()
+    try otherNotification.save()
     
     return try connection.makeJSON()
     

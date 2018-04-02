@@ -115,7 +115,7 @@ final class SeedCommand: Command {
         )
         try assetProfile.save()
         console.print("~~~~ Saved App Profile Icon ~~~~")
-        for _ in 1...4 {
+        for _ in 1...3 {
           // Set the beginning to have the icon true and the rest not
           let assetObj = try Asset(
             project_id: project.assertExists(),
@@ -129,18 +129,6 @@ final class SeedCommand: Command {
           try assetObj.save()
           console.print("~~~~ Saved Picture ~~~~~")
         }
-        // Create the video here
-        let videoObj = try Asset(
-          project_id: project.assertExists(),
-          file_type: assets[1].get("file_type"),
-          url: assets[1].get("url"),
-          file_name: assets[1].get("file_name"),
-          file_size: assets[1].get("file_size"),
-          project_icon: false,
-          public_id: "1234"
-        )
-        try videoObj.save()
-        console.print("~~~~ Saved Video ~~~~~")
       }
     }
   }
@@ -215,6 +203,7 @@ final class SeedCommand: Command {
       try FeaturedProject.makeQuery().delete()
       try Project.makeQuery().delete()
       try Connection.makeQuery().delete()
+      try Notification.makeQuery().delete()
       try User.makeQuery().delete()
       try Role.makeQuery().delete()
       try Category.makeQuery().delete()
