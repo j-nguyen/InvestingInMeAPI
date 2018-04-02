@@ -159,7 +159,6 @@ final class ConnectionController {
     try otherNotification.save()
     
     return try connection.makeJSON()
-    
   }
   
   func delete(_ request: Request) throws -> ResponseRepresentable {
