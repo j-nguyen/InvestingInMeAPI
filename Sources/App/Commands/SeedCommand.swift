@@ -198,7 +198,7 @@ final class SeedCommand: Command {
   }
   
   func run(arguments: [String]) throws {
-    if environment == .development {
+    if environment == .development || environment == .test {
       try Asset.makeQuery().delete()
       try FeaturedProject.makeQuery().delete()
       try Project.makeQuery().delete()
