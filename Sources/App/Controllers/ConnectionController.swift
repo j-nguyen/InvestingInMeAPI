@@ -158,8 +158,7 @@ final class ConnectionController {
     try notification.save()
     try otherNotification.save()
     
-    return try connection.makeJSON()
-    
+    return Response(status: .ok)
   }
   
   func delete(_ request: Request) throws -> ResponseRepresentable {

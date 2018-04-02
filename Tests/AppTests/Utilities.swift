@@ -56,7 +56,7 @@ class TestCase: XCTestCase {
     // We can just set up the user here
     if try! User.makeQuery().filter("email", "fakeuser@example.com").first() == nil {
       // create some initial setup for project and user
-      let user = try! User(google_id: URandom().makeInt(), email: "fakeuser@example.com", name: "Fake User", picture: "", email_verification: true)
+      let user = try! User(google_id: "\(URandom().makeInt())", email: "fakeuser@example.com", name: "Fake User", picture: "", email_verification: true)
       try! user.save()
     }
   }
