@@ -24,7 +24,7 @@ public struct OnlyPhoneNumberValidator: Validator {
     public func validate(_ input: String) throws {
         for char in input.lowercased() {
           guard numeric.contains(char) && input.count <= 10 else {
-            throw Abort(.badRequest, reason: "You've entered something wrong! Please try again.")
+            throw Abort(.badRequest, reason: "Your phone number must be a maximum of 10 numbers only.")
           }
         }
       }
