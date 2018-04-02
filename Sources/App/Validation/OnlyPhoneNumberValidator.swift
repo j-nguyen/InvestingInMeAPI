@@ -23,8 +23,8 @@ public struct OnlyPhoneNumberValidator: Validator {
     /// See Validator.validate
     public func validate(_ input: String) throws {
         for char in input.lowercased() {
-          guard numeric.contains(char) else {
-            throw Abort(.badRequest, reason: "You've entered something naughty! Please try again.")
+          guard numeric.contains(char) && input.count <= 10 else {
+            throw Abort(.badRequest, reason: "You've entered something wrong! Please try again.")
           }
         }
       }
