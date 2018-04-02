@@ -17,12 +17,15 @@ class NotificationControllerTests: TestCase {
   let notificationController = NotificationController()
   
   func testRoutes() throws {
-    guard let id = try createProject() else {
-      XCTFail()
-      return
-    }
+    try fetchNotficiations()
   }
   
+  func fetchNotficiations() throws {
+    let req = Request.makeTest(method: .get, headers: ["user_id": "\(1)"])
+    let res = try notificationController.index(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
+  }
 }
 
 extension NotificationControllerTests {
