@@ -27,6 +27,10 @@ class TestCase: XCTestCase {
   override func setUp() {
     Node.fuzzy = [Row.self, JSON.self, Node.self]
     Testing.onFail = XCTFail
+    
+    //
+    let droplet = try! Droplet.testable()
+    
     // We can just set up the user here
     try! Asset.makeQuery().delete()
     try! FeaturedProject.makeQuery().delete()
