@@ -9,8 +9,8 @@ import Foundation
 import Vapor
 
 final class FilterWordService {
-  
-  var filteredWords: [String] = []
+  // MARK: Properties
+  private var filteredWords: [String] = []
   
   /// Setup the initializer
   init(forPath path: String) throws {
@@ -37,6 +37,7 @@ final class FilterWordService {
   
   /// Checks if the word in there contains a string
   public func isBadWord(forContent content: String) -> Bool {
+    //: TODO- I Believe there's a faster way to do this, but this is good enough
     return filteredWords.contains(where: { $0.range(of: content, options: .caseInsensitive) != nil})
   }
 }

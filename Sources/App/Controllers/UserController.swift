@@ -61,6 +61,26 @@ final class UserController {
       throw Abort(.notFound, reason: "This role doesn't exist!")
     }
     
+    // Check for profanity
+    // Check for word filter
+    guard let dirPath = drop?.config.workDir else {
+      throw Abort.serverError
+    }
+    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
+    
+    // Check for multiple profanities
+    guard !filterWordService.isBadWord(forContent: name) else {
+      throw Abort(.badRequest, reason: "Your name contains profanity!")
+    }
+    
+    guard !filterWordService.isBadWord(forContent: project_description) else {
+      throw Abort(.badRequest, reason: "Your project description contains profanity!")
+    }
+    
+    guard !filterWordService.isBadWord(forContent: description_needs) else {
+      throw Abort(.badRequest, reason: "Your description needs contains profanity!")
+    }
+    
     //Instaniate the project using the variables we created
     let project = try Project(
       user_id: Identifier(user_id),

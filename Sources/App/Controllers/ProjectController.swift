@@ -89,22 +89,37 @@ final class ProjectController {
     }
     
     //Update name, project_description, and description_needs if they have been passed through the url
+
+    // Check for word filter
+    guard let dirPath = drop?.config.workDir else {
+      throw Abort.serverError
+    }
+    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
     
     // Add validations for these specific naming schemes
     if let name = request.json?["name"]?.string {
       try ASCIIValidator().validate(name)
+      guard !filterWordService.isBadWord(forContent: name) else {
+        throw Abort(.badRequest, reason: "Your name contains profanity!")
+      }
       project.name = name
     }
     
     // Check for the project description
     if let project_description = request.json?["project_description"]?.string {
       try ASCIIValidator().validate(project_description)
+      guard !filterWordService.isBadWord(forContent: project_description) else {
+        throw Abort(.badRequest, reason: "Your project description contains profanity!")
+      }
       project.project_description = project_description
     }
     
     // Now check for description needs
     if let description_needs = request.json?["description_needs"]?.string {
       try ASCIIValidator().validate(description_needs)
+      guard !filterWordService.isBadWord(forContent: description_needs) else {
+        throw Abort(.badRequest, reason: "Your project needs contains profanity!")
+      }
       project.description_needs = description_needs
     }
     
