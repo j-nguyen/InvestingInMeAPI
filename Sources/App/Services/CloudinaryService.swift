@@ -12,9 +12,10 @@ final class CloudinaryService {
   private let apiKey: String
   private let apiSecret: String
   private let uploadPreset: String
+  private let preset: String
   
   // Our base url to create
-  private let baseUrl: String = "https://api.cloudinary.com/v1_1/dvrolb5ai"
+  private let baseUrl: String = "https://api.cloudinary.com/v1_1"
   
   // MARK: Enums
   enum ContentType: String {
@@ -28,11 +29,13 @@ final class CloudinaryService {
     - parameter apiKey: The Api Key Token String for us we need in our url parameters
     - parameter apiSecret: The Secret we need to enter in our headers
     - parameter uploadPreset: The contents of which the metadata gets stored
+     - parameter preset: The set up
   */
-  init(apiKey: String, apiSecret: String, uploadPreset: String) {
+  init(apiKey: String, apiSecret: String, uploadPreset: String, preset: String) {
     self.apiKey = apiKey
     self.apiSecret = apiSecret
     self.uploadPreset = uploadPreset
+    self.preset = preset
   }
   
   /**
@@ -45,7 +48,8 @@ final class CloudinaryService {
     try self.init(
       apiKey: config.get("apiKey"),
       apiSecret: config.get("apiSecret"),
-      uploadPreset: config.get("uploadPreset")
+      uploadPreset: config.get("uploadPreset"),
+      preset: config.get("preset")
     )
   }
   
@@ -59,7 +63,7 @@ final class CloudinaryService {
   */
   func uploadFile(type: ContentType, file: String, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
-    let url = "\(baseUrl)/\(type.rawValue)/upload"
+    let url = "\(baseUrl)/\(preset)/\(type.rawValue)/upload"
     
     // set up our headers here
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
@@ -119,7 +123,7 @@ final class CloudinaryService {
    */
   func uploadFile(type: ContentType, file: Bytes, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
-    let url = "\(baseUrl)/\(type.rawValue)/upload"
+    let url = "\(baseUrl)/\(preset)/\(type.rawValue)/upload"
     
     // set up our headers here
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
@@ -169,7 +173,7 @@ final class CloudinaryService {
   */
   func deleteFile(type: ContentType, asset: Asset) throws {
     // generate the url once again
-    let url = "\(baseUrl)/\(type.rawValue)/destroy"
+    let url = "\(baseUrl)/\(preset)/\(type.rawValue)/destroy"
     
     // create the headers
     let headers: [HeaderKey: String] = [.contentType: "application/json"]
