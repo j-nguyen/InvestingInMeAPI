@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 import FluentProvider
+import Validation
 
 final class Connection: Model, Timestampable {
   // MARK: Properties
@@ -29,7 +30,8 @@ final class Connection: Model, Timestampable {
       - accepted: Checks if the user accepted the invite. By default, it's false
       - message: a message sent to the user about their request
   */
-  init(inviter_id: Identifier, invitee_id: Identifier, accepted: Bool = false, message: String) {
+  init(inviter_id: Identifier, invitee_id: Identifier, accepted: Bool = false, message: String) throws {    
+    // Set up our values
     self.inviter_id = inviter_id
     self.invitee_id = invitee_id
     self.accepted = accepted
@@ -75,8 +77,6 @@ extension Connection: Preparation {
       db.parent(User.self, foreignIdKey: "invitee_id")
       db.bool("accepted", default: false)
       db.string("message")
-      // we'll want to set a raw unique constraint
-      db.raw("UNIQUE(\"inviter_id\", \"invitee_id\")")
     }
   }
   

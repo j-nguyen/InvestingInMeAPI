@@ -12,33 +12,7 @@ extension Droplet {
     try config.setup()
     let drop = try Droplet(config)
     try drop.setup()
-    
-    // Changed it up so that now it'll only delete if the specified values do not exist
-    if try Role.count() == 0 {
-      //Declare the roles we will allow
-      let roles = Role.Group.allValues
-      //Iterate through the list of roles
-      for current_role in roles {
-        //Create a new role based on the current_role
-        let role = Role(role: current_role)
-        //Save the role
-        try role.save()
-      }
-    }
-    
-    // Check it now for Categories
-    if try Category.count() == 0 {
-      //Declare the categories we will allow
-      let categories = Category.Group.allValues
-      
-      //Iterate through the list of categories
-      for current_category in categories {
-        //Create a new category based on the current_category
-        let category = Category(type: current_category)
-        //Save the category
-        try category.save()
-      }
-    }
+
     return drop
   }
   func serveInBackground() throws {
@@ -53,11 +27,15 @@ class TestCase: XCTestCase {
   override func setUp() {
     Node.fuzzy = [Row.self, JSON.self, Node.self]
     Testing.onFail = XCTFail
+    
+    //
+    let droplet = try! Droplet.testable()
+    
     // We can just set up the user here
-    if try! User.makeQuery().filter("email", "fakeuser@example.com").first() == nil {
-      // create some initial setup for project and user
-      let user = try! User(google_id: URandom().makeInt(), email: "fakeuser@example.com", name: "Fake User", picture: "", email_verification: true)
-      try! user.save()
-    }
+    try! Asset.makeQuery().delete()
+    try! FeaturedProject.makeQuery().delete()
+    try! Project.makeQuery().delete()
+    try! Connection.makeQuery().delete()
+    try! Notification.makeQuery().delete()
   }
 }

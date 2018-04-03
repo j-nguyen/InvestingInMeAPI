@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 import FluentProvider
+import Validation
 
 final class Project: Model, Timestampable {
   
@@ -22,13 +23,32 @@ final class Project: Model, Timestampable {
   var description_needs: String
 
   //MARK: Initialize Project Table
-  init(user_id: Identifier, name: String, category_id: Identifier, role_id: Identifier, project_description: String, description_needs: String) {
+  init(
+    user_id: Identifier,
+    name: String,
+    category_id: Identifier,
+    role_id: Identifier,
+    project_description: String,
+    description_needs: String
+  ) throws {
+    // Validate before beginning
+    if !name.isEmpty {
+      try ASCIIValidator().validate(name)
+    }
+    if !project_description.isEmpty {
+      try ASCIIValidator().validate(project_description)
+    }
+    if !description_needs.isEmpty {
+      try ASCIIValidator().validate(description_needs)
+    }
+    
+    // Set up our values
     self.user_id = user_id
     self.name = name
     self.category_id = category_id
     self.role_id = role_id
-    self.project_description = project_description
-    self.description_needs = description_needs
+    self.project_description = project_description.trim()
+    self.description_needs = description_needs.trim()
   }
   
   //MARK: Initialize Row
@@ -107,6 +127,10 @@ extension Project {
     return parent(id: user_id)
   }
   var assets: Children<Project, Asset> {
+    return children()
+  }
+  
+  var featured: Children<Project, FeaturedProject> {
     return children()
   }
 }

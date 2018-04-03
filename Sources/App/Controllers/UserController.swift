@@ -4,11 +4,11 @@
 //
 //  Created by Liam Goodwin on 2018-01-25.
 //
-
 import Foundation
 import Vapor
 import HTTP
 import JWT
+import Validation
 
 final class UserController {
   
@@ -42,8 +42,8 @@ final class UserController {
       let role_id = request.json?["role_id"]?.int,
       let project_description = request.json?["project_description"]?.string,
       let description_needs = request.json?["description_needs"]?.string
-    else {
-      throw Abort(.badRequest, reason: "Missing required fields!")
+      else {
+        throw Abort(.badRequest, reason: "Missing required fields!")
     }
     
     //Check if the user_id in the authorization header is the user_id of the project
@@ -60,9 +60,29 @@ final class UserController {
     guard try Role.find(role_id) != nil else {
       throw Abort(.notFound, reason: "This role doesn't exist!")
     }
-      
+    
+    // Check for profanity
+    // Check for word filter
+    guard let dirPath = drop?.config.workDir else {
+      throw Abort.serverError
+    }
+    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
+    
+    // Check for multiple profanities
+    guard !filterWordService.isBadWord(forContent: name) else {
+      throw Abort(.badRequest, reason: "Your name contains profanity!")
+    }
+    
+    guard !filterWordService.isBadWord(forContent: project_description) else {
+      throw Abort(.badRequest, reason: "Your project description contains profanity!")
+    }
+    
+    guard !filterWordService.isBadWord(forContent: description_needs) else {
+      throw Abort(.badRequest, reason: "Your description needs contains profanity!")
+    }
+    
     //Instaniate the project using the variables we created
-    let project = Project(
+    let project = try Project(
       user_id: Identifier(user_id),
       name: name,
       category_id: Identifier(category_id),
@@ -73,15 +93,12 @@ final class UserController {
     
     // Save the new project
     try project.save()
-      
-    // generate the placeholder like so
-    let projectIconFile = project.name.generatePlaceholder()
     
     // save the asset
     let projectIconAsset = try Asset(
       project_id: project.assertExists(),
       file_type: "Image",
-      url: projectIconFile ?? "https://via.placeholder.com/100",
+      url: project.name.generatePlaceholder(),
       file_name: "Placeholder",
       file_size: 0,
       project_icon: true
@@ -111,12 +128,12 @@ final class UserController {
     guard let id = req.parameters["id"]?.int else {
       throw Abort.badRequest
     }
-
+    
     // check to make sure that user is you
     guard req.headers["user_id"]?.int == id else {
       throw Abort(.forbidden, reason: "You can only view your own connections!")
     }
-  
+    
     let connection = try Connection.makeQuery()
       .or { orGroup in
         try orGroup.filter("inviter_id", id)
@@ -161,10 +178,33 @@ final class UserController {
     }
     
     //Update description, and experience_and_credentials if they have been passed through the url
-    user.description = request.json?["description"]?.string ?? user.description
-    user.experience_and_credentials = request.json?["experience_and_credentials"]?.string ?? user.experience_and_credentials
-    user.location = request.json?["location"]?.string ?? user.location
-    user.phone_number = request.json?["phone_number"]?.string ?? user.phone_number
+    if let description = request.json?["description"]?.string {
+      if !description.isEmpty {
+        try ASCIIValidator().validate(description)
+      }
+      user.description = description
+    }
+    
+    if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
+      if !experience_and_credentials.isEmpty {
+        try ASCIIValidator().validate(experience_and_credentials)
+      }
+      user.experience_and_credentials = experience_and_credentials
+    }
+    
+    if let location = request.json?["location"]?.string {
+      if !location.isEmpty {
+        try ASCIIValidator().validate(location)
+      }
+      user.location = location
+    }
+    
+    if let phone_number = request.json?["phone_number"]?.string {
+      if !phone_number.isEmpty {
+        try OnlyPhoneNumberValidator().validate(phone_number)
+      }
+        user.phone_number = phone_number
+    }
     
     //Update role_id if it has been passed through the url
     if let role_id = request.json?["role_id"]?.int {
@@ -226,7 +266,7 @@ final class UserController {
     if let user = try User.makeQuery().filter("google_id", sub).first() {
       try payload.set("user_id", user.id)
     } else {
-      let user = User(
+      let user = try User(
         google_id: sub,
         email: try jwt.payload.get("email"),
         name: try jwt.payload.get("name"),

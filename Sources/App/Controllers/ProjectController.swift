@@ -8,6 +8,7 @@
 import Foundation
 import Vapor
 import HTTP
+import Validation
 
 final class ProjectController {
   
@@ -88,9 +89,39 @@ final class ProjectController {
     }
     
     //Update name, project_description, and description_needs if they have been passed through the url
-    project.name = request.json?["name"]?.string ?? project.name
-    project.project_description = request.json?["project_description"]?.string ?? project.project_description
-    project.description_needs = request.json?["description_needs"]?.string ?? project.description_needs
+
+    // Check for word filter
+    guard let dirPath = drop?.config.workDir else {
+      throw Abort.serverError
+    }
+    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
+    
+    // Add validations for these specific naming schemes
+    if let name = request.json?["name"]?.string {
+      try ASCIIValidator().validate(name)
+      guard !filterWordService.isBadWord(forContent: name) else {
+        throw Abort(.badRequest, reason: "Your name contains profanity!")
+      }
+      project.name = name
+    }
+    
+    // Check for the project description
+    if let project_description = request.json?["project_description"]?.string {
+      try ASCIIValidator().validate(project_description)
+      guard !filterWordService.isBadWord(forContent: project_description) else {
+        throw Abort(.badRequest, reason: "Your project description contains profanity!")
+      }
+      project.project_description = project_description
+    }
+    
+    // Now check for description needs
+    if let description_needs = request.json?["description_needs"]?.string {
+      try ASCIIValidator().validate(description_needs)
+      guard !filterWordService.isBadWord(forContent: description_needs) else {
+        throw Abort(.badRequest, reason: "Your project needs contains profanity!")
+      }
+      project.description_needs = description_needs
+    }
     
     //Update category_id, and role_id if they have been requested to change
     if let category_id = request.json?["category_id"]?.int {
@@ -125,6 +156,16 @@ final class ProjectController {
     
     //Check if the user requesting the update is equal to the project user_id
     if request.headers["user_id"]?.int == project.user_id.int {
+      
+      try project.featured.delete()
+      
+      //Declare the assets associated with the Project by searching the project_id
+      let assets = try project.assets.all()
+      
+      //Go through each asset and attempt to delete it
+      for asset in assets {
+        try asset.delete()
+      }
       
       //Delete the project
       try project.delete()

@@ -14,18 +14,44 @@ final class FeaturedProjectController {
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
-    var projects = try FeaturedProject.all()
+    let projects = try FeaturedProject.makeQuery().sort("startDate", .descending).limit(6).all()
+    var notExpired: [FeaturedProject] = []
     
-    for (index, project) in projects.enumerated() {
-       let expire_time = project.createdAt?.addingTimeInterval(Double(project.duration))
-      if let expire_time = expire_time, expire_time < Date() {
-        try project.delete()
-        projects.remove(at: index)
+    if projects.count == 1 {
+      let startDate = TimeInterval(projects[0].startDate.timeIntervalSince1970 + TimeInterval(projects[0].duration))
+      let endDate = Date().timeIntervalSince1970
+      
+      if startDate > endDate {
+        notExpired.append(projects[0])
+      } else {
+        try projects[0].delete()
+      }
+      
+    } else {
+    
+      let half = projects.count / 2
+      var counterExpire = half
+      
+      for i in 0..<half {
+        let startDate = TimeInterval(projects[i].startDate.timeIntervalSince1970 + TimeInterval(projects[i].duration))
+        let endDate = Date().timeIntervalSince1970
+        if startDate > endDate {
+          notExpired.append(projects[i])
+        } else {
+          counterExpire += 1
+          try projects[i].delete()
+        }
+      }
+      
+      for i in half..<counterExpire {
+          projects[i].startDate = Date()
+          try projects[i].save()
+          notExpired.append(projects[i])
       }
     }
     
     //Return all Featured Projects
-    return try projects.makeJSON()
+    return try notExpired.makeJSON()
   }
   
   //MARK: Create Feature Project
@@ -37,6 +63,33 @@ final class FeaturedProjectController {
     }
     
     //Instaniate the featured project using the variables we created
+    guard try FeaturedProject.makeQuery().filter("project_id", project_id).first() == nil else {
+      let featuredProject = try FeaturedProject.makeQuery().filter("project_id", project_id).first()!
+      if let highestDate = try featuredProject.makeQuery().sort("startDate", .descending).first() {
+        let featuredProjects = try FeaturedProject
+          .makeQuery()
+          .filter("startDate", .lessThanOrEquals, featuredProject.startDate)
+          .sort("startDate", .descending)
+          .all()
+        
+        var totalTime = Int64(highestDate.startDate.timeIntervalSince1970)
+        
+        for i in 0..<(featuredProjects.count / 3) {
+          totalTime += featuredProjects[i].duration
+        }
+        
+        let date = Date(timeIntervalSince1970: TimeInterval(totalTime))
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMM d, yyyy"
+        
+        let dateString = dateFormatter.string(from: date)
+        
+        throw Abort(.conflict, reason: "The project you’ve added is already featured! It will be featured roughly on \(dateString)")
+      } else {
+        throw Abort(.conflict, reason: "The project you've added is already featured.")
+      }
+    }
+    
     let featuredProject = FeaturedProject(project_id: Identifier(project_id), duration: Int64(duration))
     
     //Save the new featured project

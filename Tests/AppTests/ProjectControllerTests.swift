@@ -14,60 +14,84 @@ import Random
 @testable import App
 
 class ProjectControllerTests: TestCase {
-  let drop = try! Droplet.testable()
-  let user = try! User.makeQuery().filter("email", "fakeuser@example.com").first()!
+  let userController = UserController()
+  let projectController = ProjectController()
   
-  func testCreateProject() throws {
-    let project = try Project(
-      user_id: user.assertExists(),
-      name: "Project Test",
-      category_id: Category.Group.game.category().assertExists(),
-      role_id: Role.Group.developer.role().assertExists(),
-      project_description: "Im a description",
-      description_needs: "noo"
-    )
-    
-    try project.save()
-    
-    XCTAssertNotNil(project)
-  }
-  
-  func testUpdateProject() throws {
-    let project: Project
-    if try Project.makeQuery().filter("name", "Project Test").first() == nil {
-      project = try Project(
-        user_id: user.assertExists(),
-        name: "Project Test",
-        category_id: Category.Group.game.category().assertExists(),
-        role_id: Role.Group.developer.role().assertExists(),
-        project_description: "Im a description",
-        description_needs: "noo"
-      )
-      
-      try project.save()
-    } else {
-      project = try Project.makeQuery().filter("name", "Project Test").first()!
+  func testRoutes() throws {
+    guard let id = try createProject() else {
+      XCTFail()
+      return
     }
     
-    let desc = project.project_description
-    project.project_description = "random"
-    try project.save()
-    
-    XCTAssertNotEqual(desc, project.project_description)
+    try fetchUserProjects(id: id)
+    try fetchProjects()
+    try fetchProject(id: id)
+    try editProject(id: id)
+    try deleteProject(id: id)
   }
   
-  func testDeleteProject() throws {
-    let count = try Project.count()
-    try FeaturedProject.makeQuery().delete()
-    try Project.makeQuery().delete()
-    XCTAssertNotEqual(count, try Project.count())
+  func fetchUserProjects(id: Int) throws {
+    let req = Request.makeTest(method: .get)
+    req.parameters["id"] = Parameters(id)
+    let res = try userController.userProjects(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
+  }
+  
+  func fetchProjects() throws {
+    let req = Request.makeTest(method: .get, headers: ["user_id": "\(1)"])
+    let res = try projectController.index(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
+  }
+  
+  func createProject() throws -> Int? {
+    let req = Request.makeTest(method: .post, headers: ["user_id": "\(1)"])
+    req.json = try JSON(node: [
+      "user_id": 1,
+      "name": "Test",
+      "category_id": try Category.makeQuery().first()!.id!.int!,
+      "role_id": try Role.makeQuery().first()!.id!.int!,
+      "project_description": "this is a desc",
+      "description_needs": "SDFSDPFS"
+    ])
+    let res = try userController.createProject(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
+    XCTAssertNotNil(res.json?["id"]?.int)
+    
+    return res.json?["id"]?.int
+  }
+  
+  func fetchProject(id: Int) throws {
+    let req = Request.makeTest(method: .get, headers: ["user_id": "\(1)"])
+    req.parameters["id"] = Parameters(id)
+    let res = try projectController.show(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
+  }
+  
+  func editProject(id: Int) throws {
+    let req = Request.makeTest(method: .patch, headers: ["user_id": "\(1)"])
+    req.parameters["id"] = Parameters(id)
+    req.json = try JSON(node: ["name": "ABC"])
+    let res = try projectController.update(req).makeResponse()
+    
+    XCTAssertNotNil(res.json?["name"]?.string)
+    XCTAssertNotEqual(res.json?["name"]?.string, "Test")
+  }
+  
+  func deleteProject(id: Int) throws {
+    let req = Request.makeTest(method: .delete, headers: ["user_id": "\(1)"])
+    req.parameters["id"] = Parameters(id)
+    let res = try projectController.delete(req).makeResponse()
+    
+    res.assertStatus(is: .ok)
   }
 }
 
 extension ProjectControllerTests {
   static let allTests = [
-    ("testCreateProject", testCreateProject),
-    ("testUpdateProject", testUpdateProject),
-    ("testDeleteProject", testDeleteProject)
+    ("testRoutes", testRoutes)
   ]
 }
