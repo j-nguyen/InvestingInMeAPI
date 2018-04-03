@@ -32,9 +32,15 @@ final class Project: Model, Timestampable {
     description_needs: String
   ) throws {
     // Validate before beginning
-    try ASCIIValidator().validate(name)
-    try ASCIIValidator().validate(project_description)
-    try ASCIIValidator().validate(description_needs)
+    if !name.isEmpty {
+      try ASCIIValidator().validate(name)
+    }
+    if !project_description.isEmpty {
+      try ASCIIValidator().validate(project_description)
+    }
+    if !description_needs.isEmpty {
+      try ASCIIValidator().validate(description_needs)
+    }
     
     // Set up our values
     self.user_id = user_id
