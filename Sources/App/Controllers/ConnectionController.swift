@@ -122,6 +122,17 @@ final class ConnectionController {
       throw Abort(.conflict, reason: "An invitation has already been created!")
     }
     
+    // Check for word filter
+    guard let dirPath = drop?.config.workDir else {
+      throw Abort.serverError
+    }
+    
+    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
+    
+    guard !filterWordService.isBadWord(forContent: message) else {
+      throw Abort(.badRequest, reason: "Your message contains profanity!")
+    }
+    
     let connection = try Connection(
       inviter_id: Identifier(inviter_id),
       invitee_id: Identifier(invitee_id),
