@@ -25,12 +25,13 @@ final class FilterWordService {
     // Read the file contents
     do {
       // Separate them by new lines for the separated strings
-      let string = try String(contentsOfFile: path)
+      let url = URL(fileURLWithPath: path)
+      let string = try String(contentsOf: url)
       let separatedString = string.components(separatedBy: .newlines)
       return separatedString
       // Use the chance for separate strings to be added
-    } catch {
-      drop?.log.error("Could not retrieve files!")
+    } catch let e {
+      drop?.log.error("ERROR: \(e)")
       return nil
     }
   }
