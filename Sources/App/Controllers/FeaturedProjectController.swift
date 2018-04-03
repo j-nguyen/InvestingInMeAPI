@@ -14,7 +14,7 @@ final class FeaturedProjectController {
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
-    let projects = try FeaturedProject.makeQuery().sort("startDate", .descending).limit(6).all()
+    let projects = try FeaturedProject.makeQuery().sort("startDate", .ascending).limit(6).all()
     var notExpired: [FeaturedProject] = []
     
     if projects.count == 1 {
