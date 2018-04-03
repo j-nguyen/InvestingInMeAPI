@@ -22,18 +22,12 @@ final class FilterWordService {
   
   /// Reads a file, based on the path given
   private func readFile(path: String) throws -> [String]? {
-    // Read the file contents
-    do {
-      // Separate them by new lines for the separated strings
-      let url = URL(fileURLWithPath: path)
-      let string = try String(contentsOf: url)
-      let separatedString = string.components(separatedBy: .newlines)
-      return separatedString
-      // Use the chance for separate strings to be added
-    } catch let e {
-      drop?.log.error("ERROR: \(e)")
+    // Separate them by new lines for the separated strings
+    guard let string = FileManager.default.contents(atPath: path)?.makeString() else {
       return nil
     }
+    let separatedString = string.components(separatedBy: .newlines)
+    return separatedString
   }
   
   /// Checks if the word in there contains a string
