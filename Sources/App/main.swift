@@ -7,10 +7,10 @@
 
 import Vapor
 
-let drop = Droplet()
+let drop = Drop
 
-drop.get("index") { request in
-  return drop.view.make()
+drop.get("/") { request in
+  return drop.view.make("index")
 }
 
 drop.run()

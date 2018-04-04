@@ -6,6 +6,12 @@ extension Droplet {
   public func setup() throws {
     try setupRoutes()
     // Do any additional droplet setup
+    
     drop = self
+    
+    self.get("/") { request in
+      return try self.view.make("index.leaf")
+    }
+    
   }
 }
