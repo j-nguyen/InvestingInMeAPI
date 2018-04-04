@@ -18,7 +18,7 @@ final class ConnectionController {
     guard let connection_id = request.parameters["id"]?.int else {
       throw Abort.badRequest
     }
-  
+    
     guard let invite = try Connection.find(connection_id) else {
       throw Abort.notFound
     }
@@ -40,6 +40,10 @@ final class ConnectionController {
       else {
         throw Abort.badRequest
     }
+    
+    //Declare onesignal configuration
+    guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
+    let oneSignalService = try OneSignalService(config: oneSignal)
     
     //Declare the connection by searching the connection model at the given connection_id
     guard let connection = try Connection.find(connection_id) else {
@@ -73,6 +77,8 @@ final class ConnectionController {
           type_id: connection_id
         )
         try notification.save()
+        
+        try oneSignalService.sendNotification(user: inviter, content: "\(invitee.name) has accepted your connection request!")
       } else {
         let notification = try Notification(
           owner_id: invitee.assertExists(),
@@ -82,6 +88,8 @@ final class ConnectionController {
           type_id: connection_id
         )
         try notification.save()
+        
+        try oneSignalService.sendNotification(user: invitee, content: "\(inviter.name) has accepted your connection request!")
       }
       
       //Update accepted
@@ -95,8 +103,8 @@ final class ConnectionController {
     } else {
       throw Abort(.forbidden, reason: "You don't have the permissions to update a connection under this user.")
     }
-      
-}
+    
+  }
   
   // Create Connection
   func create(_ request: Request) throws -> ResponseRepresentable {
@@ -104,6 +112,10 @@ final class ConnectionController {
     guard let inviter_id = request.headers["user_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
       throw Abort.badRequest
     }
+    
+    //Declare onsignal configuration
+    guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
+    let oneSignalService = try OneSignalService(config: oneSignal)
     
     let existingConnection = try Connection
       .makeQuery()
@@ -139,7 +151,7 @@ final class ConnectionController {
       accepted: accepted,
       message: message
     )
-  
+    
     try connection.save()
     
     // Send a notification to both user
@@ -147,7 +159,7 @@ final class ConnectionController {
       let invitee = try connection.invitee.get(),
       let inviter = try connection.inviter.get(),
       let connectionId = connection.id?.int else {
-      throw Abort.notFound
+        throw Abort.notFound
     }
     
     let notification = try Notification(
@@ -157,6 +169,8 @@ final class ConnectionController {
       type: Notification.NotificationType.connection.rawValue,
       type_id: connectionId
     )
+    
+    try oneSignalService.sendNotification(user: invitee, content: "\(inviter.name) has requested to connect with you!")
     
     try notification.save()
     
@@ -182,7 +196,7 @@ final class ConnectionController {
     }
     //Delete the connection
     try connection.delete()
-
+    
     //Return a JSON confirmation message
     return try JSON(node: ["message": "Connection removed."])
   }

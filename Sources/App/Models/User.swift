@@ -10,9 +10,9 @@ import Vapor
 import FluentProvider
 import Validation
 
-final class User: Model, Timestampable {
-  let storage: Storage = Storage()
-
+public final class User: Model, Timestampable {
+  public let storage: Storage = Storage()
+  
   //MARK: User Table Variables
   var google_id: String
   var email: String
@@ -39,7 +39,7 @@ final class User: Model, Timestampable {
     phone_number: String = "",
     experience_and_credentials: String = "",
     player_id: Int? = nil
-  ) throws {
+    ) throws {
     // Set our values here
     self.google_id = google_id
     self.email = email
@@ -55,7 +55,7 @@ final class User: Model, Timestampable {
   }
   
   //MARK: Initialize Row
-  init(row: Row) throws {
+  public init(row: Row) throws {
     google_id = try row.get("google_id")
     email = try row.get("email")
     name = try row.get("name")
@@ -70,7 +70,7 @@ final class User: Model, Timestampable {
   }
   
   //MARK: Make Row
-  func makeRow() throws -> Row {
+  public func makeRow() throws -> Row {
     var row = Row()
     try row.set("google_id", google_id)
     try row.set("email", email)
@@ -92,7 +92,7 @@ final class User: Model, Timestampable {
 extension User: Preparation {
   
   //MARK: User Prepare
-  static func prepare(_ database: Database) throws {
+  public static func prepare(_ database: Database) throws {
     try database.create(self) { db in
       db.id()
       db.string("google_id")
@@ -111,7 +111,7 @@ extension User: Preparation {
   }
   
   //MARK: User Revert
-  static func revert(_ database: Database) throws {
+  public static func revert(_ database: Database) throws {
     try database.delete(self)
   }
   
@@ -119,7 +119,7 @@ extension User: Preparation {
 
 //MARK: User JSON Extension
 extension User: JSONRepresentable {
-  func makeJSON() throws -> JSON {
+  public func makeJSON() throws -> JSON {
     var json = JSON()
     
     try json.set("id", id)
