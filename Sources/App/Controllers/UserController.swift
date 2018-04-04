@@ -188,10 +188,9 @@ final class UserController {
     if let description = request.json?["description"]?.string {
       if !description.isEmpty {
         try ASCIIValidator().validate(description)
-      } else  {
         guard !filterWordService.isBadWord(forContent: description) else {
-        throw Abort(.badRequest, reason: "Your description contains profanity!")
-          }
+          throw Abort(.badRequest, reason: "Your description contains profanity!")
+        }
       }
       user.description = description
     }
@@ -199,7 +198,6 @@ final class UserController {
     if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
       if !experience_and_credentials.isEmpty {
         try ASCIIValidator().validate(experience_and_credentials)
-      } else  {
         guard !filterWordService.isBadWord(forContent: experience_and_credentials) else {
           throw Abort(.badRequest, reason: "Your experience and credentials contains profanity!")
         }
@@ -210,7 +208,6 @@ final class UserController {
     if let location = request.json?["location"]?.string {
       if !location.isEmpty {
         try ASCIIValidator().validate(location)
-      } else  {
         guard !filterWordService.isBadWord(forContent: location) else {
           throw Abort(.badRequest, reason: "Your location contains profanity!")
         }
