@@ -169,7 +169,7 @@ public final class OneSignalService {
     
     // Set up our JSON Values
     // Set a variable for users
-    let player_ids: [String] = users.map { $0.player_id ?? "" }
+    let player_ids: [Int] = users.map { $0.player_id ?? 0 }
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", player_ids)
@@ -193,13 +193,5 @@ public final class OneSignalService {
     } else {
       throw Abort(.badRequest, reason: "Could not send notification")
     }
-  }
-}
-
-extension NotificationManager {
-  public enum Notification: String {
-    case meetup
-    case invitation
-    case friend
   }
 }
