@@ -171,7 +171,7 @@ final class ConnectionController {
     )
     
      try oneSignalService.sendNotification(user: invitee, content: "\(inviter.name) has requested to connect with you!")
-    
+
     try notification.save()
     
     return try connection.makeJSON()
