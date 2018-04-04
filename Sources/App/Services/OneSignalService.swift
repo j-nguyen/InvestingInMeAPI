@@ -38,25 +38,26 @@ public final class OneSignalService {
     // Set URL
     let url = "\(baseUrl)/notifications"
     
-    // set up the content JSON
+    // Set up the content JSON
     var message = JSON()
     try message.set("en", content)
     
-    // set up our JSON values
+    // Set up our JSON values
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", [user.player_id ?? ""])
     try json.set("contents", message.makeJSON())
     
-    // set up the headers
+    // Set up the headers
     let headers: [HeaderKey: String] = [
       .contentType: "application/json",
       .authorization: "Basic \(apiKey)"
     ]
     
-    // setup the request
+    // Setup the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
+    // Setup the response
     let response = try EngineClient.factory.respond(to: request)
     
     if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
@@ -98,7 +99,7 @@ public final class OneSignalService {
     // Setup the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
-    // Setup the request
+    // Setup the response
     let response = try EngineClient.factory.respond(to: request)
     
     if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
@@ -111,29 +112,36 @@ public final class OneSignalService {
   /**
    Sends a scheduled meetup notification
    - parameters:
-   - user: User - `User` object for who we're sending the notification to
-   - date: Date - `Date` object of the date when it's being delivered
-   - content: String - The content information of what to talk about
+   - user: User - Who is receiving the notification
+   - date: Date - Date notification will be delivered
+   - content: String - Notification content
    **/
-  public func sendScheduledNotification(user: User, date: Date, content: String, type: NotificationManager.Notification, typeId: Int) throws {
+  public func sendScheduledNotification(user: User, date: Date, content: String, type: NotificationManager.Notification, typeId: Int) throws -> ResponseRepresentable {
+    
+    // Set URL
     let url = "\(baseUrl)/notifications"
-    // set up the content JSON
+    
+    // Set up the content JSON
     var message = JSON()
     try message.set("en", content)
-    // set up our JSON Values
+    
+    // Set up our JSON Values
     var json = JSON()
     try json.set("app_id", appId)
-    try json.set("include_player_ids", [user.deviceToken ?? ""])
+    try json.set("include_player_ids", [user.player_id ?? ""])
     try json.set("send_after", date.dateString)
     try json.set("contents", message.makeJSON())
-    // set up our headers
+    
+    // Set up our headers
     let headers: [HeaderKey: String] = [
       .contentType: "application/json",
       .authorization: "Basic \(apiKey)"
     ]
-    // setup the request
+    
+    // Setup the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
-    // setup the request
+    
+    // Setup the response
     let response = try EngineClient.factory.respond(to: request)
     
     if let responseJSON = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
