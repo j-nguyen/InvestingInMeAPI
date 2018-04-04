@@ -10,7 +10,7 @@ import Vapor
 import FluentProvider
 import Validation
 
-final class User: Model, Timestampable {
+public final class User: Model, Timestampable {
   let storage: Storage = Storage()
 
   //MARK: User Table Variables

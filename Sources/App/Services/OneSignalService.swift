@@ -32,9 +32,8 @@ public final class OneSignalService {
    - parameters:
    - user: User - User that will receive the notification
    - content: String - The message of the notification
-   - type: Notification - The model used
    **/
-  public func sendNotification(user: User, content: String, type: Notification) throws {
+  public func sendNotification(user: User, content: String) throws -> ResponseRepresentable {
     
     // Set URL
     let url = "\(baseUrl)/notifications"
@@ -46,7 +45,7 @@ public final class OneSignalService {
     // set up our JSON values
     var json = JSON()
     try json.set("app_id", appId)
-    try json.set("include_player_ids", [user.deviceToken ?? ""])
+    try json.set("include_player_ids", [user.player_id ?? ""])
     try json.set("contents", message.makeJSON())
     
     // set up the headers
@@ -60,46 +59,52 @@ public final class OneSignalService {
     
     let response = try EngineClient.factory.respond(to: request)
     
-    if let responseJSON = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      let uuid: String = try responseJSON.get("id")
-      let notification = Notification(uuid: uuid, type: type.rawValue, typeId: typeId)
-      try notification.save()
+    if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
+      return Response(status: .ok)
+    } else {
+      throw Abort(.badRequest, reason: "Could not send notification")
     }
   }
   
   /**
    Sends a notification to the person who requested to become friends with that user
    - parameters:
-   - user: User - A list of users we want to send the notification to
+   - user: User - List of users to send the notifications to
    - content: String - The content of which the information
    **/
-  public func sendBatchNotifications(users: [User], content: String, type: NotificationManager.Notification, typeId: Int) throws {
+  public func sendBatchNotifications(users: [User], content: String) throws -> ResponseRepresentable {
+    
+    // Set URL
     let url = "\(baseUrl)/notifications"
-    // set up the content JSON
+    
+    // Set up the content JSON
     var message = JSON()
     try message.set("en", content)
-    // set up our JSON Values
-    // set a variable for map users
-    let deviceTokens: [String] = users.map { $0.deviceToken ?? "" }
+    
+    // Set up our JSON Values
+    // Set a variable for map users
+    let deviceTokens: [Int] = users.map { $0.player_id ?? 0 }
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", deviceTokens)
     try json.set("contents", message.makeJSON())
-    // set up our headers
+    
+    // Set up our headers
     let headers: [HeaderKey: String] = [
       .contentType: "application/json",
       .authorization: "Basic \(apiKey)"
     ]
-    // setup the request
+    
+    // Setup the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
-    // setup the request
+    // Setup the request
     let response = try EngineClient.factory.respond(to: request)
     
-    if let responseJSON = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      let uuid: String = try responseJSON.get("id")
-      let notification = NotificationManager(uuid: uuid, type: type.rawValue, typeId: typeId)
-      try notification.save()
+    if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
+      return Response(status: .ok)
+    } else {
+      throw Abort(.badRequest, reason: "Could not send notification")
     }
   }
   
