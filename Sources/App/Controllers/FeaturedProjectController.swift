@@ -14,7 +14,7 @@ final class FeaturedProjectController {
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
-    let projects = try FeaturedProject.makeQuery().sort("startDate", .descending).limit(6).all()
+    let projects = try FeaturedProject.makeQuery().sort("startDate", .ascending).limit(6).all()
     var notExpired: [FeaturedProject] = []
     
     if projects.count == 1 {
@@ -65,11 +65,11 @@ final class FeaturedProjectController {
     //Instaniate the featured project using the variables we created
     guard try FeaturedProject.makeQuery().filter("project_id", project_id).first() == nil else {
       let featuredProject = try FeaturedProject.makeQuery().filter("project_id", project_id).first()!
-      if let highestDate = try featuredProject.makeQuery().sort("startDate", .descending).first() {
+      if let highestDate = try featuredProject.makeQuery().sort("startDate", .ascending).first() {
         let featuredProjects = try FeaturedProject
           .makeQuery()
           .filter("startDate", .lessThanOrEquals, featuredProject.startDate)
-          .sort("startDate", .descending)
+          .sort("startDate", .ascending)
           .all()
         
         var totalTime = Int64(highestDate.startDate.timeIntervalSince1970)

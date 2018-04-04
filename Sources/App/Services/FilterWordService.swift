@@ -22,22 +22,29 @@ final class FilterWordService {
   
   /// Reads a file, based on the path given
   private func readFile(path: String) throws -> [String]? {
-    // Read the file contents
-    do {
-      // Separate them by new lines for the separated strings
-      let string = try String(contentsOfFile: path)
-      let separatedString = string.components(separatedBy: .newlines)
-      return separatedString
-      // Use the chance for separate strings to be added
-    } catch {
-      drop?.log.error("Could not retrieve files!")
+    // Separate them by new lines for the separated strings
+    guard let string = FileManager.default.contents(atPath: path)?.makeString() else {
       return nil
     }
+    let separatedString = string.components(separatedBy: .newlines)
+    return separatedString
   }
   
   /// Checks if the word in there contains a string
   public func isBadWord(forContent content: String) -> Bool {
     //: TODO- I Believe there's a faster way to do this, but this is good enough
-    return filteredWords.contains(where: { content.contains($0) })
+    var delimiterSet = CharacterSet()
+    delimiterSet.formUnion(.punctuationCharacters)
+    delimiterSet.formUnion(.whitespacesAndNewlines)
+    
+    let separatedStrings = content.components(separatedBy: delimiterSet)
+    
+    for word in filteredWords {
+      if let _ = separatedStrings.index(where: { $0.lowercased() == word.lowercased() }) {
+        return true
+      }
+    }
+    
+    return false
   }
 }
