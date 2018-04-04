@@ -33,6 +33,14 @@ final class FilterWordService {
   /// Checks if the word in there contains a string
   public func isBadWord(forContent content: String) -> Bool {
     //: TODO- I Believe there's a faster way to do this, but this is good enough
-    return filteredWords.contains(where: { content.range(of: $0, options: [.caseInsensitive]) != nil })
+    let separatedStrings = content.components(separatedBy: " ")
+    
+    for word in filteredWords {
+      if let _ = separatedStrings.index(where: { $0.lowercased() == word.lowercased() }) {
+        return true
+      }
+    }
+    
+    return false
   }
 }
