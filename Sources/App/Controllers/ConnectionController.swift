@@ -105,6 +105,9 @@ final class ConnectionController {
       throw Abort.badRequest
     }
     
+    guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
+    let oneSignalService = try OneSignalService(config: oneSignal)
+    
     let existingConnection = try Connection
       .makeQuery()
       .or { orGroup in
@@ -157,6 +160,8 @@ final class ConnectionController {
       type: Notification.NotificationType.connection.rawValue,
       type_id: connectionId
     )
+    
+     try oneSignalService.sendNotification(user: invitee, content: "\(inviter.name) has requested to connect with you!")
     
     try notification.save()
     
