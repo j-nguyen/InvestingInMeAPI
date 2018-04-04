@@ -7,7 +7,7 @@
 <title>investingin.me</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="Public/styles/styles.css">
 <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 
 </head>
@@ -15,12 +15,12 @@
 <body>
 <div class="red-top">
 <h1>investingin.me</h1>
-<p>Currently #(project.all().count) projects to discover.</p>
+<p>Currently #(project_count) projects to discover.</p>
 </div>
 
 <div class="logo">
-<img src="assets/logo.png" class="logo-icon"></img>
-<object data="assets/Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" class="download-button" type="image/svg+xml">
+<img src="Public/images/logo.png" class="logo-icon"></img>
+<object data="Download_on_the_App_Store_Badge_US-UK_RGB_blk_092917.svg" class="download-button" type="image/svg+xml">
 <img src="" />
 </object>
 </div>
