@@ -33,7 +33,11 @@ final class FilterWordService {
   /// Checks if the word in there contains a string
   public func isBadWord(forContent content: String) -> Bool {
     //: TODO- I Believe there's a faster way to do this, but this is good enough
-    let separatedStrings = content.components(separatedBy: " ")
+    var delimiterSet = CharacterSet()
+    delimiterSet.formUnion(.punctuationCharacters)
+    delimiterSet.formUnion(.whitespacesAndNewlines)
+    
+    let separatedStrings = content.components(separatedBy: delimiterSet)
     
     for word in filteredWords {
       if let _ = separatedStrings.index(where: { $0.lowercased() == word.lowercased() }) {
