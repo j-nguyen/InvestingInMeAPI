@@ -116,7 +116,7 @@ public final class OneSignalService {
    - date: Date - Date notification will be delivered
    - content: String - Notification content
    **/
-  public func sendScheduledNotification(user: User, date: Date, content: String, type: NotificationManager.Notification, typeId: Int) throws -> ResponseRepresentable {
+  public func sendScheduledNotification(user: User, date: Date, content: String) throws -> ResponseRepresentable {
     
     // Set URL
     let url = "\(baseUrl)/notifications"
@@ -152,39 +152,46 @@ public final class OneSignalService {
   }
   
   /**
-   Sends a batched scheduled meetup notification
+   Sends a batched notification to multiple users
    - parameters:
-   - user: User - `User` object for who we're sending the notification to
-   - date: Date - `Date` object of the date when it's being delivered
-   - content: String - The content information of what to talk about
+   - user: User - Users to receive the notification
+   - date: Date - The date to schedule the
+   - content: String - The message of the notification
    **/
-  public func sendBatchedScheduledNotification(users: [User], date: Date, content: String, type: NotificationManager.Notification, typeId: Int) throws {
+  public func sendBatchedScheduledNotification(users: [User], date: Date, content: String) throws  -> ResponseRepresentable{
+    
+    // Set URL
     let url = "\(baseUrl)/notifications"
-    // set up the content JSON
+    
+    // Set up the content JSON
     var message = JSON()
     try message.set("en", content)
-    // set up our JSON Values
-    // set a variable for map users
-    let deviceTokens: [String] = users.map { $0.deviceToken ?? "" }
+    
+    // Set up our JSON Values
+    // Set a variable for users
+    let player_ids: [String] = users.map { $0.player_id ?? "" }
     var json = JSON()
     try json.set("app_id", appId)
-    try json.set("include_player_ids", deviceTokens)
+    try json.set("include_player_ids", player_ids)
     try json.set("send_after", date.dateString)
     try json.set("contents", message.makeJSON())
-    // set up our headers
+    
+    // Set up our headers
     let headers: [HeaderKey: String] = [
       .contentType: "application/json",
       .authorization: "Basic \(apiKey)"
     ]
-    // setup the request
+    
+    // Setup the request
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
+    // Set up the response
     let response = try EngineClient.factory.respond(to: request)
     
     if let responseJSON = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      let uuid: String = try responseJSON.get("id")
-      let notification = NotificationManager(uuid: uuid, type: type.rawValue, typeId: typeId)
-      try notification.save()
+      return Response(status: .ok)
+    } else {
+      throw Abort(.badRequest, reason: "Could not send notification")
     }
   }
   
@@ -225,5 +232,4 @@ extension NotificationManager {
     case invitation
     case friend
   }
-}
 }
