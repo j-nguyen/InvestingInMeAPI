@@ -144,10 +144,10 @@ public final class OneSignalService {
     // Setup the response
     let response = try EngineClient.factory.respond(to: request)
     
-    if let responseJSON = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      let uuid: String = try responseJSON.get("id")
-      let notification = NotificationManager(uuid: uuid, type: type.rawValue, typeId: typeId)
-      try notification.save()
+    if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
+      return Response(status: .ok)
+    } else {
+      throw Abort(.badRequest, reason: "Could not send notification")
     }
   }
   

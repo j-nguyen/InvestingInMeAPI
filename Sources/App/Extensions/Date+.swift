@@ -10,7 +10,7 @@ import Foundation
 extension Date {
   public var dateString: String {
     let dateFormatter = DateFormatter()
-    dateFormatter.dateFormat = "E MMM d YYYY HH:mm:ss zzzz"
+    dateFormatter.dateFormat = "E MMM d YYYY"
     return dateFormatter.string(from: self)
   }
-} Foundation
+}
