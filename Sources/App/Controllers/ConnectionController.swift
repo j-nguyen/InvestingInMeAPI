@@ -41,6 +41,10 @@ final class ConnectionController {
         throw Abort.badRequest
     }
     
+    //Declare onesignal configuration
+    guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
+    let oneSignalService = try OneSignalService(config: oneSignal)
+    
     //Declare the connection by searching the connection model at the given connection_id
     guard let connection = try Connection.find(connection_id) else {
       throw Abort.notFound
@@ -73,6 +77,8 @@ final class ConnectionController {
           type_id: connection_id
         )
         try notification.save()
+        
+        try oneSignalService.sendNotification(user: inviter, content: "\(invitee.name) has accepted your connection request!")
       } else {
         let notification = try Notification(
           owner_id: invitee.assertExists(),
@@ -82,6 +88,8 @@ final class ConnectionController {
           type_id: connection_id
         )
         try notification.save()
+        
+        try oneSignalService.sendNotification(user: invitee, content: "\(inviter.name) has accepted your connection request!")
       }
       
       //Update accepted
@@ -105,6 +113,7 @@ final class ConnectionController {
       throw Abort.badRequest
     }
     
+    //Declare onsignal configuration
     guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
     let oneSignalService = try OneSignalService(config: oneSignal)
     
