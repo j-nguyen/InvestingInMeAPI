@@ -158,16 +158,7 @@ final class ConnectionController {
       type_id: connectionId
     )
     
-    let otherNotification = try Notification(
-      owner_id: inviter.assertExists(),
-      user_id: invitee.assertExists(),
-      message: "\(invitee.name) has requested to connect with you!",
-      type: Notification.NotificationType.connection.rawValue,
-      type_id: connectionId
-    )
-    
     try notification.save()
-    try otherNotification.save()
     
     return try connection.makeJSON()
   }
