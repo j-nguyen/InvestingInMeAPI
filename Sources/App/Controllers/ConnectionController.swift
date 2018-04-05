@@ -109,7 +109,12 @@ final class ConnectionController {
   // Create Connection
   func create(_ request: Request) throws -> ResponseRepresentable {
     
-    guard let inviter_id = request.headers["user_id"]?.int, let invitee_id = request.json?["invitee_id"]?.int, let accepted = request.json?["accepted"]?.bool, let message = request.json?["message"]?.string else {
+    guard
+      let inviter_id = request.headers["user_id"]?.int,
+      let invitee_id = request.json?["invitee_id"]?.int,
+      let accepted = request.json?["accepted"]?.bool,
+      let message = request.json?["message"]?.string
+    else {
       throw Abort.badRequest
     }
     

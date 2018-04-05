@@ -33,7 +33,7 @@ public final class OneSignalService {
    - user: User - User that will receive the notification
    - content: String - The message of the notification
    **/
-  public func sendNotification(user: User, content: String) throws -> ResponseRepresentable {
+  public func sendNotification(user: User, content: String) throws {
     
     // Set URL
     let url = "\(baseUrl)/notifications"
@@ -58,13 +58,7 @@ public final class OneSignalService {
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
     // Setup the response
-    let response = try EngineClient.factory.respond(to: request)
-    
-    if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      return Response(status: .ok)
-    } else {
-      throw Abort(.badRequest, reason: "Could not send notification")
-    }
+    _ = try EngineClient.factory.respond(to: request)
   }
   
   /**
@@ -84,7 +78,7 @@ public final class OneSignalService {
     
     // Set up our JSON Values
     // Set a variable for map users
-    let deviceTokens: [Int] = users.map { $0.player_id ?? 0 }
+    let deviceTokens: [String] = users.map { $0.player_id ?? "" }
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", deviceTokens)
@@ -158,8 +152,7 @@ public final class OneSignalService {
    - date: Date - The date to schedule the
    - content: String - The message of the notification
    **/
-  public func sendBatchedScheduledNotification(users: [User], date: Date, content: String) throws  -> ResponseRepresentable{
-    
+  public func sendBatchedScheduledNotification(users: [User], date: Date, content: String) throws {
     // Set URL
     let url = "\(baseUrl)/notifications"
     
@@ -169,7 +162,7 @@ public final class OneSignalService {
     
     // Set up our JSON Values
     // Set a variable for users
-    let player_ids: [Int] = users.map { $0.player_id ?? 0 }
+    let player_ids: [Int] = users.map { $0.player_id ?? "" }
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", player_ids)
@@ -186,12 +179,6 @@ public final class OneSignalService {
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
     // Set up the response
-    let response = try EngineClient.factory.respond(to: request)
-    
-    if let responseJSON = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      return Response(status: .ok)
-    } else {
-      throw Abort(.badRequest, reason: "Could not send notification")
-    }
+    _ = try EngineClient.factory.respond(to: request)
   }
 }
