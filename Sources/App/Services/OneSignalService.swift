@@ -74,7 +74,7 @@ public final class OneSignalService {
   public func sendBatchNotifications(users: [User], content: String) throws {
     // Set up our JSON Values
     // Set a variable for map users
-    let deviceTokens: [String] = users.map { $0.player_id }.compactMap { $0 }
+    let deviceTokens: [String] = users.map { $0.player_id }.flatMap { $0 }
     guard !deviceTokens.isEmpty else { return }
     
     // Set URL
@@ -157,7 +157,7 @@ public final class OneSignalService {
   public func sendBatchedScheduledNotification(users: [User], date: Date, content: String) throws {
     // Set up our JSON Values
     // Set a variable for users
-    let player_ids: [String] = users.map { $0.player_id }.compactMap { $0 }
+    let player_ids: [String] = users.map { $0.player_id }.flatMap { $0 }
     
     guard !player_ids.isEmpty else { return }
     
