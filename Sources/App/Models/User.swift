@@ -106,7 +106,6 @@ extension User: Preparation {
       db.string("phone_number")
       db.custom("experience_and_credentials", type: "TEXT")
       db.string("player_id", optional: true)
-      
     }
   }
   
