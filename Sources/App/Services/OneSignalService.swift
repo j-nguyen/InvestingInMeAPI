@@ -34,7 +34,8 @@ public final class OneSignalService {
    - content: String - The message of the notification
    **/
   public func sendNotification(user: User, content: String) throws {
-    
+    // Makes sure that we can still send and proceed
+    guard let playerId = user.player_id else { return }
     // Set URL
     let url = "\(baseUrl)/notifications"
     
@@ -45,7 +46,7 @@ public final class OneSignalService {
     // Set up our JSON values
     var json = JSON()
     try json.set("app_id", appId)
-    try json.set("include_player_ids", [user.player_id ?? ""])
+    try json.set("include_player_ids", [playerId])
     try json.set("contents", message.makeJSON())
     
     // Set up the headers
@@ -59,7 +60,6 @@ public final class OneSignalService {
     
     // Setup the response
     let response = try EngineClient.factory.respond(to: request)
-    
     guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
       throw Abort.badRequest
     }
@@ -71,7 +71,11 @@ public final class OneSignalService {
    - user: User - List of users to send the notifications to
    - content: String - The content of which the information
    **/
-  public func sendBatchNotifications(users: [User], content: String) throws -> ResponseRepresentable {
+  public func sendBatchNotifications(users: [User], content: String) throws {
+    // Set up our JSON Values
+    // Set a variable for map users
+    let deviceTokens: [String] = users.map { $0.player_id }.compactMap { $0 }
+    guard !deviceTokens.isEmpty else { return }
     
     // Set URL
     let url = "\(baseUrl)/notifications"
@@ -80,9 +84,6 @@ public final class OneSignalService {
     var message = JSON()
     try message.set("en", content)
     
-    // Set up our JSON Values
-    // Set a variable for map users
-    let deviceTokens: [String] = users.map { $0.player_id ?? "" }
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", deviceTokens)
@@ -112,7 +113,8 @@ public final class OneSignalService {
    - date: Date - Date notification will be delivered
    - content: String - Notification content
    **/
-  public func sendScheduledNotification(user: User, date: Date, content: String) throws -> ResponseRepresentable {
+  public func sendScheduledNotification(user: User, date: Date, content: String) throws {
+    guard let playerId = user.player_id else { return }
     
     // Set URL
     let url = "\(baseUrl)/notifications"
@@ -124,7 +126,7 @@ public final class OneSignalService {
     // Set up our JSON Values
     var json = JSON()
     try json.set("app_id", appId)
-    try json.set("include_player_ids", [user.player_id ?? ""])
+    try json.set("include_player_ids", [playerId])
     try json.set("send_after", date.dateString)
     try json.set("contents", message.makeJSON())
     
@@ -153,6 +155,12 @@ public final class OneSignalService {
    - content: String - The message of the notification
    **/
   public func sendBatchedScheduledNotification(users: [User], date: Date, content: String) throws {
+    // Set up our JSON Values
+    // Set a variable for users
+    let player_ids: [String] = users.map { $0.player_id }.compactMap { $0 }
+    
+    guard !player_ids.isEmpty else { return }
+    
     // Set URL
     let url = "\(baseUrl)/notifications"
     
@@ -160,9 +168,6 @@ public final class OneSignalService {
     var message = JSON()
     try message.set("en", content)
     
-    // Set up our JSON Values
-    // Set a variable for users
-    let player_ids: [String] = users.map { $0.player_id ?? "" }
     var json = JSON()
     try json.set("app_id", appId)
     try json.set("include_player_ids", player_ids)
@@ -179,7 +184,7 @@ public final class OneSignalService {
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
     // Set up the response
-    let reponse = try EngineClient.factory.respond(to: request)
+    let response = try EngineClient.factory.respond(to: request)
     
     guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
       throw Abort.badRequest
