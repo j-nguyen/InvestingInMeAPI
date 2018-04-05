@@ -58,7 +58,11 @@ public final class OneSignalService {
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
     // Setup the response
-    _ = try EngineClient.factory.respond(to: request)
+    let response = try EngineClient.factory.respond(to: request)
+    
+    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      throw Abort.badRequest
+    }
   }
   
   /**
@@ -96,10 +100,8 @@ public final class OneSignalService {
     // Setup the response
     let response = try EngineClient.factory.respond(to: request)
     
-    if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      return Response(status: .ok)
-    } else {
-      throw Abort(.badRequest, reason: "Could not send notification")
+    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      throw Abort.badRequest
     }
   }
   
@@ -138,10 +140,8 @@ public final class OneSignalService {
     // Setup the response
     let response = try EngineClient.factory.respond(to: request)
     
-    if let _ = response.json, response.status.statusCode >= 200 && response.status.statusCode <= 299 {
-      return Response(status: .ok)
-    } else {
-      throw Abort(.badRequest, reason: "Could not send notification")
+    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      throw Abort.badRequest
     }
   }
   
@@ -179,6 +179,10 @@ public final class OneSignalService {
     let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
     
     // Set up the response
-    _ = try EngineClient.factory.respond(to: request)
+    let reponse = try EngineClient.factory.respond(to: request)
+    
+    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
+      throw Abort.badRequest
+    }
   }
 }
