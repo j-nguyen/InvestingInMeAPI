@@ -24,7 +24,7 @@ public final class User: Model, Timestampable {
   var location: String
   var phone_number: String
   var experience_and_credentials: String
-  var player_id: Int?
+  var player_id: String?
   
   //MARK: Initialize User Table
   init(
@@ -38,7 +38,7 @@ public final class User: Model, Timestampable {
     location: String = "",
     phone_number: String = "",
     experience_and_credentials: String = "",
-    player_id: Int? = nil
+    player_id: String? = nil
     ) throws {
     // Set our values here
     self.google_id = google_id
@@ -105,8 +105,7 @@ extension User: Preparation {
       db.string("location")
       db.string("phone_number")
       db.custom("experience_and_credentials", type: "TEXT")
-      db.int("player_id", optional: true)
-      
+      db.string("player_id", optional: true)
     }
   }
   
