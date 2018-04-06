@@ -97,10 +97,7 @@ final class ProjectController {
     //Update name, project_description, and description_needs if they have been passed through the url
 
     // Check for word filter
-    guard let dirPath = drop?.config.workDir else {
-      throw Abort.serverError
-    }
-    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
+    let filterWordService = try FilterWordService(forPath: "\(config.workDir)badwords.txt")
     
     // Add validations for these specific naming schemes
     if let name = request.json?["name"]?.string {

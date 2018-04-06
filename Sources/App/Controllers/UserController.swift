@@ -301,8 +301,10 @@ final class UserController {
       try payload.set("user_id", user.id)
     }
     
-    // not the best way to sign for now, but this is for a developmental purpose standpoint.
-    let authToken = try JWT(payload: payload, signer: HS512(key: "login".bytes))
+    // Grab generated random string to try to get it
+    guard let login = config["login", "key"]?.string else { throw Abort.serverError }
+    
+    let authToken = try JWT(payload: payload, signer: HS512(key: login.bytes))
     
     return try JSON(node: ["token": authToken.createToken()])
   }
