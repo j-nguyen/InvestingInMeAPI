@@ -11,6 +11,13 @@ import HTTP
 import FluentProvider
 
 final class NotificationController {
+  
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   func index(_ req: Request) throws -> ResponseRepresentable {
     guard let userId = req.headers["user_id"]?.int else {
       throw Abort.badRequest

@@ -12,6 +12,12 @@ import Validation
 
 final class UserController {
   
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   //MARK: Show User
   func show(_ request: Request) throws -> ResponseRepresentable {
     

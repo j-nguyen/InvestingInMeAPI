@@ -12,6 +12,12 @@ import Validation
 
 final class ProjectController {
   
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   //MARK: Show all Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     let projects = try Project.makeQuery()

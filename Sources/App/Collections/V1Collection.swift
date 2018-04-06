@@ -15,6 +15,7 @@ final class V1Collection: RouteCollection {
   
   public init(cache: CacheProtocol, config: Config) {
     self.cache = cache
+    self.config = config
   }
   
   /**
@@ -31,7 +32,7 @@ final class V1Collection: RouteCollection {
     let connectionController = ConnectionController(config)
     let featuredProjectController = FeaturedProjectController(config)
     let assetController = AssetController(config)
-    let notificationController = NotificationController(config")
+    let notificationController = NotificationController(config)
     
     // Declare the middlewares
     let authMiddleware = AuthMiddleware()
