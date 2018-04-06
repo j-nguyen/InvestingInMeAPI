@@ -11,6 +11,12 @@ import HTTP
 
 final class ConnectionController {
   
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   //MARK: Show Connection Invite
   func show(_ request: Request) throws -> ResponseRepresentable {
     
@@ -42,7 +48,7 @@ final class ConnectionController {
     }
     
     //Declare onesignal configuration
-    guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
+    guard let oneSignal = config["onesignal"] else { throw Abort.notFound }
     let oneSignalService = try OneSignalService(config: oneSignal)
     
     //Declare the connection by searching the connection model at the given connection_id
@@ -119,7 +125,7 @@ final class ConnectionController {
     }
     
     //Declare onsignal configuration
-    guard let oneSignal = drop?.config["onesignal"] else { throw Abort.notFound }
+    guard let oneSignal = config["onesignal"] else { throw Abort.notFound }
     let oneSignalService = try OneSignalService(config: oneSignal)
     
     let existingConnection = try Connection

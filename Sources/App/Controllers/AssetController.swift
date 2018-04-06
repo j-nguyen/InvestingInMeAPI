@@ -14,6 +14,13 @@ import HTTP
  for actually uploading the required materials, but this is just a handicap of how things will work
 */
 final class AssetController {
+  
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   /**
     Attempts to create the asset, by first creating the model, then attempting to upload an image
   */
@@ -28,7 +35,7 @@ final class AssetController {
     }
     
     // attempt to retrieve file
-    guard let config = drop?.config["cloudinary"] else {
+    guard let cloudinary = config["cloudinary"] else {
       throw Abort.serverError
     }
     
@@ -50,7 +57,7 @@ final class AssetController {
         throw Abort(.forbidden, reason: "You are not the owner of this project!")
       }
       
-      let cloudService = try CloudinaryService(config: config)
+      let cloudService = try CloudinaryService(config: cloudinary)
       
       return try cloudService.uploadFile(type: fileType, file: file, projectIcon: projectIcon, project: project)
     case .video:
@@ -64,7 +71,7 @@ final class AssetController {
       }
       
       // set up the service and attempt to uplaod the file
-      let cloudService = try CloudinaryService(config: config)
+      let cloudService = try CloudinaryService(config: cloudinary)
       return try cloudService.uploadFile(type: fileType, file: file, project: project)
     }
     
