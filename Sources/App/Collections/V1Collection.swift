@@ -35,7 +35,7 @@ final class V1Collection: RouteCollection {
     let notificationController = NotificationController(config)
     
     // Declare the middlewares
-    let authMiddleware = AuthMiddleware()
+    let authMiddleware = AuthMiddleware(config)
     let rateMiddleware = RateLimitMiddleware(rate: Rate(15, interval: .second), cache: cache)
     
     //MARK: User Routes
