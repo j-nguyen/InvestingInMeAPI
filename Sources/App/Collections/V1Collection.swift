@@ -9,10 +9,11 @@ import HTTP
  We conform to RouteCollection so that we can start grouping.
 */
 final class V1Collection: RouteCollection {
-  
+  // MARK: Properties
   private let cache: CacheProtocol
+  private let config: Config
   
-  public init(_ cache: CacheProtocol) {
+  public init(cache: CacheProtocol, config: Config) {
     self.cache = cache
   }
   
@@ -25,12 +26,12 @@ final class V1Collection: RouteCollection {
     let api = builder.grouped("api", "v1")
     
     //Declare the Controllers
-    let userController = UserController()
-    let projectController = ProjectController()
-    let connectionController = ConnectionController()
-    let featuredProjectController = FeaturedProjectController()
-    let assetController = AssetController()
-    let notificationController = NotificationController()
+    let userController = UserController(config)
+    let projectController = ProjectController(config)
+    let connectionController = ConnectionController(config)
+    let featuredProjectController = FeaturedProjectController(config)
+    let assetController = AssetController(config)
+    let notificationController = NotificationController(config")
     
     // Declare the middlewares
     let authMiddleware = AuthMiddleware()
