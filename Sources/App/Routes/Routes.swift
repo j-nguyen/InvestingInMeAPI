@@ -7,7 +7,7 @@ extension Droplet {
     
     get("/") { [weak self] req in
       guard let this = self else { throw Abort.notFound }
-      return try this.view.make("index", ["project_count", try Project.count()])
+      return try this.view.make("index", ["project_count": Project.count()])
     }
   }
 }
