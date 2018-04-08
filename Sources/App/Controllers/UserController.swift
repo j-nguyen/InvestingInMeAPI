@@ -172,15 +172,17 @@ final class UserController {
   func update(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the user_id requested in the url
-    guard let user_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let user_id = request.parameters["id"]?.int, let myUserId = request.headers["user_id"]?.int else {
+      throw Abort.badRequest
+    }
+    
+    guard user_id == myUserId else {
+      throw Abort(.forbidden, reason: "You are not the user of this!")
     }
     
     //Declare the user by searching the User model at the given user_id
-    guard let user = try User.find(user_id)
-      else {
-        throw Abort.notFound
+    guard let user = try User.find(user_id) else {
+      throw Abort.notFound
     }
     
     // Check for profanity
@@ -232,6 +234,8 @@ final class UserController {
     if let role_id = request.json?["role_id"]?.int {
       user.role_id = Identifier(role_id)
     }
+    
+    user.player_id = request.json?["player_id"]?.string 
     
     //Save the user
     try user.save()
