@@ -101,7 +101,7 @@ final class ProjectController {
     
     // Add validations for these specific naming schemes
     if let name = request.json?["name"]?.string {
-      try ASCIIValidator().validate(name)
+      try CustomASCIIValidator().validate(name)
       guard !filterWordService.isBadWord(forContent: name) else {
         throw Abort(.badRequest, reason: "Your name contains profanity!")
       }
@@ -110,7 +110,7 @@ final class ProjectController {
     
     // Check for the project description
     if let project_description = request.json?["project_description"]?.string {
-      try ASCIIValidator().validate(project_description)
+      try CustomASCIIValidator().validate(project_description)
       guard !filterWordService.isBadWord(forContent: project_description) else {
         throw Abort(.badRequest, reason: "Your project description contains profanity!")
       }
@@ -119,7 +119,7 @@ final class ProjectController {
     
     // Now check for description needs
     if let description_needs = request.json?["description_needs"]?.string {
-      try ASCIIValidator().validate(description_needs)
+      try CustomASCIIValidator().validate(description_needs)
       guard !filterWordService.isBadWord(forContent: description_needs) else {
         throw Abort(.badRequest, reason: "Your project needs contains profanity!")
       }

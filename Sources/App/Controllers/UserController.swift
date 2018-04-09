@@ -195,7 +195,7 @@ final class UserController {
     //Update description, and experience_and_credentials if they have been passed through the url
     if let description = request.json?["description"]?.string {
       if !description.isEmpty {
-        try ASCIIValidator().validate(description)
+        try CustomASCIIValidator().validate(description)
         guard !filterWordService.isBadWord(forContent: description) else {
           throw Abort(.badRequest, reason: "Your description contains profanity!")
         }
@@ -205,7 +205,7 @@ final class UserController {
     
     if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
       if !experience_and_credentials.isEmpty {
-        try ASCIIValidator().validate(experience_and_credentials)
+        try CustomASCIIValidator().validate(experience_and_credentials)
         guard !filterWordService.isBadWord(forContent: experience_and_credentials) else {
           throw Abort(.badRequest, reason: "Your experience and credentials contains profanity!")
         }
@@ -215,7 +215,7 @@ final class UserController {
     
     if let location = request.json?["location"]?.string {
       if !location.isEmpty {
-        try ASCIIValidator().validate(location)
+        try CustomASCIIValidator().validate(location)
         guard !filterWordService.isBadWord(forContent: location) else {
           throw Abort(.badRequest, reason: "Your location contains profanity!")
         }
