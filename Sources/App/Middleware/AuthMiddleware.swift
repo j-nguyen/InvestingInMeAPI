@@ -8,11 +8,21 @@ import Foundation
  AuthMiddleware to authenticate users to make sure it's set up
 */
 final class AuthMiddleware: Middleware {
+  
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   func respond(to request: Request, chainingTo next: Responder) throws -> Response {
     // get our token string, if there isn't any then we know it doesn't exist
     guard let token = request.headers["Authorization"]?.string else {
       throw Abort(.forbidden, metadata: "No token found!")
     }
+    
+    // Attempt to load file
+    guard let login = config["login", "key"]?.string else { throw Abort.serverError }
     
     // Attempt to verify token
     let jwt: JWT
@@ -20,7 +30,7 @@ final class AuthMiddleware: Middleware {
     // attempt to verify the token here
     do {
       jwt = try JWT(token: token)
-      try jwt.verifySignature(using: HS512(key: "login".bytes))
+      try jwt.verifySignature(using: HS512(key: login.bytes))
     } catch {
       throw Abort(.unauthorized, metadata: "Token is either invalid, or something is wrong.")
     }

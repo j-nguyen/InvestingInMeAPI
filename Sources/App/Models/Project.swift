@@ -33,13 +33,13 @@ final class Project: Model, Timestampable {
   ) throws {
     // Validate before beginning
     if !name.isEmpty {
-      try ASCIIValidator().validate(name)
+      try CustomASCIIValidator().validate(name)
     }
     if !project_description.isEmpty {
-      try ASCIIValidator().validate(project_description)
+      try CustomASCIIValidator().validate(project_description)
     }
     if !description_needs.isEmpty {
-      try ASCIIValidator().validate(description_needs)
+      try CustomASCIIValidator().validate(description_needs)
     }
     
     // Set up our values

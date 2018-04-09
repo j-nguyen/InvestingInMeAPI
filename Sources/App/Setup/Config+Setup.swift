@@ -1,6 +1,7 @@
 import FluentProvider
 import PostgreSQLProvider
 import RedisProvider
+import LeafProvider
 
 extension Config {
   public func setup() throws {
@@ -18,6 +19,7 @@ extension Config {
     try addProvider(FluentProvider.Provider.self)
     try addProvider(PostgreSQLProvider.Provider.self)
     try addProvider(RedisProvider.Provider.self)
+    try addProvider(LeafProvider.Provider.self)
   }
   
   /// configures our custom commands that we have
@@ -37,5 +39,6 @@ extension Config {
     preparations.append(Asset.self)
     preparations.append(FeaturedProject.self)
     preparations.append(Notification.self)
+    preparations.append(AlterPlayerIdUser.self)
   }
 }

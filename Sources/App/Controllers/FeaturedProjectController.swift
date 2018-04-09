@@ -11,6 +11,12 @@ import HTTP
 
 final class FeaturedProjectController {
   
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     

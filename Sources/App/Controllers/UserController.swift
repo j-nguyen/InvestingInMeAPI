@@ -12,6 +12,12 @@ import Validation
 
 final class UserController {
   
+  private let config: Config
+  
+  init(_ config: Config) {
+    self.config = config
+  }
+  
   //MARK: Show User
   func show(_ request: Request) throws -> ResponseRepresentable {
     
@@ -166,15 +172,17 @@ final class UserController {
   func update(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the user_id requested in the url
-    guard let user_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let user_id = request.parameters["id"]?.int, let myUserId = request.headers["user_id"]?.int else {
+      throw Abort.badRequest
+    }
+    
+    guard user_id == myUserId else {
+      throw Abort(.forbidden, reason: "You are not the user of this!")
     }
     
     //Declare the user by searching the User model at the given user_id
-    guard let user = try User.find(user_id)
-      else {
-        throw Abort.notFound
+    guard let user = try User.find(user_id) else {
+      throw Abort.notFound
     }
     
     // Check for profanity
@@ -187,7 +195,7 @@ final class UserController {
     //Update description, and experience_and_credentials if they have been passed through the url
     if let description = request.json?["description"]?.string {
       if !description.isEmpty {
-        try ASCIIValidator().validate(description)
+        try CustomASCIIValidator().validate(description)
         guard !filterWordService.isBadWord(forContent: description) else {
           throw Abort(.badRequest, reason: "Your description contains profanity!")
         }
@@ -197,7 +205,7 @@ final class UserController {
     
     if let experience_and_credentials = request.json?["experience_and_credentials"]?.string {
       if !experience_and_credentials.isEmpty {
-        try ASCIIValidator().validate(experience_and_credentials)
+        try CustomASCIIValidator().validate(experience_and_credentials)
         guard !filterWordService.isBadWord(forContent: experience_and_credentials) else {
           throw Abort(.badRequest, reason: "Your experience and credentials contains profanity!")
         }
@@ -207,7 +215,7 @@ final class UserController {
     
     if let location = request.json?["location"]?.string {
       if !location.isEmpty {
-        try ASCIIValidator().validate(location)
+        try CustomASCIIValidator().validate(location)
         guard !filterWordService.isBadWord(forContent: location) else {
           throw Abort(.badRequest, reason: "Your location contains profanity!")
         }
@@ -226,6 +234,8 @@ final class UserController {
     if let role_id = request.json?["role_id"]?.int {
       user.role_id = Identifier(role_id)
     }
+    
+    user.player_id = request.json?["player_id"]?.string 
     
     //Save the user
     try user.save()
@@ -295,8 +305,10 @@ final class UserController {
       try payload.set("user_id", user.id)
     }
     
-    // not the best way to sign for now, but this is for a developmental purpose standpoint.
-    let authToken = try JWT(payload: payload, signer: HS512(key: "login".bytes))
+    // Grab generated random string to try to get it
+    guard let login = config["login", "key"]?.string else { throw Abort.serverError }
+    
+    let authToken = try JWT(payload: payload, signer: HS512(key: login.bytes))
     
     return try JSON(node: ["token": authToken.createToken()])
   }
