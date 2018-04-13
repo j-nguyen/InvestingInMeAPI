@@ -52,6 +52,7 @@ final class ProjectController {
     
     //Return all Projects
     return try projects
+      .sort("created_at", .descending)
       .filter("user_id", .notEquals, request.headers["user_id"]?.int)
       .all()
       .makeJSON()
