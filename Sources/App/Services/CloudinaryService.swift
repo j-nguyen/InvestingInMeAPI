@@ -2,6 +2,7 @@ import HTTP
 import Vapor
 import Foundation
 import Multipart
+import FormData
 
 /**
  Our CloudinaryService is the service for actually using the Restful API connection to ensure that we've
@@ -54,87 +55,24 @@ final class CloudinaryService {
   }
   
   /**
-    Attempts to upload the file based on the content type chosen
-   
-    - parameter type: The file type of its used
-    - parameter file: A Data URI base64-encoded used to save the image files for us
-    - parameter projectIcon: This asks to make sure it's a profileIcon or not
-    - parameter project: The project model so that we can insert it into our asset model
-  */
-  func uploadFile(type: ContentType, file: String, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
-    // this will generate the url
-    let url = "\(baseUrl)/\(preset)/\(type.rawValue)/upload"
-    
-    // set up our headers here
-    let headers: [HeaderKey: String] = [.contentType: "application/json"]
-    // set up our body content
-    var json = JSON()
-    try json.set("file", "data:image/png;base64,\(file)")
-    try json.set("upload_preset", uploadPreset)
-    
-    // set up the request
-    let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
-    let response = try EngineClient.factory.respond(to: request)
-    // if response is successful we can continue
-    guard response.status.statusCode >= 200 && response.status.statusCode <= 299 else {
-      throw Abort(.badRequest, reason: "Something went wrong with the image!")
-    }
-    
-    // we can now get the json
-    guard let responseJSON = response.json else {
-      throw Abort(.unprocessableEntity, reason: "Could not parse correctly!")
-    }
-    
-    // attempt to create the asset
-    if let asset = try project.assets.makeQuery().filter("project_icon", projectIcon).first(), projectIcon {
-      try asset.file_type = responseJSON.get("resource_type")
-      try asset.url = responseJSON.get("secure_url")
-      try asset.file_name = responseJSON.get("public_id")
-      try asset.file_size = responseJSON.get("bytes")
-      try asset.public_id = responseJSON.get("public_id")
-      // attempt to save once finished
-      try asset.save()
-      
-      return try asset.makeJSON()
-    } else {
-      let asset = try Asset(
-        project_id: project.assertExists(),
-        file_type: responseJSON.get("resource_type"),
-        url: responseJSON.get("secure_url"),
-        file_name: responseJSON.get("public_id"),
-        file_size: responseJSON.get("bytes"),
-        project_icon: projectIcon,
-        public_id: responseJSON.get("public_id")
-      )
-      
-      // attempt to save once finished
-      try asset.save()
-      
-      return try asset.makeJSON()
-    }
-  }
-  
-  /**
    Attempts to upload the file based on the content type chosen
    
      - parameter type: The file type of its used
      - parameter file: String
+     - parameter projectIcon: Bool
      - parameter project: The project model needed to upload with asset to create a relation
    */
-  func uploadFile(type: ContentType, file: Bytes, project: Project) throws -> ResponseRepresentable {
+  func uploadFile(type: ContentType, file: Part, projectIcon: Bool, project: Project) throws -> ResponseRepresentable {
     // this will generate the url
     let url = "\(baseUrl)/\(preset)/\(type.rawValue)/upload"
     
-    // set up our headers here
-    let headers: [HeaderKey: String] = [.contentType: "application/json"]
-
-    let json = try JSON(node: [
-      "file": "data:video/mp4;base64,\(file.base64Encoded.makeString())",
-      "upload_preset": uploadPreset
-    ])
-    
     // set up the request
-    let request = Request(method: .post, uri: url, headers: headers, body: json.makeBody())
+    let request = Request(method: .post, uri: url)
+    let fileBytes = uploadPreset.makeBytes()
+    request.multipart = [
+      file,
+      Part(headers: [.contentDisposition: "form-data; name=\"upload_preset\""], body: fileBytes)
+    ]
     
     let response = try EngineClient.factory.respond(to: request)
     
@@ -155,7 +93,7 @@ final class CloudinaryService {
       url: responseJSON.get("secure_url"),
       file_name: responseJSON.get("public_id"),
       file_size: responseJSON.get("bytes"),
-      project_icon: false,
+      project_icon: projectIcon,
       public_id: responseJSON.get("public_id")
     )
     
