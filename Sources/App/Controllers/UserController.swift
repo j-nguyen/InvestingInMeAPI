@@ -103,9 +103,9 @@ final class UserController {
     // save the asset
     let projectIconAsset = try Asset(
       project_id: project.assertExists(),
-      file_type: "Image",
+      file_type: CloudinaryService.ContentType.image.rawValue,
       url: project.name.generatePlaceholder(),
-      file_name: "Placeholder",
+      file_name: "placeholder",
       file_size: 0,
       project_icon: true
     )
