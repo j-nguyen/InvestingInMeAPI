@@ -93,12 +93,10 @@ final class CloudinaryService {
         .and({ try $0.filter("project_icon", projectIcon) })
         .first() {
         
-        // Attempt to delete the file first
-        guard let contentType = ContentType(rawValue: asset.file_type) else {
-          throw Abort(.badRequest, reason: "Could not properly get the file type!")
+        // Attempt to delete the file first, if public id exists
+        if let _ = asset.public_id {
+          try deleteFile(type: .image, asset: asset)
         }
-        
-        try deleteFile(type: contentType, asset: asset)
         
         // Creating an asset
         asset.file_type = try responseJSON.get("resource_type")
