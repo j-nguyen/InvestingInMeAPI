@@ -93,6 +93,11 @@ final class CloudinaryService {
         .and({ try $0.filter("project_icon", projectIcon) })
         .first() {
         
+        // Attempt to delete the file first
+        guard let contentType = ContentType(rawValue: asset.file_type) else { return }
+        
+        try deleteFile(type: contentType, asset: asset)
+        
         // Creating an asset
         asset.file_type = try responseJSON.get("resource_type")
         asset.url = try responseJSON.get("secure_url")
