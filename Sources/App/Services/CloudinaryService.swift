@@ -94,7 +94,9 @@ final class CloudinaryService {
         .first() {
         
         // Attempt to delete the file first
-        guard let contentType = ContentType(rawValue: asset.file_type) else { return }
+        guard let contentType = ContentType(rawValue: asset.file_type) else {
+          throw Abort(.badRequest, reason: "Could not properly get the file type!")
+        }
         
         try deleteFile(type: contentType, asset: asset)
         
