@@ -20,44 +20,30 @@ final class FeaturedProjectController {
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
     
-    let projects = try FeaturedProject.makeQuery().sort("startDate", .ascending).limit(6).all()
-    var notExpired: [FeaturedProject] = []
+    var threeProjects = try FeaturedProject.makeQuery().sort("startDate", .ascending).limit(3).all()
+    var counter = 0
     
-    if projects.count == 1 {
-      let startDate = TimeInterval(projects[0].startDate.timeIntervalSince1970 + TimeInterval(projects[0].duration))
+    // filter out all the projects first
+    for project in threeProjects {
+      let startDate = TimeInterval(project.startDate.timeIntervalSince1970 + TimeInterval(project.duration))
       let endDate = Date().timeIntervalSince1970
-      
-      if startDate > endDate {
-        notExpired.append(projects[0])
-      } else {
-        try projects[0].delete()
+      if startDate < endDate {
+        try project.delete()
+        counter += 1
       }
-      
-    } else {
+    }
+  
+    // GO through the other rest]
+    let projectIds = threeProjects.map { $0.id }.flatMap { $0 }
+    let filteredProjects = try FeaturedProject.makeQuery().sort("startDate", .ascending).filter("id", notIn: projectIds).all()
     
-      let half = projects.count / 2
-      var counterExpire = half
-      
-      for i in 0..<half {
-        let startDate = TimeInterval(projects[i].startDate.timeIntervalSince1970 + TimeInterval(projects[i].duration))
-        let endDate = Date().timeIntervalSince1970
-        if startDate > endDate {
-          notExpired.append(projects[i])
-        } else {
-          counterExpire += 1
-          try projects[i].delete()
-        }
-      }
-      
-      for i in half..<counterExpire {
-          projects[i].startDate = Date()
-          try projects[i].save()
-          notExpired.append(projects[i])
+    for i in 0..<counter {
+      if i < filteredProjects.count {
+        threeProjects.append(filteredProjects[i])
       }
     }
     
-    //Return all Featured Projects
-    return try notExpired.makeJSON()
+    return try threeProjects.makeJSON()
   }
   
   //MARK: Create Feature Project

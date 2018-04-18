@@ -94,7 +94,7 @@ final class CloudinaryService {
         .first() {
         
         // Attempt to delete the file first, if public id exists
-        if let _ = asset.public_id {
+        if asset.public_id != nil {
           try deleteFile(type: .image, asset: asset)
         }
         
