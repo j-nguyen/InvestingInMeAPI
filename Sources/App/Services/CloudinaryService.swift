@@ -169,8 +169,7 @@ final class CloudinaryService {
     
     // set up body
     var json = JSON()
-    try json.set("public_id", publicId
-    )
+    try json.set("public_id", publicId)
     try json.set("timestamp", timestamp)
     try json.set("signature", signature.makeString())
     try json.set("api_key", apiKey)
