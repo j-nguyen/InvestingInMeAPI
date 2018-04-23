@@ -152,6 +152,9 @@ final class CloudinaryService {
    - parameter asset: The asset model from the database
   */
   func deleteFile(type: ContentType, asset: Asset) throws {
+    // check for public
+    guard let publicId = asset.public_id else { return }
+    
     // generate the url once again
     let url = "\(baseUrl)/\(preset)/\(type.rawValue)/destroy"
     
@@ -161,12 +164,12 @@ final class CloudinaryService {
     // setup hash
     let timestamp = Int(Date().timeIntervalSince1970)
     let hash = CryptoHasher(hash: .sha1, encoding: .hex)
-    let encrypt: String = ["public_id=\(asset.public_id!)", "timestamp=\(timestamp)"].joined(separator: "&") + apiSecret
+    let encrypt: String = ["public_id=\(publicId)", "timestamp=\(timestamp)"].joined(separator: "&") + apiSecret
     let signature = try hash.make(encrypt)
     
     // set up body
     var json = JSON()
-    try json.set("public_id", asset.public_id)
+    try json.set("public_id", publicId)
     try json.set("timestamp", timestamp)
     try json.set("signature", signature.makeString())
     try json.set("api_key", apiKey)
