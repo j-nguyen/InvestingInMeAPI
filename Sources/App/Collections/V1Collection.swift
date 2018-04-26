@@ -30,7 +30,6 @@ final class V1Collection: RouteCollection {
     let userController = UserController(config)
     let projectController = ProjectController(config)
     let connectionController = ConnectionController(config)
-    let featuredProjectController = FeaturedProjectController(config)
     let assetController = AssetController(config)
     let notificationController = NotificationController(config)
     
@@ -70,13 +69,6 @@ final class V1Collection: RouteCollection {
       connection.patch(":id", handler: connectionController.update)
       connection.post("/", handler: connectionController.create)
       connection.delete(":id", handler: connectionController.delete)
-    }
-    
-    //MARK: Featured Project Routes
-    api.grouped(authMiddleware, rateMiddleware).group("featured") { featured_project in
-      featured_project.get("/", handler: featuredProjectController.index)
-      featured_project.post("/", handler: featuredProjectController.create)
-      featured_project.delete(":id", handler: featuredProjectController.delete)
     }
     
     // MARK: Notification routes
