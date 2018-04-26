@@ -129,18 +129,6 @@ final class SeedCommand: Command {
     }
   }
   
-  func createFeaturedProjects() throws {
-    for _ in 1...100 {
-      let projects = try Project.all()
-      let project = projects.random
-      if let project = project {
-        let featuredProjectObject = try FeaturedProject(project_id: project.assertExists(), duration: 86400)
-        try? featuredProjectObject.save()
-        console.print("~~~~ Saved Featured Project ~~~~")
-      }
-    }
-  }
-  
   func createConnections() throws {
     let dev = try User.makeQuery().filter("email", "investinginme.dev@gmail.com").first()
     let users = try User.makeQuery().filter("email", .notEquals, "investinginme.dev@gmail.com").all()
@@ -196,7 +184,6 @@ final class SeedCommand: Command {
   func run(arguments: [String]) throws {
     if environment == .development || environment == .test {
       try Asset.makeQuery().delete()
-      try FeaturedProject.makeQuery().delete()
       try Project.makeQuery().delete()
       try Connection.makeQuery().delete()
       try Notification.makeQuery().delete()
@@ -209,7 +196,6 @@ final class SeedCommand: Command {
       try createUser()
       try createProjects()
       try createAssets()
-      try createFeaturedProjects()
       try createConnections()
     } else if environment == .production {
       try createRoles()
