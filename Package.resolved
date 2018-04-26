@@ -236,6 +236,15 @@
         }
       },
       {
+        "package": "SwiftRandom",
+        "repositoryURL": "https://github.com/iamjono/SwiftRandom.git",
+        "state": {
+          "branch": null,
+          "revision": "cb36e1aaa692ee86ec5c16a15fda86de94611737",
+          "version": "1.0.0"
+        }
+      },
+      {
         "package": "TLS",
         "repositoryURL": "https://github.com/vapor/tls.git",
         "state": {

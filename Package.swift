@@ -16,11 +16,12 @@ let package = Package(
         .package(url: "https://github.com/vapor/redis-provider.git", .upToNextMajor(from: "2.0.1")),
         .package(url: "https://github.com/vapor/validation.git", .upToNextMajor(from: "1.1.1")),
         .package(url: "https://github.com/vapor/leaf-provider.git", .upToNextMajor(from: "1.0.0")),
+        .package(url: "https://github.com/iamjono/SwiftRandom.git", .upToNextMajor(from: "1.0.0"))
     ],
     targets: [
         .target(
             name: "App",
-            dependencies: ["Vapor", "FluentProvider", "PostgreSQLProvider", "JWT", "RedisProvider", "Validation", "LeafProvider"],
+            dependencies: ["Vapor", "FluentProvider", "PostgreSQLProvider", "JWT", "RedisProvider", "Validation", "LeafProvider", "SwiftRandom"],
             exclude: ["Config", "Public", "Resources"]
         ),
         .target(name: "Run", dependencies: ["App"]),
