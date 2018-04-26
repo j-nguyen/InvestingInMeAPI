@@ -169,7 +169,7 @@ final class ProjectController {
     try project.delete()
     
     // Return a confirmation message that the project was deleted
-    return try JSON(node: ["\(project.name) has been deleted."])
+    return try JSON(node: ["message": "\(project.name) has been deleted."])
   }
   
   /// Gets all the categories

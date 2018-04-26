@@ -14,7 +14,7 @@ import Random
 @testable import App
 
 class ConnectionControllerTests: TestCase {
-  let connectionController = ConnectionController()
+  let connectionController = try! ConnectionController(Droplet.getConfig())
   
   func testRoutes() throws {
     guard let id = try createConnection() else {

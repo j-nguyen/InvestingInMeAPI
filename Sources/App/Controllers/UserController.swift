@@ -48,8 +48,8 @@ final class UserController {
       let role_id = request.json?["role_id"]?.int,
       let project_description = request.json?["project_description"]?.string,
       let description_needs = request.json?["description_needs"]?.string
-      else {
-        throw Abort(.badRequest, reason: "Missing required fields!")
+    else {
+      throw Abort(.badRequest, reason: "Missing required fields!")
     }
     
     //Check if the user_id in the authorization header is the user_id of the project
@@ -69,10 +69,7 @@ final class UserController {
     
     // Check for profanity
     // Check for word filter
-    guard let dirPath = drop?.config.workDir else {
-      throw Abort.serverError
-    }
-    let filterWordService = try FilterWordService(forPath: "\(dirPath)badwords.txt")
+    let filterWordService = try FilterWordService(forPath: "\(config.workDir)badwords.txt")
     
     // Check for multiple profanities
     guard !filterWordService.isBadWord(forContent: name) else {

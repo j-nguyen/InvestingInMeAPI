@@ -15,6 +15,13 @@ extension Droplet {
 
     return drop
   }
+  
+  static func getConfig() throws -> Config {
+    let config = try Config(arguments: ["vapor", "--env=test"])
+    try config.setup()
+    return config
+  }
+  
   func serveInBackground() throws {
     background {
       try! self.run()
@@ -28,8 +35,7 @@ class TestCase: XCTestCase {
     Node.fuzzy = [Row.self, JSON.self, Node.self]
     Testing.onFail = XCTFail
     
-    //
-    let droplet = try! Droplet.testable()
+    _ = try! Droplet.testable()
     
     // We can just set up the user here
     try! Asset.makeQuery().delete()

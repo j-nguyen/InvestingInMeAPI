@@ -117,7 +117,7 @@ final class FeaturedProjectController {
     try featured_project.delete()
     
     //Return a confirmation message that the featured project was deleted
-    return try JSON(node: ["\(project.name) is no longer being featured."])
+    return try JSON(node: ["message": "\(project.name) is no longer being featured."])
   }
   
 }
