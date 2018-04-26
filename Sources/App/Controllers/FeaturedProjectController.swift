@@ -19,31 +19,40 @@ final class FeaturedProjectController {
   
   //MARK: Show all Featured Projects
   func index(_ request: Request) throws -> ResponseRepresentable {
-    
-    var threeProjects = try FeaturedProject.makeQuery().sort("startDate", .ascending).limit(3).all()
-    var counter = 0
-    
+    // retrieve the first three projects
+    let threeProjects = try FeaturedProject.makeQuery().sort("startDate", .ascending).limit(3).all()
+
     // filter out all the projects first
-    for project in threeProjects {
+    let indicies: [Int] = threeProjects.filter { project in
       let startDate = TimeInterval(project.startDate.timeIntervalSince1970 + TimeInterval(project.duration))
       let endDate = Date().timeIntervalSince1970
-      if startDate < endDate {
-        try project.delete()
-        counter += 1
-      }
+      return startDate < endDate
     }
-  
-    // GO through the other rest]
-    let projectIds = threeProjects.map { $0.id }.flatMap { $0 }
+    .enumerated()
+    .map { $0.offset }
+    
+    // track
+    for index in indicies {
+      try threeProjects[index].delete()
+    }
+    
+    // GO through the other rest
+    var nonExpiredProjects = threeProjects
+      .enumerated()
+      .filter { !indicies.contains($0.offset) }
+      .map { $0.element }
+    
+    let projectIds = nonExpiredProjects.map { $0.id }.flatMap { $0 }
+    
     let filteredProjects = try FeaturedProject.makeQuery().sort("startDate", .ascending).filter("id", notIn: projectIds).all()
     
-    for i in 0..<counter {
+    for i in 0..<indicies.count {
       if i < filteredProjects.count {
-        threeProjects.append(filteredProjects[i])
+        nonExpiredProjects.append(filteredProjects[i])
       }
     }
     
-    return try threeProjects.makeJSON()
+    return try nonExpiredProjects.makeJSON()
   }
   
   //MARK: Create Feature Project
