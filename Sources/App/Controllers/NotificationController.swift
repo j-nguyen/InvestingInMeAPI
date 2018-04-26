@@ -48,7 +48,7 @@ final class NotificationController {
     }
     
     guard let notificationId = req.parameters["id"]?.int else {
-       throw Abort.badRequest
+      throw Abort.badRequest
     }
     
     guard let notification = try Notification.makeQuery()

@@ -9,18 +9,19 @@ let package = Package(
         .executable(name: "Run", targets: ["Run"])
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", .upToNextMajor(from: "2.1.0")),
+        .package(url: "https://github.com/vapor/vapor.git", .upToNextMajor(from: "2.4.3")),
         .package(url: "https://github.com/vapor/fluent-provider.git", .upToNextMajor(from: "1.2.0")),
         .package(url: "https://github.com/vapor-community/postgresql-provider.git", .upToNextMajor(from: "2.1.0")),
         .package(url: "https://github.com/vapor/jwt.git", .upToNextMajor(from: "2.3.0")),
         .package(url: "https://github.com/vapor/redis-provider.git", .upToNextMajor(from: "2.0.1")),
         .package(url: "https://github.com/vapor/validation.git", .upToNextMajor(from: "1.1.1")),
         .package(url: "https://github.com/vapor/leaf-provider.git", .upToNextMajor(from: "1.0.0")),
+        .package(url: "https://github.com/iamjono/LoremSwiftum.git", .upToNextMajor(from: "0.0.3"))
     ],
     targets: [
         .target(
             name: "App",
-            dependencies: ["Vapor", "FluentProvider", "PostgreSQLProvider", "JWT", "RedisProvider", "Validation", "LeafProvider"],
+            dependencies: ["Vapor", "FluentProvider", "PostgreSQLProvider", "JWT", "RedisProvider", "Validation", "LeafProvider", "LoremSwiftum"],
             exclude: ["Config", "Public", "Resources"]
         ),
         .target(name: "Run", dependencies: ["App"]),

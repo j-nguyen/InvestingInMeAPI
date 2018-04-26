@@ -14,8 +14,7 @@ import Random
 @testable import App
 
 class AssetControllerTests: TestCase {
-  
-  let assetController = AssetController()
+  let assetController = try! AssetController(Droplet.getConfig())
   
   func testRoutes() throws {
     guard let id = try createAsset() else {

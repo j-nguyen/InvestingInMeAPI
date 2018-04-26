@@ -24,7 +24,6 @@ final class DropCommand: Command {
   func run(arguments: [String]) throws {
     try drop?.database?.raw("DROP SCHEMA public CASCADE;")
     try drop?.database?.raw("CREATE SCHEMA public;")
-//    try drop?.database?.raw("GRANT ALL ON SCHEMA public TO postgres;")
     try drop?.database?.raw("GRANT ALL ON SCHEMA public TO public;")
   }
 }

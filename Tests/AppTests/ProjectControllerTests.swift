@@ -14,8 +14,8 @@ import Random
 @testable import App
 
 class ProjectControllerTests: TestCase {
-  let userController = UserController()
-  let projectController = ProjectController()
+  let userController = try! UserController(Droplet.getConfig())
+  let projectController = try! ProjectController(Droplet.getConfig())
   
   func testRoutes() throws {
     guard let id = try createProject() else {

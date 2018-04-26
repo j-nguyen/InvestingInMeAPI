@@ -14,7 +14,7 @@ import Random
 @testable import App
 
 class NotificationControllerTests: TestCase {
-  let notificationController = NotificationController()
+  let notificationController = try! NotificationController(Droplet.getConfig())
   
   func testRoutes() throws {
     try fetchNotficiations()

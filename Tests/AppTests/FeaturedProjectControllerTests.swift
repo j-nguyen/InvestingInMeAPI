@@ -15,7 +15,7 @@ import Random
 
 class FeaturedProjectControllerTests: TestCase {
   
-  let featuredProjectController = FeaturedProjectController()
+  let featuredProjectController = try! FeaturedProjectController(Droplet.getConfig())
   
   func testRoutes() throws {
     _ = try createFeaturedProject()

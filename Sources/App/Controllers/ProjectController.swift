@@ -79,15 +79,13 @@ final class ProjectController {
   func update(_ request: Request) throws -> ResponseRepresentable {
     
     //Declare the project_id requested in the url
-    guard let project_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let project_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
     
     //Declare the project by searching the Project model at the given project_id
-    guard let project = try Project.find(project_id)
-      else {
-        throw Abort.notFound
+    guard let project = try Project.find(project_id) else {
+      throw Abort.notFound
     }
     
     //Check if the user requesting the update is equal to the project user_id
@@ -158,30 +156,22 @@ final class ProjectController {
         throw Abort.notFound
     }
     
-    //Check if the user requesting the update is equal to the project user_id
-    if request.headers["user_id"]?.int == project.user_id.int {
-      
-      try project.featured.delete()
-      
-      //Declare the assets associated with the Project by searching the project_id
-      let assets = try project.assets.all()
-      
-      //Go through each asset and attempt to delete it
-      for asset in assets {
-        try asset.delete()
-      }
-      
-      //Delete the project
-      try project.delete()
-      
-      //Return a confirmation message that the project was deleted
-      return try JSON(node: ["message", "\(project.name) has been deleted."])
-    } else {
-      throw Abort(.forbidden, reason: "You don't have the permissions to delete this project.")
+    // Check if the user requesting the update is equal to the project user_id
+    guard request.headers["user_id"]?.int == project.user_id.int else {
+      throw Abort(.forbidden, reason: "You don't have permission to delete this project!")
     }
+    
+    // Delete all the relationships with projects
+    try project.featured.delete()
+    try project.assets.delete()
+    
+    // Delete the primary project
+    try project.delete()
+    
+    // Return a confirmation message that the project was deleted
+    return try JSON(node: ["message": "\(project.name) has been deleted."])
   }
   
-  // MARK: Gets all categories
   /// Gets all the categories
   func categories(_ req: Request) throws -> ResponseRepresentable {
     return try Category
