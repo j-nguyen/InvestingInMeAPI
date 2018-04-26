@@ -196,9 +196,8 @@ final class ConnectionController {
     }
     
     //Declare the connection by searching the connection model at the given connection_id
-    guard let connection = try Connection.find(connection_id)
-      else {
-        throw Abort.notFound
+    guard let connection = try Connection.find(connection_id) else {
+      throw Abort.notFound
     }
     
     // check the connection and make sure that the req header userId

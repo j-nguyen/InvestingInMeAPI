@@ -95,32 +95,29 @@ final class FeaturedProjectController {
   func delete(_ request: Request) throws -> ResponseRepresentable {
   
     //Declare the featured project id requested in the url
-    guard let featured_project_id = request.parameters["id"]?.int
-      else {
-        throw Abort.badRequest
+    guard let featured_project_id = request.parameters["id"]?.int else {
+      throw Abort.badRequest
     }
     
     //Declare the featured project by searching the FeaturedProject model at the given feature_project_id
-    guard let featured_project = try FeaturedProject.find(featured_project_id)
-      else {
-        throw Abort.notFound
+    guard let featured_project = try FeaturedProject.find(featured_project_id) else {
+      throw Abort.notFound
     }
     
     //Declare the project by searching the Project model using the featured project, project_id
-    guard let project = try Project.find(featured_project.project_id)
-      else {
-        throw Abort.notFound
+    guard let project = try Project.find(featured_project.project_id) else {
+      throw Abort.notFound
     }
     
     guard request.headers["user_id"]?.int == project.user_id.int else {
-      throw Abort(.forbidden, reason:  "You're not the owner of this project")
+      throw Abort(.forbidden, reason: "You're not the owner of this project")
     }
     
     //Delete the featured project
     try featured_project.delete()
     
     //Return a confirmation message that the featured project was deleted
-    return try JSON(node: ["message", "\(project.name) is not longer being featured."])
+    return try JSON(node: ["\(project.name) is no longer being featured."])
   }
   
 }
