@@ -35,19 +35,17 @@ final class SeedCommand: Command {
     console.print ("~~~~~ Saved User: \(user.name) ~~~~~~")
     
     // Setup the user projects now
-    let categories = Category.Group.allValues
-    let roles = Role.Group.allValues
+    let categories = try Category.all()
+    let roles = try Role.all()
     
     // Creates all projects to fill for categories and roles
     for category in categories {
-      guard let categoryType = Category.Group(rawValue: category) else { return }
       for role in roles {
-        guard let roleType = Role.Group(rawValue: role) else { return }
         let project = try Project(
           user_id: user.assertExists(),
           name: Lorem.title,
-          category_id: categoryType.category().assertExists(),
-          role_id: roleType.role().assertExists(),
+          category_id: category.assertExists(),
+          role_id: role.assertExists(),
           project_description: Lorem.paragraph,
           description_needs: Lorem.paragraph
         )
@@ -60,34 +58,30 @@ final class SeedCommand: Command {
   func createProjects() throws {
     
     // Setup the user projects now
-    let categories = Category.Group.allValues
-    let roles = Role.Group.allValues
+    let categories = try Category.all()
+    let roles = try Role.all()
     
     // Creates all projects to fill for categories and roles
     for category in categories {
-      guard let categoryType = Category.Group(rawValue: category) else { return }
-      guard let randomRole = Role.Group(rawValue: roles.random ?? "") else { return }
-      
       // we can set-up the user here
       let user = try User(
         google_id: "\(URandom.makeInt())",
-        email: "\(category)-email@example.com",
+        email: "\(category.type)-email@example.com",
         name: Lorem.name,
         picture: "https://lh4.googleusercontent.com/-odK3p3pgzIc/AAAAAAAAAAI/AAAAAAAAAAA/ACSILjUEWrHe0j_9GxV1yT2oVaObU557-Q/s96-c/photo.jpg",
         email_verification: true
       )
-      user.role_id = try randomRole.role().assertExists()
+      user.role_id = try roles.random?.assertExists()
       
       try user.save()
       console.print ("~~~~~ Saved User: \(user.name) ~~~~~~")
       
       for role in roles {
-        guard let roleType = Role.Group(rawValue: role) else { return }
         let project = try Project(
           user_id: user.assertExists(),
           name: Lorem.title,
-          category_id: categoryType.category().assertExists(),
-          role_id: roleType.role().assertExists(),
+          category_id: category.assertExists(),
+          role_id: role.assertExists(),
           project_description: Lorem.paragraph,
           description_needs: Lorem.paragraph
         )
@@ -126,18 +120,6 @@ final class SeedCommand: Command {
         console.print("~~~~ Saved Picture ~~~~~")
       }
       
-    }
-  }
-  
-  func createFeaturedProjects() throws {
-    for _ in 1...100 {
-      let projects = try Project.all()
-      let project = projects.random
-      if let project = project {
-        let featuredProjectObject = try FeaturedProject(project_id: project.assertExists(), duration: 86400)
-        try? featuredProjectObject.save()
-        console.print("~~~~ Saved Featured Project ~~~~")
-      }
     }
   }
   
@@ -196,7 +178,6 @@ final class SeedCommand: Command {
   func run(arguments: [String]) throws {
     if environment == .development || environment == .test {
       try Asset.makeQuery().delete()
-      try FeaturedProject.makeQuery().delete()
       try Project.makeQuery().delete()
       try Connection.makeQuery().delete()
       try Notification.makeQuery().delete()
@@ -209,7 +190,6 @@ final class SeedCommand: Command {
       try createUser()
       try createProjects()
       try createAssets()
-      try createFeaturedProjects()
       try createConnections()
     } else if environment == .production {
       try createRoles()
