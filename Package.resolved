@@ -137,6 +137,15 @@
         }
       },
       {
+        "package": "LoremSwiftum",
+        "repositoryURL": "https://github.com/iamjono/LoremSwiftum.git",
+        "state": {
+          "branch": null,
+          "revision": "09ed8c4a00883eb899541fb73ac6ffaa4d9ab5e7",
+          "version": "0.0.3"
+        }
+      },
+      {
         "package": "Multipart",
         "repositoryURL": "https://github.com/vapor/multipart.git",
         "state": {
@@ -240,8 +249,17 @@
         "repositoryURL": "https://github.com/iamjono/SwiftRandom.git",
         "state": {
           "branch": null,
-          "revision": "cb36e1aaa692ee86ec5c16a15fda86de94611737",
-          "version": "1.0.0"
+          "revision": "81641ce93424c280817b9b059a325690ff11a544",
+          "version": "0.2.6"
+        }
+      },
+      {
+        "package": "SwiftString",
+        "repositoryURL": "https://github.com/iamjono/SwiftString.git",
+        "state": {
+          "branch": null,
+          "revision": "171a8bb129cd2ced82e25a6db3ce240d6433a105",
+          "version": "1.0.14"
         }
       },
       {

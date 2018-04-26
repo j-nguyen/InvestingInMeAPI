@@ -2,6 +2,7 @@ import Vapor
 import HTTP
 import Console
 import Random
+import LoremSwiftum
 
 /**
  SeedCommand is a way to prepopulate our data, so that we know what it'll look like on the front-end of our application.
@@ -13,123 +14,118 @@ final class SeedCommand: Command {
   let help: [String] = ["Helps populate data so that we know what our application is going to look like"]
   let console: ConsoleProtocol
   let environment: Environment
-  let user: Config?
-  let project: Config?
-  let assets: [Config]?
   
-  init(console: ConsoleProtocol, environment: Environment, seeds: Config?) {
+  init(console: ConsoleProtocol, environment: Environment) {
     self.console = console
     self.environment = environment
-    self.user = seeds?["user"]
-    self.project = seeds?["project"]
-    self.assets = seeds?["assets"]?.array
   }
   
   func createUser() throws {
-    // Create Dev Acc
-    if let user = user {
-      let userObj = try User(
-        google_id: user.get("google_id"),
-        email: user.get("email"),
-        name: user.get("name"),
-        picture: user.get("picture"),
-        email_verification: user.get("email_verification")
-      )
-      userObj.description = try user.get("description")
-      userObj.experience_and_credentials = try user.get("experience_and_credentials")
-      userObj.phone_number = try user.get("phone_number")
-      userObj.role_id = try Role.Group.developer.role().assertExists()
-      
-      try userObj.save()
-      
-      // Setup the user projects now
-      if let project = project {
-        for i in 1...10 {
-          let categories = Category.Group.allValues
-          for category in categories {
-            let role = Role.Group.allValues
-            guard let categoryGroup = Category.Group(rawValue: category) else { return }
-            guard let roleGroup = Role.Group(rawValue: role.random ?? Role.Group.developer.rawValue) else { return }
-            let projectObj = try Project(
-              user_id: userObj.assertExists(),
-              name: "User \(project.get("name") as String) - \(i)",
-              category_id: categoryGroup.category().assertExists(),
-              role_id: roleGroup.role().assertExists(),
-              project_description: project.get("project_description"),
-              description_needs: project.get("description_needs")
-            )
-            try projectObj.save()
-            console.print("~~~~~~ User Saved \(projectObj.name) ~~~~~~~")
-          }
-        }
+    // Create Dev Account
+    let user = try User(
+      google_id: "115087936934019172257",
+      email: "investinginme.dev@gmail.com",
+      name: "Dev InvestingInMe",
+      picture: "https://lh4.googleusercontent.com/-odK3p3pgzIc/AAAAAAAAAAI/AAAAAAAAAAA/ACSILjUEWrHe0j_9GxV1yT2oVaObU557-Q/s96-c/photo.jpg",
+      email_verification: true
+    )
+    user.description = Lorem.sentence
+    user.experience_and_credentials = Lorem.paragraph
+    try user.save()
+    console.print ("~~~~~ Saved User: \(user.name) ~~~~~~")
+    
+    // Setup the user projects now
+    let categories = Category.Group.allValues
+    let roles = Role.Group.allValues
+    
+    // Creates all projects to fill for categories and roles
+    for category in categories {
+      guard let categoryType = Category.Group(rawValue: category) else { return }
+      for role in roles {
+        guard let roleType = Role.Group(rawValue: role) else { return }
+        let project = try Project(
+          user_id: user.assertExists(),
+          name: Lorem.title,
+          category_id: categoryType.category().assertExists(),
+          role_id: roleType.role().assertExists(),
+          project_description: Lorem.paragraph,
+          description_needs: Lorem.paragraph
+        )
+        try project.save()
+        console.print("~~~~~~ Project Saved: \(project.name) ~~~~~~~")
       }
     }
   }
   
   func createProjects() throws {
-    // Random Accounts
-    for i in 1...15 {
-      let userObj = try User(
+    
+    // Setup the user projects now
+    let categories = Category.Group.allValues
+    let roles = Role.Group.allValues
+    
+    // Creates all projects to fill for categories and roles
+    for category in categories {
+      guard let categoryType = Category.Group(rawValue: category) else { return }
+      guard let randomRole = Role.Group(rawValue: roles.random ?? "") else { return }
+      
+      // we can set-up the user here
+      let user = try User(
         google_id: "\(URandom.makeInt())",
-        email: "\(i)email@example.com",
-        name: "User \(i)",
+        email: "\(category)-email@example.com",
+        name: Lorem.name,
         picture: "https://lh4.googleusercontent.com/-odK3p3pgzIc/AAAAAAAAAAI/AAAAAAAAAAA/ACSILjUEWrHe0j_9GxV1yT2oVaObU557-Q/s96-c/photo.jpg",
         email_verification: true
       )
-      userObj.role_id = try Role.Group.marketer.role().assertExists()
-      try userObj.save()
+      user.role_id = try randomRole.role().assertExists()
       
-      for i in 1...3 {
-        if let project = project {
-          
-          let category = try Category.Group.mobileApp.category()
-          let role = try Role.Group.developer.role()
-          let name: String = try project.get("name") + String(i)
-          let projectObject = try Project(
-            user_id: userObj.assertExists(),
-            name: name,
-            category_id: category.assertExists(),
-            role_id: role.assertExists(),
-            project_description: project.get("project_description"),
-            description_needs: project.get("description_needs")
-          )
-          
-          try projectObject.save()
-          console.print("~~~~ Saved \(projectObject.name) ~~~~~")
-        }
+      try user.save()
+      console.print ("~~~~~ Saved User: \(user.name) ~~~~~~")
+      
+      for role in roles {
+        guard let roleType = Role.Group(rawValue: role) else { return }
+        let project = try Project(
+          user_id: user.assertExists(),
+          name: Lorem.title,
+          category_id: categoryType.category().assertExists(),
+          role_id: roleType.role().assertExists(),
+          project_description: Lorem.paragraph,
+          description_needs: Lorem.paragraph
+        )
+        try project.save()
+        console.print("~~~~~~ Project Saved: \(project.name) ~~~~~~~")
       }
     }
   }
   
   func createAssets() throws {
-    if let assets = assets {
-      let projects = try Project.all()
-      for project in projects {
-        let assetProfile = try Asset(
+    let projects = try Project.all()
+    // CReate the assets
+    for project in projects {
+      let assetProfile = try Asset(
+        project_id: project.assertExists(),
+        file_type: "Image",
+        url: project.name.generatePlaceholder(),
+        file_name: "file-\(project.assertExists().int!)",
+        file_size: 2324,
+        project_icon: true
+      )
+      try assetProfile.save()
+      console.print("~~~~ Saved App Profile Icon ~~~~")
+      
+      for i in 1...3 {
+        // Set the beginning to have the icon true and the rest not
+        let assetObj = try Asset(
           project_id: project.assertExists(),
-          file_type: assets[0].get("file_type"),
-          url: project.name.generatePlaceholder(),
-          file_name: "file-\(project.assertExists().int!)",
-          file_size: assets[0].get("file_size"),
-          project_icon: true
+          file_type: "Image",
+          url: "https://via.placeholder.com/350x150",
+          file_name: "\(i)-Placeholder-Image",
+          file_size: 2324,
+          project_icon: false
         )
-        try assetProfile.save()
-        console.print("~~~~ Saved App Profile Icon ~~~~")
-        for _ in 1...3 {
-          // Set the beginning to have the icon true and the rest not
-          let assetObj = try Asset(
-            project_id: project.assertExists(),
-            file_type: assets[0].get("file_type"),
-            url: assets[0].get("url"),
-            file_name: assets[0].get("file_name"),
-            file_size: assets[0].get("file_size"),
-            project_icon: false,
-            public_id: "1234"
-          )
-          try assetObj.save()
-          console.print("~~~~ Saved Picture ~~~~~")
-        }
+        try assetObj.save()
+        console.print("~~~~ Saved Picture ~~~~~")
       }
+      
     }
   }
   
@@ -226,7 +222,6 @@ final class SeedCommand: Command {
 extension SeedCommand: ConfigInitializable {
   convenience init(config: Config) throws {
     let console = try config.resolveConsole()
-    let seeds = config["seeds"]
-    self.init(console: console, environment: config.environment, seeds: seeds)
+    self.init(console: console, environment: config.environment)
   }
 }
